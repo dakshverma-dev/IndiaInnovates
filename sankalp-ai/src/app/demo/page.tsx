@@ -4,68 +4,41 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // --- Types ---
-type Stage = "IDLE" | "RAW" | "NLP" | "CLASSIFIED" | "DEDUPE" | "ASSIGNED" | "RESOLVING" | "DONE";
+type AiStage = "IDLE" | "STAGE1_PROCESSING" | "STAGE1_DONE" | "STAGE2_PROCESSING" | "STAGE2_DONE" | "STAGE3_PROCESSING" | "STAGE3_DONE";
+type OfficerStatus = "AVAILABLE" | "EN_ROUTE" | "ON_SITE" | "RESOLVED" | "QR_SCANNED";
 
-interface Complaint {
-  id: string;
+interface BlockEntry {
+  block: string;
+  action: "INTAKE" | "CLASS" | "DEDUPE" | "ASSIGN" | "RESOLVE" | "SMS";
   text: string;
-  category: string;
-  priority: string;
-  ward: string;
-  dept: string;
-  sla: string;
-  confidence: number;
+  hash: string;
 }
 
-// --- Data ---
-const DEMO_SCENARIOS: Complaint[] = [
-  {
-    id: "DL-4821",
-    text: "Meri gali mein nali band hai aur kachra jam gaya hai",
-    category: "Sanitation",
-    priority: "P2 — High Priority",
-    ward: "Ward 42 — Lajpat Nagar",
-    dept: "MCD South Zone",
-    sla: "48 hours",
-    confidence: 0.94,
-  },
-  {
-    id: "DL-4822",
-    text: "Bijli pole ka wire toota hua hai, khatra ho sakta hai",
-    category: "Electricity",
-    priority: "P1 — Critical",
-    ward: "Ward 42 — Lajpat Nagar",
-    dept: "BSES Rajdhani",
-    sla: "12 hours",
-    confidence: 0.98,
-  },
-  {
-    id: "DL-4823",
-    text: "Sadak par bahut bada gaddha hai, accident ho jayega",
-    category: "Roads",
-    priority: "P2 — High Priority",
-    ward: "Ward 42 — Lajpat Nagar",
-    dept: "PWD Delhi",
-    sla: "72 hours",
-    confidence: 0.91,
-  }
-];
-
-// --- Helpers ---
-const formatHash = () => "0x" + Math.random().toString(16).slice(2, 10) + "..." + Math.random().toString(16).slice(2, 6);
-
 // ============================================================
-// MAIN DEMO PAGE
+// MAIN DEMO PAGE REBUILD
 // ============================================================
 export default function DemoDashboard() {
-  const [stage, setStage] = useState<Stage>("IDLE");
-  const [scenarioIdx, setScenarioIdx] = useState(0);
-  const [chat, setChat] = useState<{ text: string; time: string }[]>([]);
-  const [logs, setLogs] = useState<{ id: string; action: string; msg: string; hash: string }[]>([]);
-  const currentComplaint = DEMO_SCENARIOS[scenarioIdx];
+  // State
+  const [isRunning, setIsRunning] = useState(false);
+  const [whatsappVisible, setWhatsappVisible] = useState(false);
+  const [currentMessage, setCurrentMessage] = useState("");
+  const [aiStage, setAiStage] = useState<AiStage>("IDLE");
+  const [officerStatus, setOfficerStatus] = useState<OfficerStatus>("AVAILABLE");
+  const [logs, setLogs] = useState<BlockEntry[]>([]);
+  const [showResolvedCard, setShowResolvedCard] = useState(false);
+  const [civicScore, setCivicScore] = useState(73.2);
   const [clock, setClock] = useState("");
+  const [scenarioIdx, setScenarioIdx] = useState(0);
 
-  // Clock
+  const scenarios = [
+    "Meri gali mein nali band hai aur kachra jam gaya hai",
+    "Bijli ka pole gir gaya hai, wire latka hua hai",
+    "Sadak par itna bada gaddha hai, accident ho sakta hai",
+    "Teen din se kachra nahi utha, bahut bdboo aa rahi hai",
+    "Paani bilkul nahi aa raha subah se, koi sun nahi raha"
+  ];
+
+  // Clock effect
   useEffect(() => {
     const tick = () => {
       const now = new Date();
@@ -76,341 +49,456 @@ export default function DemoDashboard() {
     return () => clearInterval(id);
   }, []);
 
-  const addLog = (action: string, msg: string) => {
-    setLogs(prev => [{ id: `Block #${8847 + prev.length}`, action, msg, hash: formatHash() }, ...prev].slice(0, 10));
+  // Helpers
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  const addBlockchainEntry = (entry: Omit<BlockEntry, "hash">) => {
+    const hash = "0x" + Math.random().toString(16).slice(2, 10) + "..." + Math.random().toString(16).slice(2, 6);
+    setLogs(prev => [{ ...entry, hash }, ...prev].slice(0, 10));
   };
 
-  // Run Demo Logic
-  const runDemo = async () => {
-    if (stage !== "IDLE" && stage !== "DONE") return;
+  const resetDemo = () => {
+    setWhatsappVisible(false);
+    setAiStage("IDLE");
+    setOfficerStatus("AVAILABLE");
+    setLogs([]);
+    setShowResolvedCard(false);
+    setScenarioIdx(prev => (prev + 1) % scenarios.length);
+  };
+
+  const runFullDemo = async () => {
+    if (isRunning) return;
+    setIsRunning(true);
     
-    // reset if needed
-    if (stage === "DONE") {
-      setChat([]);
-      setLogs([]);
-      setScenarioIdx((scenarioIdx + 1) % DEMO_SCENARIOS.length);
-    }
+    resetDemo();
+    await delay(800);
 
-    // Step 1: Intake
-    setStage("RAW");
-    setChat([{ text: DEMO_SCENARIOS[scenarioIdx].text, time: "Just now" }]);
-    addLog("INTAKE", `Received from WhatsApp: ${DEMO_SCENARIOS[scenarioIdx].id}`);
+    // STEP 1: Intake
+    setCurrentMessage(scenarios[scenarioIdx]);
+    setWhatsappVisible(true);
+    addBlockchainEntry({ block: `#${8847 + logs.length}`, action: "INTAKE", text: `Received from WhatsApp: ${scenarios[scenarioIdx].slice(0, 15)}...` });
+    await delay(2000);
+
+    // STEP 2: AI Processing - Stage 1
+    setAiStage("STAGE1_PROCESSING");
+    await delay(1200);
+    setAiStage("STAGE1_DONE");
+    addBlockchainEntry({ block: `#${8848 + logs.length}`, action: "CLASS", text: "Classified as Sanitation (94% confidence)" });
+    await delay(1500);
+
+    // STEP 3: Deduplication - Stage 2
+    setAiStage("STAGE2_PROCESSING");
+    await delay(1000);
+    setAiStage("STAGE2_DONE");
+    addBlockchainEntry({ block: `#${8849 + logs.length}`, action: "DEDUPE", text: "No duplicates found in 200m radius" });
+    await delay(1500);
+
+    // STEP 4: Assignment - Stage 3
+    setAiStage("STAGE3_PROCESSING");
+    await delay(800);
+    setAiStage("STAGE3_DONE");
+    setOfficerStatus("EN_ROUTE");
+    addBlockchainEntry({ block: `#${8850 + logs.length}`, action: "ASSIGN", text: "Assigned to Rajesh Kumar (Sector 42)" });
+    await delay(3000);
+
+    // STEP 5: Resolving
+    setOfficerStatus("QR_SCANNED");
+    await delay(1000);
+    setOfficerStatus("RESOLVED");
+    addBlockchainEntry({ block: `#${8851 + logs.length}`, action: "RESOLVE", text: "QR Scanned at site. Photo verified." });
+    setShowResolvedCard(true);
     
-    await new Promise(r => setTimeout(r, 1500));
-    setStage("NLP");
-    addLog("NLP", "Gemini 2.0 processing intent & named entities...");
-
-    await new Promise(r => setTimeout(r, 2000));
-    setStage("CLASSIFIED");
-    addLog("CLASS", `Classified as ${DEMO_SCENARIOS[scenarioIdx].category} (Conf: ${(DEMO_SCENARIOS[scenarioIdx].confidence * 100).toFixed(1)}%)`);
-
-    await new Promise(r => setTimeout(r, 1500));
-    setStage("DEDUPE");
-    addLog("DEDUPE", "Checking spatial-temporal clusters...");
-
-    await new Promise(r => setTimeout(r, 1500));
-    setStage("ASSIGNED");
-    addLog("ASSIGN", "Assigned to nearest Field Officer: Rajesh Kumar");
-
-    await new Promise(r => setTimeout(r, 3000));
-    setStage("RESOLVING");
-    addLog("ACTION", "Officer arrived on site. QR Code verified.");
-
-    await new Promise(r => setTimeout(r, 2000));
-    setStage("DONE");
-    addLog("RESOLVE", `Ticket ${DEMO_SCENARIOS[scenarioIdx].id} marked RESOLVED.`);
+    // Update score
+    setCivicScore(prev => parseFloat((prev + 0.1).toFixed(1)));
+    
+    await delay(1000);
+    addBlockchainEntry({ block: `#${8852 + logs.length}`, action: "SMS", text: "Resolution SMS sent to citizen." });
+    
+    setIsRunning(false);
   };
 
   return (
     <div style={{
       width: "100%", height: "100vh",
-      background: "#0A0F1E",
-      color: "#FFFFFF",
-      fontFamily: "'Sora', sans-serif",
+      background: "#F8F9FC",
+      color: "#111",
+      fontFamily: "'DM Sans', sans-serif",
       display: "flex", flexDirection: "column",
       overflow: "hidden",
     }}>
-      {/* TOP HEADER */}
-      <div style={{
-        height: "56px", borderBottom: "1px solid rgba(255,255,255,0.08)",
+      {/* GLOBAL STYLES FOR ANIMATIONS */}
+      <style jsx global>{`
+        @keyframes pulse-green {
+          0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+          70%  { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+          100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+        }
+        @keyframes checkPulse {
+          0%   { transform: scale(0); opacity: 0; }
+          60%  { transform: scale(1.2); }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes grow-bar {
+          from { width: 0; }
+          to { width: var(--bar-width); }
+        }
+      `}</style>
+
+      {/* TOPBAR */}
+      <header style={{
+        height: "56px", background: "#0F2D5E",
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "0 24px", background: "rgba(10,15,30,0.8)", backdropFilter: "blur(10px)",
+        padding: "0 32px",
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <span style={{ fontWeight: 800, fontSize: "16px", letterSpacing: "-0.02em" }}>SANKALP AI</span>
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", background: "rgba(34,197,94,0.1)", padding: "4px 10px", borderRadius: "100px", border: "1px solid rgba(34,197,94,0.2)" }}>
-            <motion.div animate={{ opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 2 }} style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#22C55E" }} />
-            <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "10px", fontWeight: 700, color: "#22C55E" }}>● LIVE NODE — 42A</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <div>
+            <p style={{ fontFamily: "'Sora'", fontWeight: 700, fontSize: "18px", color: "#FFF", margin: 0 }}>SANKALP AI</p>
+            <p style={{ fontFamily: "'Noto Sans Devanagari'", fontSize: "11px", color: "#FF6B2B", margin: 0, marginTop: "-2px" }}>सङ्कल्प</p>
+          </div>
+          <div style={{ width: "1px", height: "24px", background: "rgba(255,255,255,0.2)" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+             <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#22C55E', boxShadow: '0 0 0 0 rgba(34,197,94,0.4)', animation: 'pulse-green 2s infinite' }} />
+             <span style={{ fontFamily: "'DM Sans'", fontWeight: 500, fontSize: "13px", color: "#FFF" }}>LIVE — Ward 42, Lajpat Nagar</span>
           </div>
         </div>
-        
-        <div style={{ fontFamily: "'JetBrains Mono'", fontSize: "18px", fontWeight: 500, opacity: 0.8 }}>
+
+        <div style={{ fontFamily: "'JetBrains Mono'", fontSize: "20px", fontWeight: 600, color: "#FFF", letterSpacing: "0.05em" }}>
           {clock}
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <span style={{ fontFamily: "'DM Sans'", fontSize: "12px", opacity: 0.5 }}>Lajpat Nagar Command Center</span>
-          <button onClick={() => window.location.reload()} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", padding: "4px 12px", fontSize: "11px", color: "#FFF", cursor: "pointer" }}>Reset Node</button>
+          <span style={{ fontFamily: "'DM Sans'", fontSize: "13px", color: "rgba(255,255,255,0.6)" }}>Demo Command Center</span>
+          <button 
+            onClick={resetDemo}
+            style={{ 
+              background: "transparent", border: "1px solid #FFF", borderRadius: "100px", padding: "4px 12px", 
+              fontSize: "12px", color: "#FFF", cursor: "pointer", opacity: 0.8 
+            }}
+          >
+            Reset Demo
+          </button>
         </div>
-      </div>
+      </header>
 
       {/* DASHBOARD GRID */}
-      <div style={{ flex: 1, display: "grid", gridTemplateColumns: "320px 1fr 340px", gap: "1px", background: "rgba(255,255,255,0.05)" }}>
+      <div style={{ flex: 1, display: "grid", gridTemplateColumns: "30% 40% 30%", padding: "24px", gap: "24px" }}>
         
-        {/* COL 1: INTAKE */}
-        <section style={{ background: "#0A0F1E", display: "flex", flexDirection: "column", borderRight: "1px solid rgba(255,255,255,0.05)" }}>
-          <PanelHeader title="Citizen Intake Feed" icon="📱" />
-          <div style={{ flex: 1, padding: "20px", display: "flex", flexDirection: "column", gap: "16px", overflowY: "auto" }}>
-            <AnimatePresence>
-              {chat.map((msg, i) => (
-                <motion.div key={i} initial={{ opacity: 0, x: -20, scale: 0.95 }} animate={{ opacity: 1, x: 0, scale: 1 }} style={{
-                  background: "#075E54", borderRadius: "12px 12px 12px 2px", padding: "12px 14px", alignSelf: "flex-start", maxWidth: "85%",
-                  border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-                }}>
-                  <p style={{ fontFamily: "'DM Sans'", fontSize: "13px", lineHeight: 1.5 }}>{msg.text}</p>
-                  <p style={{ fontFamily: "'JetBrains Mono'", fontSize: "9px", opacity: 0.5, marginTop: "4px", textAlign: "right" }}>{msg.time} ✓✓</p>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-            
-            {/* IVR / Voice simulation */}
-            <div style={{ marginTop: "auto", background: "rgba(255,255,255,0.03)", borderRadius: "12px", padding: "16px", border: "1px dashed rgba(255,255,255,0.1)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-                <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1.5 }} style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#FF6B2B" }} />
-                <span style={{ fontSize: "11px", fontWeight: 700, color: "#FF6B2B", textTransform: "uppercase", letterSpacing: "0.05em" }}>Voice IVR Transcribing...</span>
-              </div>
-              <p style={{ fontFamily: "'DM Sans'", fontSize: "12px", fontStyle: "italic", opacity: 0.4 }}>
-                {stage === "RAW" ? "Transcribing audio to Hinglish..." : "Waiting for voice trigger..."}
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* COL 2: AI BRAIN */}
-        <section style={{ background: "#0A0F1E", display: "flex", flexDirection: "column", position: "relative" }}>
-          {/* Scanning lines effect */}
-          <div className="scan-line" />
-          <PanelHeader title="Gemini AI — Civic Nervous System" icon="🧠" />
-          
-          <div style={{ flex: 1, padding: "40px", display: "flex", flexDirection: "column", gap: "24px" }}>
-            <div style={{ display: "flex", gap: "20px" }}>
-              {/* Left side: Main processing display */}
-              <div style={{ flex: 1 }}>
-                <AnimatePresence mode="wait">
-                  {stage === "IDLE" ? (
-                    <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ height: "300px", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "20px", background: "rgba(255,255,255,0.01)" }}>
-                      <p style={{ opacity: 0.3, fontSize: "13px", letterSpacing: "0.1em" }}>SYSTEM IDLE. AWAITING FEED.</p>
-                    </motion.div>
-                  ) : (
-                    <motion.div key="active" initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ minHeight: "360px", background: "rgba(15,45,94,0.05)", border: "1px solid rgba(15,45,94,0.2)", borderRadius: "20px", padding: "28px", position: "relative", overflow: "hidden" }}>
-                      
-                      {/* Token-by-token classification */}
-                      <StageIndicator active={stage !== "IDLE"} label="Stage 1: Intent Analysis" ok={stage !== "RAW"} />
-                      <div style={{ marginLeft: "24px", marginBottom: "32px" }}>
-                        <p style={{ fontFamily: "'DM Sans'", fontSize: "18px", color: "rgba(255,255,255,0.9)", marginBottom: "16px" }}>&ldquo;{currentComplaint.text}&rdquo;</p>
-                        
-                        {(stage === "CLASSIFIED" || stage === "DEDUPE" || stage === "ASSIGNED" || stage === "RESOLVING" || stage === "DONE") && (
-                          <div style={{ display: "grid", gridTemplateColumns: "100px 1fr", gap: "12px 24px" }}>
-                            <Label>Category</Label><Output value={currentComplaint.category} accent="#FF6B2B" conf={currentComplaint.confidence} />
-                            <Label>Priority</Label><Output value={currentComplaint.priority} accent={currentComplaint.priority.includes("Critical") ? "#EF4444" : "#FF6B2B"} />
-                            <Label>Department</Label><Output value={currentComplaint.dept} />
-                            <Label>Geo-Ward</Label><Output value={currentComplaint.ward} />
-                          </div>
-                        )}
+        {/* COLUMN 1: CITIZEN INTAKE */}
+        <section style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <DashboardCard title="Citizen Intake" subtitle="Live incoming complaints" icon="📱" status="Active">
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+              <div style={{ flex: 1, paddingBottom: "16px", overflowY: "auto" }}>
+                <AnimatePresence>
+                  {whatsappVisible && (
+                    <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ type: "spring", damping: 15 }}>
+                      <div style={{ background:'#DCF8C6', borderRadius:'0px 12px 12px 12px', padding:'12px 14px', maxWidth:'85%', marginBottom:4, boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                        <p style={{ fontFamily:'Noto Sans Devanagari', fontSize:14, color:'#0A0F1E', margin:0, lineHeight:1.5 }}>
+                          {currentMessage}
+                        </p>
                       </div>
-
-                      <StageIndicator active={stage === "DEDUPE" || stage === "ASSIGNED" || stage === "RESOLVING" || stage === "DONE"} label="Stage 2: Deduplication Check" ok={stage !== "DEDUPE" && stage !== "CLASSIFIED" && stage !== "RAW"} />
-                      { (stage === "DEDUPE" || stage === "ASSIGNED" || stage === "RESOLVING" || stage === "DONE") && (
-                         <div style={{ marginLeft: "24px", marginBottom: "32px" }}>
-                            <p style={{ fontFamily: "'JetBrains Mono'", fontSize: "11px", color: "#6366F1", textTransform: "uppercase", marginBottom: "4px" }}>
-                              {stage === "DEDUPE" ? "🔍 Analyzing spatial clusters..." : "✅ No duplicate tickets in last 6h"}
-                            </p>
-                            <p style={{ fontSize: "12px", opacity: 0.4 }}>Radius: 200m | Ward: 42 | Policy: MCD-CIVIC-V2</p>
-                         </div>
-                      )}
-
-                      <StageIndicator active={stage === "ASSIGNED" || stage === "RESOLVING" || stage === "DONE"} label="Stage 3: Field Assignment" ok={stage === "RESOLVING" || stage === "DONE"} />
-                      { (stage === "ASSIGNED" || stage === "RESOLVING" || stage === "DONE") && (
-                         <div style={{ marginLeft: "24px" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                               <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "#FF6B2B", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: "12px" }}>RK</div>
-                               <div>
-                                  <p style={{ fontSize: "14px", fontWeight: 600 }}>Rajesh Kumar</p>
-                                  <p style={{ fontSize: "11px", opacity: 0.5 }}>En-route · ETA 12 mins · 1.4km away</p>
-                               </div>
-                            </div>
-                         </div>
-                      )}
-
+                      <div style={{display:'flex', alignItems:'center', gap:4, paddingLeft:4, marginBottom: 16}}>
+                        <span style={{fontFamily:'DM Sans', fontSize:11, color:'#9CA3AF'}}>Just now</span>
+                        <span style={{color:'#34B7F1', fontSize:12}}>✓✓</span>
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
+                
+                <button 
+                  onClick={runFullDemo}
+                  disabled={isRunning}
+                  style={{
+                    width:'100%', padding:'10px', background:'#FF6B2B', color:'white', border:'none', borderRadius:10, 
+                    fontFamily:'Sora', fontWeight:600, fontSize:13, cursor: isRunning ? 'not-allowed' : 'pointer', transition:'all 0.2s ease',
+                    opacity: isRunning ? 0.6 : 1
+                  }}
+                >
+                  + Send New Complaint
+                </button>
               </div>
 
-              {/* Right side: Blockchain Log */}
-              <div style={{ width: "260px", display: "flex", flexDirection: "column", gap: "12px" }}>
-                <p style={{ fontFamily: "'JetBrains Mono'", fontSize: "10px", letterSpacing: "0.1em", opacity: 0.3, textAlign: "right" }}>IMMUTABLE AUDIT TRAIL</p>
-                <div style={{ flex: 1, background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "12px", padding: "12px", overflow: "hidden" }}>
-                  <AnimatePresence>
-                    {logs.map((log) => (
-                      <motion.div key={log.id} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} style={{ marginBottom: "12px", borderBottom: "1px solid rgba(255,255,255,0.03)", pb: "8px" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "2px" }}>
-                          <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "9px", color: "#FF6B2B" }}>{log.id}</span>
-                          <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "8px", opacity: 0.4 }}>{log.action}</span>
-                        </div>
-                        <p style={{ fontFamily: "'JetBrains Mono'", fontSize: "9px", opacity: 0.8, lineHeight: 1.4 }}>{log.msg}</p>
-                        <p style={{ fontFamily: "'JetBrains Mono'", fontSize: "7px", opacity: 0.2, marginTop: "2px" }}>{log.hash}</p>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
+              <div style={{ height: "1px", background: "#E5E7EB", margin: "16px 0" }} />
+              
+              <div style={{ opacity: 0.6 }}>
+                <SectionLabel title="Voice IVR — Hindi" icon="📞" />
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "#F3F4F6", padding: "12px", borderRadius: "10px", marginTop: "8px" }}>
+                   <div style={{ fontSize: "20px" }}>🎙️</div>
+                   <div>
+                      <p style={{ fontFamily: "Noto Sans Devanagari", fontSize: "13px", margin: 0 }}>"नाली बंद है गली नंबर 4 में"</p>
+                      <p style={{ fontSize: "10px", color: "#9CA3AF", margin: 0 }}>Whisper AI — Transcribed in 1.2s</p>
+                   </div>
+                </div>
+                <div style={{ marginTop: "8px", background: "#FFF0E8", color: "#FF6B2B", fontSize: "11px", fontWeight: 700, padding: "4px 8px", borderRadius: "100px", width: "fit-content" }}>
+                  Ticket DL-4822 Created ✓
                 </div>
               </div>
             </div>
+          </DashboardCard>
+        </section>
+
+        {/* COLUMN 2: AI BRAIN */}
+        <section style={{ display: "flex", flexDirection: "column", borderRadius: "16px", overflow: "hidden", boxShadow: "0 4px 16px rgba(15,45,94,0.08)" }}>
+          {/* TOP PANEL: AI BRAIN */}
+          <div style={{ flex: 1.8, background: "#FFF", padding: "24px", display: "flex", flexDirection: "column", borderBottom: "1px solid #E5E7EB" }}>
+            <DashboardCardHeader title="Gemini AI Engine" subtitle="Real-time processing" icon="🧠" badge="Processing" badgeColor="#FF6B2B" noPadding />
+            
+            <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", gap: "24px" }}>
+              {/* STAGE 1 */}
+              <AiStageRow stageNum={1} title="Intent Analysis" status={aiStage === "IDLE" ? "PENDING" : (aiStage === "STAGE1_PROCESSING" ? "ACTIVE" : "DONE")}>
+                {(aiStage !== "IDLE" && aiStage !== "STAGE1_PROCESSING") && (
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+                    <div style={{ background:'#F8F9FC', border:'1px solid #E5E7EB', borderLeft:'3px solid #FF6B2B', borderRadius:'0 8px 8px 0', padding:'10px 14px', marginBottom:16, fontFamily:'DM Sans', fontSize:13, color:'#0A0F1E', fontStyle:'italic' }}>
+                      "{currentMessage}"
+                    </div>
+                    <ClassificationRow label="CATEGORY" value="Sanitation" bar={94} color="#FF6B2B" />
+                    <ClassificationRow label="PRIORITY" value="P2 — High Priority" bar={80} color="#F59E0B" />
+                    <ClassificationRow label="DEPARTMENT" value="MCD South Zone" />
+                    <ClassificationRow label="GEO-WARD" value="Ward 42 — Lajpat Nagar" />
+                  </motion.div>
+                )}
+              </AiStageRow>
+
+              {/* STAGE 2 */}
+              <AiStageRow stageNum={2} title="Deduplication Check" status={aiStage === "IDLE" || aiStage === "STAGE1_PROCESSING" || aiStage === "STAGE1_DONE" ? "PENDING" : (aiStage === "STAGE2_PROCESSING" ? "ACTIVE" : "DONE")}>
+                {aiStage === "STAGE2_DONE" || aiStage === "STAGE3_PROCESSING" || aiStage === "STAGE3_DONE" ? (
+                  <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} style={{ background:'#F0FDF4', border:'1px solid #BBF7D0', borderRadius:8, padding:'10px 14px', display:'flex', alignItems:'center', gap:8 }}>
+                    <span style={{color:'#16A34A', fontSize:16}}>✓</span>
+                    <div>
+                      <p style={{fontFamily:'Sora', fontWeight:600, fontSize:12, color:'#16A34A', margin:0}}>No duplicates found in last 6 hours</p>
+                      <p style={{fontFamily:'DM Sans', fontSize:11, color:'#6B7280', margin:0}}>Radius: 200m · Ward: 42 · Policy: MCD-CIVIC-V2</p>
+                    </div>
+                  </motion.div>
+                ) : null}
+              </AiStageRow>
+
+              {/* STAGE 3 */}
+              <AiStageRow stageNum={3} title="Field Assignment" status={aiStage === "STAGE3_PROCESSING" ? "ACTIVE" : (aiStage === "STAGE3_DONE" ? "DONE" : "PENDING")}>
+                 {aiStage === "STAGE3_DONE" && (
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 14px', background:'#F8F9FC', border:'1px solid #E5E7EB', borderRadius:10 }}>
+                      <div style={{ width:40, height:40, borderRadius:'50%', background:'linear-gradient(135deg, #0F2D5E, #1a3a6b)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Sora', fontWeight:700, fontSize:14, color:'white' }}>RK</div>
+                      <div style={{flex:1}}>
+                        <p style={{fontFamily:'Sora', fontWeight:600, fontSize:13, color:'#0A0F1E', margin:0}}>Rajesh Kumar</p>
+                        <p style={{fontFamily:'DM Sans', fontSize:11, color:'#6B7280', margin:0}}>En-route · ETA 12 mins · 1.4km away</p>
+                      </div>
+                      <div style={{ padding:'4px 10px', background:'#FFF0E8', border:'1px solid #FFCBA4', borderRadius:20, fontFamily:'DM Sans', fontWeight:500, fontSize:11, color:'#FF6B2B' }}>Notified ✓</div>
+                    </motion.div>
+                 )}
+              </AiStageRow>
+            </div>
+          </div>
+
+          {/* BOTTOM PANEL: BLOCKCHAIN */}
+          <div style={{ flex: 1, background: "#0F2D5E", padding: "16px 24px", color: "white", borderTop: "2px solid #FF6B2B" }}>
+             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                <h3 style={{ fontFamily: "Sora", fontSize: "12px", fontWeight: 600, margin: 0, color: "rgba(255,255,255,0.9)" }}>⛓ Immutable Audit Trail</h3>
+                <span style={{ padding: "2px 8px", background: "#FF6B2B", color: "#FFF", fontSize: "9px", borderRadius: "100px", fontWeight: 700 }}>RTI-READY ✓</span>
+             </div>
+
+             <div style={{ display: "flex", flexDirection: "column" }}>
+               <AnimatePresence>
+                 {logs.map((log) => (
+                    <motion.div key={log.block} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} style={{ padding:'8px 0', borderBottom:'1px solid rgba(255,255,255,0.08)', display:'grid', gridTemplateColumns:'60px 1fr auto', gap:12, alignItems:'start' }}>
+                       <span style={{ fontFamily:'JetBrains Mono', fontSize:11, color:'#FF6B2B', fontWeight:500 }}>{log.block}</span>
+                       <div>
+                          <p style={{fontFamily:'DM Sans', fontSize:11, color:'rgba(255,255,255,0.85)', margin:0}}>{log.text}</p>
+                          <p style={{fontFamily:'JetBrains Mono', fontSize:10, color:'rgba(255,255,255,0.35)', margin:0}}>{log.hash}</p>
+                       </div>
+                       <span style={{ 
+                         padding:'2px 6px', borderRadius:4, fontFamily:'JetBrains Mono', fontSize:9, letterSpacing:'0.05em', color: "#FFF",
+                         background: log.action === "RESOLVE" ? "rgba(22,163,74,0.4)" : log.action === "ASSIGN" ? "rgba(255,107,43,0.4)" : "rgba(255,255,255,0.1)"
+                       }}>
+                         {log.action}
+                       </span>
+                    </motion.div>
+                 ))}
+               </AnimatePresence>
+             </div>
           </div>
         </section>
 
-        {/* COL 3: FIELD TRACKER */}
-        <section style={{ background: "#0A0F1E", display: "flex", flexDirection: "column", borderLeft: "1px solid rgba(255,255,255,0.05)" }}>
-          <PanelHeader title="Field Response Node" icon="📍" />
-          <div style={{ flex: 1, padding: "20px", display: "flex", flexDirection: "column", gap: "12px" }}>
-            
-            <OfficerCard name="Rajesh Kumar" status={stage === "RESOLVING" ? "ON_SITE" : stage === "DONE" ? "RESOLVED" : stage === "ASSIGNED" ? "EN_ROUTE" : "AVAILABLE"} ticket={stage === "IDLE" ? null : currentComplaint.id} />
-            <OfficerCard name="Amit Sharma" status="ON_TASK" ticket="DL-4792" />
-            <OfficerCard name="Suresh Gupta" status="AVAILABLE" />
-            <OfficerCard name="Priya Singh" status="AVAILABLE" />
+        {/* COLUMN 3: FIELD OFFICERS */}
+        <section style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+           <DashboardCard title="Field Officers" subtitle="Live location & engagement" icon="📍">
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                 <OfficerCard name="Rajesh Kumar" initials="RK" status={officerStatus === "QR_SCANNED" ? "ON_SITE" : officerStatus === "RESOLVED" ? "RESOLVED" : officerStatus === "EN_ROUTE" ? "EN_ROUTE" : "AVAILABLE"} details={officerStatus === "AVAILABLE" ? "Ward 42 · Available" : "1.4km away · ETA 12 min"} task={officerStatus === "AVAILABLE" ? null : "#DL-4821"} active={officerStatus !== "AVAILABLE"} />
+                 <OfficerCard name="Amit Sharma" initials="AS" status="ON_SITE" details="QR scan pending" task="#DL-4792" />
+                 <OfficerCard name="Suresh Gupta" initials="SG" status="AVAILABLE" details="Ward 42 · Available" />
+                 <OfficerCard name="Priya Singh" initials="PS" status="AVAILABLE" details="Ward 41 · Available" />
 
-            {/* Resolution Proof visualization */}
-            {stage === "RESOLVING" && (
-              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} style={{ marginTop: "auto", background: "rgba(34,197,94,0.05)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: "16px", padding: "20px", textAlign: "center" }}>
-                <div style={{ width: "48px", height: "48px", borderRadius: "8px", background: "#FFF", margin: "0 auto 12px", display: "flex", alignItems: "center", justifyContent: "center", color: "#000", fontSize: "20px" }}>📷</div>
-                <p style={{ fontWeight: 700, fontSize: "14px", color: "#4ADE80", marginBottom: "4px" }}>Site Verification</p>
-                <p style={{ fontSize: "11px", opacity: 0.6 }}>QR #42-12-X Scanned. Resolution photo uploaded to blockchain.</p>
-              </motion.div>
-            )}
-
-            {stage === "DONE" && (
-              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} style={{ marginTop: "auto", background: "rgba(34,197,94,0.1)", border: "1px solid #22C55E", borderRadius: "16px", padding: "20px", textAlign: "center" }}>
-                <div style={{ fontSize: "32px", marginBottom: "8px" }}>✅</div>
-                <p style={{ fontWeight: 800, fontSize: "16px", color: "#FFF" }}>RESOLVED</p>
-                <p style={{ fontSize: "12px", opacity: 0.7, marginTop: "4px" }}>SMS Sent to Citizen · Ticket Closed</p>
-              </motion.div>
-            )}
-          </div>
+                 <AnimatePresence>
+                    {showResolvedCard && (
+                       <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", damping: 12 }}>
+                          <div style={{ padding:'20px', background:'linear-gradient(135deg, #F0FDF4, #DCFCE7)', border:'2px solid #16A34A', borderRadius:12, textAlign:'center', marginTop:12 }}>
+                             <div style={{ width:48, height:48, borderRadius:'50%', background:'#16A34A', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 12px', animation:'checkPulse 0.5s ease', boxShadow:'0 0 0 8px rgba(22,163,74,0)' }}>
+                                <span style={{color:'white', fontSize:24}}>✓</span>
+                             </div>
+                             <p style={{fontFamily:'Sora', fontWeight:700, fontSize:16, color:'#15803D', margin:'0 0 4px'}}>RESOLVED</p>
+                             <p style={{fontFamily:'DM Sans', fontSize:12, color:'#16A34A', margin:'0 0 8px'}}>QR Scanned · Photo Verified · Ticket Closed</p>
+                             <div style={{ padding:'6px 12px', background:'white', borderRadius:8, fontFamily:'DM Sans', fontSize:11, color:'#6B7280', border:'1px solid #BBF7D0' }}>
+                               📲 SMS Sent to +91-98XXX-6542
+                             </div>
+                          </div>
+                       </motion.div>
+                    )}
+                 </AnimatePresence>
+              </div>
+           </DashboardCard>
         </section>
 
       </div>
 
-      {/* BOTTOM ACTION BAR */}
-      <div style={{ height: "72px", borderTop: "1px solid rgba(255,255,255,0.08)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 24px", background: "rgba(10,15,30,0.9)" }}>
-        <div style={{ display: "flex", gap: "32px" }}>
-            <Metric label="WARD SCORE" val="73 / 100" trend="↑ +2.1" color="#4ADE80" />
-            <Metric label="ACTIVE TICKETS" val="847" trend="+2 incoming" color="#FF6B2B" />
-            <Metric label="SLA COMPLIANCE" val="89.3%" trend="↑ 1.2%" color="#4ADE80" />
+      {/* BOTTOM BAR */}
+      <footer style={{
+        height: "72px", background: "#FFF", borderTop: "1px solid #E5E7EB",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "0 32px", boxShadow: "0 -2px 8px rgba(15,45,94,0.04)"
+      }}>
+        <div style={{display:'flex', alignItems:'center', gap:24}}>
+          <div>
+            <p style={{fontFamily:'JetBrains Mono', fontSize:10, color:'#9CA3AF', margin:0, letterSpacing:'0.05em'}}>WARD SCORE</p>
+            <div style={{display:'flex', alignItems:'baseline', gap:4}}>
+              <span style={{fontFamily:'Sora', fontWeight:700, fontSize:24, color:'#0A0F1E'}}>{civicScore}</span>
+              <span style={{fontFamily:'Sora', fontSize:14, color:'#6B7280'}}>/100</span>
+              <motion.span key={civicScore} initial={{ color: "#16A34A", scale: 1.2 }} animate={{ color: "#16A34A", scale: 1 }} style={{fontFamily:'DM Sans', fontSize:11, color:'#16A34A', marginLeft:4}}>↑ +0.3</motion.span>
+            </div>
+          </div>
+          <div style={{width:1, height:32, background:'#E5E7EB'}} />
+          <span style={{fontFamily:'DM Sans', fontSize:12, color:'#6B7280'}}>Ward 42 · Lajpat Nagar South</span>
         </div>
 
-        <motion.button 
-          whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(255,107,43,0.4)" }}
-          whileTap={{ scale: 0.95 }}
-          onClick={runDemo}
+        <div style={{ display: "flex", gap: "48px" }}>
+            <Metric label="ACTIVE TICKETS" val="847" delta="+2 incoming" color="#F59E0B" />
+            <Metric label="RESOLVED TODAY" val="1,247" delta="↑ 23 this hour" color="#16A34A" />
+            <Metric label="SLA COMPLIANCE" val="89.3%" delta="↑ 1.2%" color="#0F2D5E" />
+        </div>
+
+        <button
+          onClick={runFullDemo}
+          disabled={isRunning}
           style={{
-            background: stage === "IDLE" || stage === "DONE" ? "#FF6B2B" : "rgba(255,255,255,0.05)",
-            border: "none", borderRadius: "12px", padding: "14px 28px",
-            color: "#FFF", fontWeight: 800, fontSize: "15px", cursor: (stage === "IDLE" || stage === "DONE") ? "pointer" : "not-allowed",
-            display: "flex", alignItems: "center", gap: "12px",
+            padding:'12px 28px', background:'#FF6B2B', color:'white', border:'none', borderRadius:10,
+            fontFamily:'Sora', fontWeight:700, fontSize:15, cursor: isRunning ? 'not-allowed' : 'pointer',
+            display:'flex', alignItems:'center', gap:8, boxShadow:'0 4px 16px rgba(255,107,43,0.35)',
+            transition:'all 0.2s ease', opacity: isRunning ? 0.8 : 1
           }}
         >
-          {stage === "IDLE" || stage === "DONE" ? "▶ RUN FULL DEMO" : "● DEMO IN PROGRESS"}
-        </motion.button>
+          {isRunning ? "● DEMO RUNNING..." : "▶ RUN FULL DEMO"}
+        </button>
+      </footer>
+    </div>
+  );
+}
+
+// ============================================================
+// UI COMPONENTS
+// ============================================================
+
+function DashboardCard({ title, subtitle, icon, status, children }: { title: string; subtitle: string; icon: string; status?: string; children: React.ReactNode }) {
+  return (
+    <div style={{ background: "#FFF", borderRadius: "16px", border: "1px solid #E5E7EB", padding: "24px", boxShadow: "0 4px 16px rgba(15,45,94,0.08)", flex: 1, display: "flex", flexDirection: "column" }}>
+      <DashboardCardHeader title={title} subtitle={subtitle} icon={icon} badge={status} />
+      {children}
+    </div>
+  );
+}
+
+function DashboardCardHeader({ title, subtitle, icon, badge, badgeColor, noPadding }: { title: string; subtitle: string; icon: string; badge?: string; badgeColor?: string; noPadding?: boolean }) {
+  return (
+    <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom: noPadding ? 0 : 20 }}>
+      <div style={{ width:32, height:32, borderRadius:8, background:'#FFF0E8', display:'flex', alignItems:'center', justifyContent:'center', fontSize: "16px" }}>{icon}</div>
+      <div>
+        <p style={{fontFamily:'Sora', fontWeight:600, fontSize:14, color:'#0A0F1E', margin:0}}>{title}</p>
+        <p style={{fontFamily:'DM Sans', fontSize:11, color:'#6B7280', margin:0}}>{subtitle}</p>
       </div>
-
-      <style jsx global>{`
-        body { margin: 0; background: #0A0F1E; }
-        .scan-line {
-            width: 100%; height: 2px; background: rgba(15,45,94,0.15);
-            position: absolute; top: 0; left: 0; z-index: 5;
-            animation: scan 4s linear infinite; pointer-events: none;
-        }
-        @keyframes scan { from { top: 0; } to { top: 100%; } }
-      `}</style>
-    </div>
-  );
-}
-
-// ============================================================
-// SUB-COMPONENTS
-// ============================================================
-
-function PanelHeader({ title, icon }: { title: string; icon: string }) {
-  return (
-    <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", gap: "10px" }}>
-      <span style={{ fontSize: "16px" }}>{icon}</span>
-      <h2 style={{ fontSize: "12px", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", opacity: 0.5 }}>{title}</h2>
-    </div>
-  );
-}
-
-function StageIndicator({ active, label, ok }: { active: boolean; label: string; ok: boolean }) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px", opacity: active ? 1 : 0.2 }}>
-      <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: ok ? "#4ADE80" : "#FF6B2B" }} />
-      <span style={{ fontSize: "11px", fontWeight: 800, letterSpacing: "0.05em", textTransform: "uppercase" }}>{label}</span>
-      {ok && <span style={{ fontSize: "10px", color: "#4ADE80" }}>DONE</span>}
-    </div>
-  );
-}
-
-function Label({ children }: { children: React.ReactNode }) {
-  return <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "11px", textTransform: "uppercase", opacity: 0.3, letterSpacing: "0.05em" }}>{children}</span>;
-}
-
-function Output({ value, accent, conf }: { value: string; accent?: string; conf?: number }) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-      <span style={{ fontSize: "14px", fontWeight: 600, color: accent || "#FFF" }}>{value}</span>
-      {conf && (
-        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-           <div style={{ width: "60px", height: "4px", background: "rgba(255,255,255,0.1)", borderRadius: "2px", overflow: "hidden" }}>
-              <motion.div initial={{ width: 0 }} animate={{ width: `${conf * 100}%` }} style={{ height: "100%", background: "#4ADE80" }} />
-           </div>
-           <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "9px", opacity: 0.5 }}>{(conf * 100).toFixed(0)}%</span>
+      {badge && (
+        <div style={{ marginLeft:'auto', padding:'2px 8px', background: badgeColor ? `${badgeColor}15` : '#F0FDF4', border: `1px solid ${badgeColor || '#BBF7D0'}`, borderRadius:20, fontFamily:'DM Sans', fontSize:11, color: badgeColor || '#16A34A', fontWeight:500 }}>
+          ● {badge}
         </div>
       )}
     </div>
   );
 }
 
-function OfficerCard({ name, status, ticket }: { name: string; status: "AVAILABLE" | "EN_ROUTE" | "ON_SITE" | "ON_TASK" | "RESOLVED"; ticket?: string | null }) {
-  const S = {
-    AVAILABLE: { bg: "rgba(255,255,255,0.03)", border: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)", label: "AVAILABLE" },
-    EN_ROUTE: { bg: "rgba(251,146,60,0.08)", border: "rgba(251,146,60,0.2)", color: "#FB923C", label: "EN ROUTE" },
-    ON_SITE: { bg: "rgba(251,146,60,0.15)", border: "#FB923C", color: "#FB923C", label: "ON SITE" },
-    ON_TASK: { bg: "rgba(255,255,255,0.05)", border: "rgba(255,255,255,0.1)", color: "#94A3B8", label: "ON TASK" },
-    RESOLVED: { bg: "rgba(34,197,94,0.1)", border: "#22C55E", color: "#4ADE80", label: "RESOLVED" },
-  };
-  const cfg = S[status];
-
+function SectionLabel({ title, icon }: { title: string; icon: string }) {
   return (
-    <div style={{ background: cfg.bg, border: `1px solid ${cfg.border}`, borderRadius: "12px", padding: "14px", position: "relative" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-           <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 700 }}>{name[0]}</div>
-           <span style={{ fontSize: "13px", fontWeight: 600 }}>{name}</span>
-        </div>
-        <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "8px", fontWeight: 700, background: "rgba(0,0,0,0.3)", padding: "2px 6px", borderRadius: "4px", color: cfg.color }}>{cfg.label}</span>
-      </div>
-      {ticket && <p style={{ fontFamily: "'JetBrains Mono'", fontSize: "10px", color: "#FF6B2B" }}>TASK: #{ticket}</p>}
+    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+      <span style={{ fontSize: "14px" }}>{icon}</span>
+      <span style={{ fontFamily: "Sora", fontSize: "12px", fontWeight: 700, color: "#0A0F1E", textTransform: "uppercase", letterSpacing: "0.05em" }}>{title}</span>
     </div>
   );
 }
 
-function Metric({ label, val, trend, color }: { label: string; val: string; trend: string; color: string }) {
+function AiStageRow({ stageNum, title, status, children }: { stageNum: number; title: string; status: "PENDING" | "ACTIVE" | "DONE"; children: React.ReactNode }) {
+  const color = status === "DONE" ? "#16A34A" : status === "ACTIVE" ? "#FF6B2B" : "#E5E7EB";
   return (
-    <div>
-       <p style={{ fontFamily: "'JetBrains Mono'", fontSize: "9px", opacity: 0.3, letterSpacing: "0.1em", marginBottom: "2px" }}>{label}</p>
-       <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
-          <span style={{ fontSize: "18px", fontWeight: 800 }}>{val}</span>
-          <span style={{ fontSize: "10px", fontWeight: 700, color }}>{trend}</span>
-       </div>
+    <div style={{ display: "flex", gap: "16px", opacity: status === "PENDING" ? 0.3 : 1 }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: color, color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 800 }}>{stageNum}</div>
+        <div style={{ flex: 1, width: "2px", background: "#E5E7EB", margin: "4px 0" }} />
+      </div>
+      <div style={{ flex: 1, paddingBottom: "12px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+          <h4 style={{ fontFamily: "Sora", fontSize: "13px", fontWeight: 700, margin: 0, color: "#0F2D5E" }}>{title}</h4>
+          {status === "DONE" && <span style={{ fontSize: "10px", fontWeight: 700, color: "#16A34A", background: "#F0FDF4", padding: "2px 8px", borderRadius: "100px", border: "1px solid #BBF7D0" }}>DONE</span>}
+          {status === "ACTIVE" && <motion.span animate={{ opacity: [1, 0.5, 1] }} transition={{ repeat: Infinity }} style={{ fontSize: "10px", fontWeight: 700, color: "#FF6B2B" }}>PROCESSING...</motion.span>}
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function ClassificationRow({ label, value, bar, color }: { label: string; value: string; bar?: number; color?: string }) {
+  return (
+    <div style={{display:'grid', gridTemplateColumns:'100px 1fr', gap:8, alignItems:'center', marginBottom:8}}>
+      <span style={{fontFamily:'JetBrains Mono', fontSize:10, color:'#9CA3AF', letterSpacing:'0.05em'}}>{label}</span>
+      <div style={{display:'flex', alignItems:'center', gap:8}}>
+        <span style={{fontFamily:'Sora', fontWeight:600, fontSize:13, color: color || '#222'}}>{value}</span>
+        {bar && (
+          <div style={{flex:1, height:4, background:'#E5E7EB', borderRadius:2, overflow:'hidden'}}>
+             <motion.div initial={{ width: 0 }} animate={{ width: `${bar}%` }} style={{ height:'100%', background: color || '#FF6B2B', borderRadius:2 }} />
+          </div>
+        )}
+        {bar && <span style={{fontFamily:'JetBrains Mono', fontSize:11, color:'#6B7280'}}>{bar}%</span>}
+      </div>
+    </div>
+  );
+}
+
+function OfficerCard({ name, initials, status, details, task, active }: { name: string; initials: string; status: string; details: string; task?: string | null; active?: boolean }) {
+  const S: any = {
+    EN_ROUTE:  { bg:'#FFF7ED', border:'#FED7AA', text:'#F59E0B', label:"→ En Route" },
+    ON_SITE:   { bg:'#FFF0E8', border:'#FFCBA4', text:'#FF6B2B', label:"● On Site" },
+    AVAILABLE: { bg:'#F0FDF4', border:'#BBF7D0', text:'#16A34A', label:"✓ Available" },
+    RESOLVED:  { bg:'#F0FDF4', border:'#BBF7D0', text:'#16A34A', label:"✓ Resolved" },
+    QR_SCANNED:{ bg:'#F0FDF4', border:'#16A34A', text:'#16A34A', label:"● Scanning..." }
+  };
+  const cfg = S[status] || S.AVAILABLE;
+
+  return (
+    <div style={{ padding:'12px', borderRadius:10, border: active ? `1.5px solid #FF6B2B` : '1px solid #E5E7EB', background: active ? '#FFFBF8' : '#FFF', marginBottom:2, transition:'all 0.2s ease' }}>
+      <div style={{display:'flex', alignItems:'center', gap:10}}>
+        <div style={{ width:36, height:36, borderRadius:'50%', background:'linear-gradient(135deg, #0F2D5E, #1a3a6b)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Sora', fontWeight:700, fontSize:12, color:'white' }}>{initials}</div>
+        <div style={{flex:1}}>
+          <p style={{fontFamily:'Sora', fontWeight:600, fontSize:13, color:'#0A0F1E', margin:0}}>{name}</p>
+          <p style={{fontFamily:'DM Sans', fontSize:11, color:'#6B7280', margin:0}}>{details}</p>
+        </div>
+        <div style={{ background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.text, padding: "4px 8px", borderRadius: "100px", fontSize: "10px", fontWeight: 700 }}>{cfg.label}</div>
+      </div>
+      {task && (
+        <div style={{ marginTop:8, padding:'4px 10px', background:'#F8F9FC', borderRadius:6, fontFamily:'JetBrains Mono', fontSize:11, color:'#FF6B2B', fontWeight: 600 }}>
+          TASK: {task}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Metric({ label, val, delta, color }: { label: string; val: string; delta: string; color: string }) {
+  return (
+    <div style={{ textAlign: "center" }}>
+      <p style={{ fontFamily:'JetBrains Mono', fontSize:9, color:'#9CA3AF', margin:0, letterSpacing:'0.06em' }}>{label}</p>
+      <p style={{ fontFamily:'Sora', fontWeight:700, fontSize:20, color: color, margin:0, lineHeight: 1.2 }}>{val}</p>
+      <p style={{ fontFamily:'DM Sans', fontSize:10, color:'#9CA3AF', margin:0 }}>{delta}</p>
     </div>
   );
 }
