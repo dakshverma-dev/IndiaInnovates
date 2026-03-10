@@ -44,28 +44,34 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("Dashboard");
 
   return (
-    <div style={{ 
-      display: "flex", 
-      height: "100vh", 
-      background: "#E7E8E2", // Soft Beige background
-      fontFamily: "'DM Sans', sans-serif",
-      padding: "24px",
-      gap: "24px",
-      overflow: "hidden" 
-    }}>
+    <div 
+      className="dashboard-container"
+      style={{ 
+        display: "flex", 
+        minHeight: "100vh", 
+        background: "#E7E8E2", 
+        fontFamily: "'DM Sans', sans-serif",
+        padding: "24px",
+        gap: "24px",
+      }}
+    >
       
       {/* 1. PILL SIDEBAR */}
-      <aside style={{ 
-        width: "80px", 
-        background: "#1A2E2A", // Dark Sage
-        borderRadius: "40px", 
-        display: "flex", 
-        flexDirection: "column", 
-        alignItems: "center", 
-        padding: "32px 0",
-        boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
-        border: "1px solid rgba(255,255,255,0.05)"
-      }}>
+      <aside 
+        className="dashboard-sidebar"
+        style={{ 
+          width: "80px", 
+          background: "#1A2E2A", 
+          borderRadius: "40px", 
+          display: "flex", 
+          flexDirection: "column", 
+          alignItems: "center", 
+          padding: "32px 0",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
+          border: "1px solid rgba(255,255,255,0.05)",
+          flexShrink: 0
+        }}
+      >
         {/* Logo Icon */}
         <a href="/" style={{ textDecoration: "none", marginBottom: "40px" }}>
           <div style={{ 
@@ -104,52 +110,44 @@ export default function AdminDashboard() {
       <main style={{ flex: 1, display: "flex", flexDirection: "column", gap: "32px", overflowY: "auto", paddingRight: "8px" }}>
         
         {/* HEADER */}
-        <header style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <div>
-            <h1 style={{ fontFamily: "'Sora'", fontSize: "32px", fontWeight: 700, color: "#1A2E2A", margin: 0 }}>Hello, Rajesh!</h1>
-            <p style={{ fontSize: "16px", color: "rgba(26, 46, 42, 0.5)", marginTop: "4px" }}>Manage Delhi’s civic health and real-time triage.</p>
+        <header 
+          className="dashboard-header"
+          style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "24px", flexWrap: "wrap" }}
+        >
+          <div className="header-greeting">
+            <h1 style={{ fontFamily: "'Sora'", fontSize: "clamp(24px, 4vw, 32px)", fontWeight: 700, color: "#1A2E2A", margin: 0 }}>Hello, Rajesh!</h1>
+            <p style={{ fontSize: "14px", color: "rgba(26, 46, 42, 0.5)", marginTop: "4px" }}>Manage Delhi’s civic health.</p>
           </div>
           
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <div style={{
-              background: "#FFF", borderRadius: "100px", padding: "8px 24px",
-              display: "flex", alignItems: "center", gap: "12px",
-              width: "320px", boxShadow: "0 2px 10px rgba(26,46,42,0.02)",
-              border: "1px solid rgba(26,46,42,0.05)"
-            }}>
+          <div className="header-actions" style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+            <div 
+              className="search-bar"
+              style={{
+                background: "#FFF", borderRadius: "100px", padding: "8px 20px",
+                display: "flex", alignItems: "center", gap: "10px",
+                width: "var(--search-width, 320px)", boxShadow: "0 2px 10px rgba(26,46,42,0.02)",
+                border: "1px solid rgba(26,46,42,0.05)"
+              }}
+            >
               <span style={{ opacity: 0.4 }}>🔍</span>
               <input 
-                placeholder="Search wards, tickets..." 
+                placeholder="Search..." 
                 style={{ border: "none", background: "transparent", outline: "none", fontSize: "14px", width: "100%", color: "#1A2E2A" }} 
               />
-              <div style={{ 
-                width: "32px", height: "32px", background: "#1A2E2A", borderRadius: "50%", 
-                display: "flex", alignItems: "center", justifyContent: "center", color: "#FFF" 
-              }}>
-                ➔
-              </div>
             </div>
             
-            <div style={{ 
-              width: "48px", height: "48px", background: "#FFF", borderRadius: "50%", 
-              display: "flex", alignItems: "center", justifyContent: "center", 
-              fontSize: "20px", boxShadow: "0 2px 10px rgba(26,46,42,0.02)", border: "1px solid rgba(26,46,42,0.05)"
-            }}>
-              💬
-            </div>
-            <div style={{ 
-              width: "48px", height: "48px", background: "#FFF", borderRadius: "50%", 
-              display: "flex", alignItems: "center", justifyContent: "center", 
-              fontSize: "20px", boxShadow: "0 2px 10px rgba(26,46,42,0.02)", border: "1px solid rgba(26,46,42,0.05)", position: "relative"
-            }}>
-              🔔
-              <div style={{ position: "absolute", top: "12px", right: "12px", width: "8px", height: "8px", background: "#FF6B2B", borderRadius: "50%", border: "2px solid #FFF" }} />
+            <div style={{ display: "flex", gap: "12px" }}>
+              <HeaderIcon icon="💬" />
+              <HeaderIcon icon="🔔" badge />
             </div>
           </div>
         </header>
 
         {/* TOP KPI ROW */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "24px" }}>
+        <div 
+          className="kpi-row"
+          style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "24px" }}
+        >
           <KpiCard label="Total Complaints" val="847" icon="📊" trendType="bar" />
           <KpiCard label="Active Officers" val="321" icon="👥" trendType="line" />
           <KpiCard label="Avg Resolution" val="31.4h" icon="⌛" />
@@ -176,7 +174,10 @@ export default function AdminDashboard() {
         </div>
 
         {/* MAIN COMPONENT ROW */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 340px 380px", gap: "24px", flex: 1 }}>
+        <div 
+          className="main-grid"
+          style={{ display: "grid", gridTemplateColumns: "1fr 340px 380px", gap: "24px", flex: 1 }}
+        >
           
           {/* LEFT COLUMN: ACTIVITY CHART */}
           <section style={{ background: "#FFF", borderRadius: "24px", padding: "24px", display: "flex", flexDirection: "column" }}>
@@ -344,10 +345,62 @@ export default function AdminDashboard() {
       </main>
 
       <style jsx global>{`
-        body { margin: 0; background: #E7E8E2; }
-        ::-webkit-scrollbar { width: 8px; }
+        body { margin: 0; background: #E7E8E2; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.05); borderRadius: 10px; }
+
+        @media (max-width: 1400px) {
+          .main-grid {
+            grid-template-columns: 1fr 1fr !important;
+          }
+        }
+
+        @media (max-width: 1024px) {
+          .kpi-row, .main-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .dashboard-container {
+            flex-direction: column !important;
+            padding: 16px !important;
+          }
+          .dashboard-sidebar {
+            width: 100% !important;
+            height: auto !important;
+            flex-direction: row !important;
+            padding: 12px 24px !important;
+            border-radius: 20px !important;
+            order: 2; /* Move to bottom */
+            position: sticky;
+            bottom: 16px;
+            z-index: 10;
+          }
+          .dashboard-sidebar nav {
+            flex-direction: row !important;
+            justify-content: space-around;
+            width: 100%;
+          }
+          .dashboard-sidebar a, .dashboard-sidebar > div:last-child {
+            display: none !important;
+          }
+          main {
+            padding-right: 0 !important;
+            overflow-y: visible !important;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .dashboard-header {
+            flex-direction: column !important;
+            align-items: stretch !important;
+          }
+          .search-bar {
+            --search-width: 100%;
+          }
+          .header-actions {
+            justify-content: space-between;
+          }
+        }
       `}</style>
     </div>
   );
@@ -356,6 +409,22 @@ export default function AdminDashboard() {
 // ============================================================
 // SUB-COMPONENTS
 // ============================================================
+
+function HeaderIcon({ icon, badge }: { icon: string; badge?: boolean }) {
+  return (
+    <div style={{ 
+      width: "48px", height: "48px", background: "#FFF", borderRadius: "50%", 
+      display: "flex", alignItems: "center", justifyContent: "center", 
+      fontSize: "20px", boxShadow: "0 2px 10px rgba(26, 46, 42, 0.02)", border: "1px solid rgba(26, 46, 42, 0.05)",
+      position: "relative"
+    }}>
+      {icon}
+      {badge && (
+        <div style={{ position: "absolute", top: "12px", right: "12px", width: "8px", height: "8px", background: "#FF6B2B", borderRadius: "50%", border: "2px solid #FFF" }} />
+      )}
+    </div>
+  );
+}
 
 function SidebarIcon({ icon, active, onClick }: { icon: string; active?: boolean; onClick?: () => void }) {
   return (

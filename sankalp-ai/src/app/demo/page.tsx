@@ -117,14 +117,16 @@ export default function DemoDashboard() {
   };
 
   return (
-    <div style={{
-      width: "100%", height: "100vh",
-      background: "#E7E8E2",
-      color: "#111",
-      fontFamily: "'DM Sans', sans-serif",
-      display: "flex", flexDirection: "column",
-      overflow: "hidden",
-    }}>
+    <div 
+      className="demo-container"
+      style={{
+        width: "100%", minHeight: "100vh",
+        background: "#E7E8E2",
+        color: "#111",
+        fontFamily: "'DM Sans', sans-serif",
+        display: "flex", flexDirection: "column",
+      }}
+    >
       {/* GLOBAL STYLES FOR ANIMATIONS */}
       <style jsx global>{`
         @keyframes pulse-green {
@@ -144,29 +146,32 @@ export default function DemoDashboard() {
       `}</style>
 
       {/* TOPBAR */}
-      <header style={{
-        height: "56px", background: "#1A2E2A",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "0 32px",
-      }}>
+      <header 
+        className="demo-header"
+        style={{
+          height: "auto", minHeight: "56px", background: "#1A2E2A",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "12px 24px", flexWrap: "wrap", gap: "12px"
+        }}
+      >
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <a href="/" style={{ textDecoration: "none" }}>
             <p style={{ fontFamily: "'Sora'", fontWeight: 700, fontSize: "18px", color: "#FFF", margin: 0 }}>SANKALP AI</p>
             <p style={{ fontFamily: "'Noto Sans Devanagari'", fontSize: "11px", color: "#FF6B2B", margin: 0, marginTop: "-2px" }}>सङ्कल्प</p>
           </a>
-          <div style={{ width: "1px", height: "24px", background: "rgba(255,255,255,0.15)" }} />
+          <div className="header-divider" style={{ width: "1px", height: "24px", background: "rgba(255,255,255,0.15)" }} />
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
              <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#22C55E', boxShadow: '0 0 0 0 rgba(34,197,94,0.4)', animation: 'pulse-green 2s infinite' }} />
-             <span style={{ fontFamily: "'DM Sans'", fontWeight: 500, fontSize: "13px", color: "#FFF" }}>LIVE — Ward 42, Lajpat Nagar</span>
+             <span style={{ fontFamily: "'DM Sans'", fontWeight: 500, fontSize: "13px", color: "#FFF" }}>LIVE — Ward 42</span>
           </div>
         </div>
 
-        <div style={{ fontFamily: "'JetBrains Mono'", fontSize: "20px", fontWeight: 600, color: "#FFF", letterSpacing: "0.05em" }}>
+        <div className="demo-clock" style={{ fontFamily: "'JetBrains Mono'", fontSize: "20px", fontWeight: 600, color: "#FFF", letterSpacing: "0.05em" }}>
           {clock}
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <span style={{ fontFamily: "'DM Sans'", fontSize: "13px", color: "rgba(255,255,255,0.6)" }}>Demo Command Center</span>
+          <span className="demo-subtitle" style={{ fontFamily: "'DM Sans'", fontSize: "13px", color: "rgba(255,255,255,0.6)" }}>Command Center</span>
           <button 
             onClick={resetDemo}
             style={{ 
@@ -174,13 +179,18 @@ export default function DemoDashboard() {
               fontSize: "12px", color: "#FFF", cursor: "pointer", opacity: 0.6 
             }}
           >
-            Reset Demo
+            Reset
           </button>
         </div>
       </header>
 
       {/* DASHBOARD GRID */}
-      <div style={{ flex: 1, display: "grid", gridTemplateColumns: "30% 40% 30%", padding: "24px", gap: "24px" }}>
+      <div 
+        className="dashboard-grid"
+        style={{ 
+          flex: 1, display: "grid", gridTemplateColumns: "30% 40% 30%", padding: "24px", gap: "24px" 
+        }}
+      >
         
         {/* COLUMN 1: CITIZEN INTAKE */}
         <section style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
@@ -347,12 +357,16 @@ export default function DemoDashboard() {
       </div>
 
       {/* BOTTOM BAR */}
-      <footer style={{
-        height: "72px", background: "#FFF", borderTop: "1px solid #E5E7EB",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "0 32px", boxShadow: "0 -2px 8px rgba(15,45,94,0.04)"
-      }}>
-        <div style={{display:'flex', alignItems:'center', gap:24}}>
+      <footer 
+        className="demo-footer"
+        style={{
+          minHeight: "72px", background: "#FFF", borderTop: "1px solid #E5E7EB",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "16px 24px", boxShadow: "0 -2px 8px rgba(15,45,94,0.04)",
+          flexWrap: "wrap", gap: "20px"
+        }}
+      >
+        <div style={{display:'flex', alignItems:'center', gap:24}} className="footer-score-zone">
           <div>
             <p style={{fontFamily:'JetBrains Mono', fontSize:10, color:'#9CA3AF', margin:0, letterSpacing:'0.05em'}}>WARD SCORE</p>
             <div style={{display:'flex', alignItems:'baseline', gap:4}}>
@@ -361,14 +375,14 @@ export default function DemoDashboard() {
               <motion.span key={civicScore} initial={{ color: "#16A34A", scale: 1.2 }} animate={{ color: "#16A34A", scale: 1 }} style={{fontFamily:'DM Sans', fontSize:11, color:'#16A34A', marginLeft:4}}>{"\u2191"} +0.3</motion.span>
             </div>
           </div>
-          <div style={{width:1, height:32, background:'#E5E7EB'}} />
-          <span style={{fontFamily:'DM Sans', fontSize:12, color:'#6B7280'}}>Ward 42 · Lajpat Nagar South</span>
+          <div className="footer-divider" style={{width:1, height:32, background:'#E5E7EB'}} />
+          <span style={{fontFamily:'DM Sans', fontSize:12, color:'#6B7280'}} className="footer-ward-text">Ward 42 · Lajpat Nagar South</span>
         </div>
 
-        <div style={{ display: "flex", gap: "48px" }}>
-            <Metric label="ACTIVE TICKETS" val="847" delta="+2 incoming" color="#F59E0B" />
-            <Metric label="RESOLVED TODAY" val="1,247" delta="↑ 23 this hour" color="#16A34A" />
-            <Metric label="SLA COMPLIANCE" val="89.3%" delta="↑ 1.2%" color="#1A2E2A" />
+        <div className="footer-metrics" style={{ display: "flex", gap: "32px" }}>
+            <Metric label="ACTIVE" val="847" delta="+2" color="#F59E0B" />
+            <Metric label="RESOLVED" val="1,247" delta="↑ 23" color="#16A34A" />
+            <Metric label="SLA" val="89.3%" delta="↑ 1.2%" color="#1A2E2A" />
         </div>
 
         <button
@@ -378,12 +392,55 @@ export default function DemoDashboard() {
             padding:'12px 28px', background:'#FF6B2B', color:'white', border:'none', borderRadius:10,
             fontFamily:'Sora', fontWeight:700, fontSize:15, cursor: isRunning ? 'not-allowed' : 'pointer',
             display:'flex', alignItems:'center', gap:8, boxShadow:'0 4px 16px rgba(255,107,43,0.35)',
-            transition:'all 0.2s ease', opacity: isRunning ? 0.8 : 1
+            transition:'all 0.2s ease', opacity: isRunning ? 0.8 : 1,
+            flex: "var(--btn-flex, none)"
           }}
         >
-          {isRunning ? "● DEMO RUNNING..." : "▶ RUN FULL DEMO"}
+          {isRunning ? "● RUNNING..." : "▶ RUN FULL DEMO"}
         </button>
       </footer>
+
+      <style jsx>{`
+        @media (max-width: 1024px) {
+          .dashboard-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .demo-container {
+            overflow-y: auto !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .demo-header {
+            justify-content: center !important;
+            text-align: center !important;
+          }
+          .header-divider, .demo-subtitle {
+            display: none !important;
+          }
+          .demo-clock {
+            width: 100%;
+          }
+          .demo-footer {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            padding: 24px !important;
+          }
+          .footer-score-zone {
+            justify-content: space-between !important;
+          }
+          .footer-metrics {
+            justify-content: space-between !important;
+            gap: 12px !important;
+          }
+          .footer-ward-text {
+            font-size: 11px !important;
+          }
+          .demo-footer button {
+            width: 100% !important;
+            --btn-flex: 1;
+          }
+        }
+      `}</style>
     </div>
   );
 }

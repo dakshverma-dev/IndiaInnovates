@@ -41,7 +41,8 @@ export default function HeroSection() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        paddingTop: "64px",
+        paddingTop: "80px",
+        paddingBottom: "40px",
         position: "relative",
         overflow: "hidden",
       }}
@@ -116,7 +117,7 @@ export default function HeroSection() {
           transition={{ duration: 0.7, delay: 0.4 }}
           style={{
             fontFamily: "'DM Sans', sans-serif",
-            fontSize: "18px",
+            fontSize: "clamp(15px, 2.5vw, 18px)",
             fontWeight: 400,
             color: "rgba(26, 46, 42, 0.5)",
             lineHeight: 1.7,
@@ -134,6 +135,7 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.5 }}
           style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}
+          className="hero-ctas"
         >
           <motion.button
             whileHover={{ scale: 1.02, boxShadow: "0 8px 32px rgba(10,10,10,0.15)" }}
@@ -149,6 +151,8 @@ export default function HeroSection() {
               padding: "14px 32px",
               borderRadius: "100px",
               cursor: "pointer",
+              flex: "var(--cta-flex, none)",
+              minWidth: "160px"
             }}
           >
             See Live Demo
@@ -167,6 +171,8 @@ export default function HeroSection() {
               padding: "14px 32px",
               borderRadius: "100px",
               cursor: "pointer",
+              flex: "var(--cta-flex, none)",
+              minWidth: "160px"
             }}
           >
             How It Works
@@ -191,6 +197,18 @@ export default function HeroSection() {
           Why civic AI matters
         </motion.p>
       </div>
+      <style jsx>{`
+        @media (max-width: 640px) {
+          .hero-ctas {
+            flex-direction: column !important;
+            --cta-flex: 1;
+            width: 100%;
+          }
+          .hero-gradient {
+            padding-top: 100px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

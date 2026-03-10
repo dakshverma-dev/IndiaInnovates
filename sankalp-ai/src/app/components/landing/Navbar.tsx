@@ -73,7 +73,7 @@ export default function Navbar() {
 
         {/* Desktop links — centered */}
         <nav
-          className="hidden md:flex"
+          className="desktop-nav"
           style={{ gap: "32px", alignItems: "center" }}
         >
           {navLinks.map((l) => (
@@ -101,7 +101,7 @@ export default function Navbar() {
         </nav>
 
         {/* CTAs */}
-        <div className="hidden md:flex" style={{ gap: "8px", alignItems: "center" }}>
+        <div className="desktop-ctas" style={{ gap: "8px", alignItems: "center" }}>
           <button
             onClick={() => document.getElementById("dataflow")?.scrollIntoView({ behavior: "smooth" })}
             style={{
@@ -138,11 +138,11 @@ export default function Navbar() {
 
         {/* Mobile burger */}
         <button
-          className="md:hidden"
+          className="mobile-burger"
           onClick={() => setMobileOpen(!mobileOpen)}
           style={{ background: "none", border: "none", cursor: "pointer", padding: "4px" }}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A2E2A" strokeWidth="2">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A2E2A" strokeWidth="2">
             {mobileOpen ? (
               <path d="M6 18L18 6M6 6l12 12" />
             ) : (
@@ -199,6 +199,13 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+      <style jsx>{`
+        .mobile-burger { display: none; }
+        @media (max-width: 768px) {
+          .mobile-burger { display: block; }
+          .desktop-nav, .desktop-ctas { display: none !important; }
+        }
+      `}</style>
     </motion.header>
   );
 }

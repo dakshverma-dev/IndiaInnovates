@@ -59,13 +59,15 @@ export default function PillarsSection() {
               transition={{ delay: i * 0.06, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
               style={{
                 display: "grid",
-                gridTemplateColumns: "80px 1fr auto",
-                gap: "24px",
+                gridTemplateColumns: "minmax(60px, 80px) 1fr auto",
+                gap: "16px",
                 alignItems: "center",
-                padding: "28px 0",
+                padding: "24px 0",
                 borderBottom: i < pillars.length - 1 ? "1px solid rgba(0,0,0,0.06)" : "none",
                 cursor: "default",
+                overflow: "hidden"
               }}
+              className="mobile-stack"
             >
               {/* Number */}
               <span
@@ -121,13 +123,15 @@ export default function PillarsSection() {
               </div>
 
               {/* Metric */}
-              <div style={{ textAlign: "right", flexShrink: 0 }}>
+              <div style={{ textAlign: "right", flexShrink: 0 }} className="pillar-metric">
                 <span style={{
                   fontFamily: "'Sora'",
-                  fontSize: "13px",
+                  fontSize: "clamp(11px, 2vw, 13px)",
                   fontWeight: 600,
                   color: "#5D7A6F",
-                  whiteSpace: "nowrap",
+                  whiteSpace: "normal",
+                  display: "block",
+                  maxWidth: "120px"
                 }}>
                   {"\u2192"} {p.metric}
                 </span>
@@ -136,6 +140,18 @@ export default function PillarsSection() {
           ))}
         </div>
       </div>
+      <style jsx>{`
+        @media (max-width: 640px) {
+          .mobile-stack {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+          }
+          .pillar-metric {
+            text-align: left !important;
+            margin-top: 4px;
+          }
+        }
+      `}</style>
     </section>
   );
 }

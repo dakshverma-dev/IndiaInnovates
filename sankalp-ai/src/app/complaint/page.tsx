@@ -282,24 +282,37 @@ export default function ComplaintPage() {
   const onBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => (e.target.style.borderColor = "#E5E7EB");
 
   return (
-    <div style={{ display: "flex", height: "100vh", overflow: "hidden", background: "#E7E8E2" }}>
+    <div 
+      className="complaint-container"
+      style={{ display: "flex", minHeight: "100vh", background: "#E7E8E2" }}
+    >
       {/* SIDEBAR — 36% */}
-      <div style={{ width: "36%", minWidth: "300px", maxWidth: "400px", flexShrink: 0, height: "100%" }}>
+      <div 
+        className="complaint-sidebar"
+        style={{ width: "36%", minWidth: "300px", maxWidth: "400px", flexShrink: 0 }}
+      >
         <Sidebar lang={lang} />
       </div>
 
       {/* RIGHT PANEL */}
-      <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "0 0 48px" }}>
+      <div 
+        className="complaint-main"
+        style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "0 0 48px" }}
+      >
 
         {/* Top bar */}
-        <div style={{
-          width: "100%", padding: "14px 32px",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          background: "rgba(231, 232, 226, 0.8)",
-          backdropFilter: "blur(20px)",
-          borderBottom: "1px solid rgba(26, 46, 42, 0.05)",
-          position: "sticky", top: 0, zIndex: 10,
-        }}>
+        <div 
+          className="complaint-topbar"
+          style={{
+            width: "100%", padding: "14px 32px",
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            background: "rgba(231, 232, 226, 0.8)",
+            backdropFilter: "blur(20px)",
+            borderBottom: "1px solid rgba(26, 46, 42, 0.05)",
+            position: "sticky", top: 0, zIndex: 10,
+            flexWrap: "wrap", gap: "12px"
+          }}
+        >
           {/* Step wizaard */}
           <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
             {([1, 2, 3, 4] as Step[]).map((s, i) => (
@@ -460,20 +473,20 @@ export default function ComplaintPage() {
                 <div style={{ display: "flex", gap: "8px", marginTop: "24px" }}>
                   {step > 1 && (
                     <motion.button whileTap={{ scale: 0.97 }} onClick={() => setStep((s) => (s - 1) as Step)}
-                      style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "13px", fontWeight: 500, padding: "10px 18px", borderRadius: "100px", border: "1px solid rgba(26, 46, 42, 0.1)", background: "rgba(26, 46, 42, 0.05)", color: "#1A2E2A", cursor: "pointer" }}>
+                      style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "14px", fontWeight: 500, padding: "12px 24px", borderRadius: "100px", border: "1px solid rgba(26, 46, 42, 0.1)", background: "rgba(26, 46, 42, 0.05)", color: "#1A2E2A", cursor: "pointer" }}>
                       {t.back}
                     </motion.button>
                   )}
                   {step < 4 ? (
                     <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                       onClick={() => setStep((s) => (s + 1) as Step)}
-                      style={{ flex: 1, fontFamily: "'DM Sans',sans-serif", fontSize: "14px", fontWeight: 600, padding: "11px", borderRadius: "100px", border: "none", background: "#1A2E2A", color: "#FFF", cursor: "pointer" }}>
+                      style={{ flex: 1, fontFamily: "'DM Sans',sans-serif", fontSize: "15px", fontWeight: 600, padding: "14px", borderRadius: "100px", border: "none", background: "#1A2E2A", color: "#FFF", cursor: "pointer" }}>
                       {t.next} {"\u2192"}
                     </motion.button>
                   ) : (
                     <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                       onClick={handleSubmit} disabled={submitting}
-                      style={{ flex: 1, fontFamily: "'DM Sans',sans-serif", fontSize: "14px", fontWeight: 600, padding: "13px", borderRadius: "100px", border: "none", background: "#1A2E2A", color: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+                      style={{ flex: 1, fontFamily: "'DM Sans',sans-serif", fontSize: "15px", fontWeight: 600, padding: "14px", borderRadius: "100px", border: "none", background: "#1A2E2A", color: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
                       {submitting ? (
                         <><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.7, ease: "linear" }}
                           style={{ width: "16px", height: "16px", border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#FFF", borderRadius: "50%" }} /></>
@@ -486,6 +499,34 @@ export default function ComplaintPage() {
           </AnimatePresence>
         </div>
       </div>
+      <style jsx>{`
+        @media (max-width: 900px) {
+          .complaint-container {
+            flex-direction: column !important;
+          }
+          .complaint-sidebar {
+            width: 100% !important;
+            max-width: none !important;
+            order: 2; /* Sidebar after form on mobile */
+          }
+          .complaint-main {
+            order: 1;
+            padding-bottom: 24px !important;
+          }
+          .complaint-topbar {
+            padding: 12px 16px !important;
+            justify-content: center !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .complaint-topbar div:first-child {
+            gap: 2px !important;
+          }
+          .complaint-topbar div:first-child span:last-child {
+            display: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
