@@ -1,0 +1,752 @@
+# SANKALP AI — World-Class Frontend Prompts
+###  Design Reference: sarvam.ai aesthetic — clean, purposeful, Indian-context-aware
+### Stack: React + Next.js + Tailwind + Framer Motion + Recharts + Socket.IO
+
+---
+
+> **MASTER DESIGN BRIEF (prepend to every prompt)**
+>
+> Design language: Clean Indian govtech meets modern SaaS. Think sarvam.ai — restrained white space, sharp typography, purposeful color, data-forward layouts. NOT a government portal. NOT a generic dashboard. This is an intelligence platform. The visual identity should feel like something the Prime Minister's office would proudly demo.
+>
+> **Color System:**
+> - Primary: `#0F2D5E` (Deep Navy — authority, trust)
+> - Accent: `#FF6B2B` (Saffron-Orange — Indian identity, urgency, action)
+> - Success: `#16A34A`
+> - Warning: `#F59E0B`
+> - Danger: `#DC2626`
+> - Background: `#F8F9FC` (near-white, slightly cool)
+> - Surface: `#FFFFFF`
+> - Text Primary: `#0A0F1E`
+> - Text Secondary: `#6B7280`
+> - Border: `#E5E7EB`
+>
+> **Typography:**
+> - Display/Headings: `Sora` (geometric, modern, confident)
+> - Body: `DM Sans` (legible, neutral, humanist)
+> - Data/Mono: `JetBrains Mono` (dashboards, IDs, codes)
+> - Hindi text: `Noto Sans Devanagari`
+>
+> **Principles:**
+> - Every screen must look credible to a government bureaucrat AND impressive to a VC
+> - Real data labels everywhere (use Delhi ward names, real complaint categories)
+> - Micro-interactions on every interactive element
+> - Mobile-first, but desktop is the hero presentation surface
+> - NO purple gradients. NO generic startup purple. NO Inter font.
+
+---
+
+## PROMPT 1 — Landing Page / Hero
+
+```
+Build a full landing page for SANKALP AI — Delhi's Civic Nervous System.
+
+Design reference: sarvam.ai — clean, data-forward, Indian-context SaaS. NOT a government portal.
+
+COLOR SYSTEM:
+- Primary: #0F2D5E (deep navy)
+- Accent: #FF6B2B (saffron orange)
+- Background: #F8F9FC
+- Text: #0A0F1E / #6B7280
+
+FONTS (import from Google Fonts):
+- Headings: Sora (700, 600)
+- Body: DM Sans (400, 500)
+- Numbers/IDs: JetBrains Mono
+
+SECTIONS TO BUILD:
+
+1. NAVBAR
+- Logo: "SANKALP AI" in Sora 700, navy. Sanskrit ligature "सङ्कल्प" in small Devanagari below it in orange.
+- Nav links: Problem | Solution | Features | Demo | Team
+- CTA button: "Request Pilot" — navy background, white text, subtle hover lift shadow
+- Sticky with backdrop-blur on scroll
+
+2. HERO SECTION
+- Full-viewport height
+- Left side (60%):
+  - Eyebrow tag: "India Innovates 2026 — Civic Tech Domain" in small orange caps
+  - H1: "Delhi's complaints. Finally resolved." — Sora 700, 64px, navy. "Finally resolved" animates in with a typewriter effect, cycling through "Finally tracked. / Finally verified. / Finally prevented."
+  - Subtext: "SANKALP AI is not another complaint portal. It is the AI intelligence layer that makes MCD's existing systems actually work — for 20 million citizens, 272 wards."
+  - Two CTAs: "See Live Demo →" (orange filled) | "How It Works" (ghost navy border)
+  - Live stats ticker below CTAs: animated counters showing "400 → 1 duplicate tickets collapsed" | "4 sec AI classification" | "0 fake resolutions possible"
+
+- Right side (40%):
+  - Floating dashboard card mockup — dark navy card showing a live complaint ticket being classified:
+    - WhatsApp message in Hindi "Meri gali mein nali band hai" appearing
+    - Arrow → AI Classification chip appearing: "🗂 Sanitation | ⚡ P2 Priority | 📍 Ward 42"
+    - Resolution timer counting down: "SLA: 47:23:11 remaining"
+  - Subtle animated grid background behind card
+  - Small floating chips: "AI Triaged ✓" "Deduplicated ✓" "GPS Assigned ✓"
+
+3. CREDIBILITY BAR
+- Single row, clean divider section
+- Label: "Built for Delhi. Aligned with:"
+- Logos/tags: Digital India | Smart Cities Mission | Viksit Bharat 2047 | RTI Act 2005 | MCD Citizen Charter
+- Each as a clean pill badge, navy border
+
+4. PROBLEM SECTION
+- H2: "A system where complaints disappear into silence."
+- 8 problem cards in a 4×2 grid. Each card:
+  - Icon (relevant emoji or SVG)
+  - Short bold title
+  - One-line description
+  - Cards have a subtle left-border accent in orange on hover
+- Problems: No Tracking | Zero SLA Enforcement | Agency Confusion | Duplicate Overload | Purely Reactive | Fake Resolutions | Language Barrier | Delhi Mitra Gap
+- Bottom of section: Big centered text — "The problem isn't a missing portal. It's a missing intelligence layer." — Sora 600, 32px, navy, with orange underline on "intelligence layer"
+
+5. THREE ENGINES SECTION
+- Full-width, dark navy background (#0F2D5E)
+- H2 in white: "Three Engines. One Unified Platform."
+- Three large feature cards in a row, each with:
+  - Large icon
+  - Engine name
+  - 3-4 bullet capabilities
+  - Bottom accent line in orange
+- Engines: 🧠 AI Intelligence Core | 📡 Omnichannel Citizen Access | ⚙️ Workflow Orchestration
+
+6. DATA FLOW ANIMATION SECTION
+- Title: "From WhatsApp to Resolution in 4 Steps"
+- Horizontal flow diagram with 8 nodes, animated left-to-right with connecting lines
+- Each node: icon + label
+- Nodes: Citizen → Intake → Gemini AI → Prediction → Workflow → Field App → Blockchain → Dashboard
+- On scroll-into-view, nodes illuminate one by one with a 300ms stagger
+- Use Framer Motion for the reveal
+
+7. 7 PILLARS / USP SECTION
+- Title: "7 Pillars. Zero Precedent in Indian Civic Tech."
+- Alternating left-right layout (magazine style):
+  - Left: Large number (01, 02...) in JetBrains Mono, orange, 120px
+  - Center: Title + description + impact metric
+  - Right: Visual mockup or icon illustration
+- Highlight Pillar 01 (Predictive Prevention) with "★ INDUSTRY FIRST" orange badge
+
+8. CIVIC HEALTH SCORE SHOWCASE
+- Full-width section, light grey background
+- Title: "Every Ward. Publicly Accountable."
+- Show 6 ward cards in a grid:
+  - Ward name (use real Delhi ward names: Lajpat Nagar, Govindpuri, Rohini, Dwarka, Saket, Karol Bagh)
+  - Circular progress indicator (0–100 score)
+  - Color-coded: green (>75) / amber (50–75) / red (<50)
+  - Sub-metrics: Resolution Speed | Open Complaints | Citizen Satisfaction
+- Subtext: "Visible to courts. Journalists. Councillors. Voters."
+
+9. TECH STACK SECTION
+- Title: "Enterprise-grade infrastructure for 20 million citizens"
+- Clean table/grid showing layer → technology → role
+- Each tech shown as a badge with logo
+- NOT a boring table — use a card-based layout with category grouping
+
+10. TEAM SECTION
+- 4 cards: Daksh | Kartik | Yash | Aparna
+- Role + college (placeholder)
+- Clean minimal cards, navy background, white text
+
+11. FOOTER
+- Left: SANKALP AI logo + tagline
+- Center: Nav links
+- Right: GitHub | Demo Video | Proposal Doc links
+- Bottom bar: Policy alignment badges
+
+INTERACTIONS & ANIMATIONS:
+- Navbar hides on scroll down, shows on scroll up (headroom behavior)
+- All sections fade-up on scroll using Intersection Observer
+- Stat counters animate when entering viewport
+- All buttons have scale(0.97) on active, smooth shadow on hover
+- Card hovers: subtle translateY(-4px) + shadow increase
+
+USE: React + Tailwind CSS + Framer Motion + Google Fonts import
+Make it look like a funded startup's product page, not a hackathon project.
+```
+
+---
+
+## PROMPT 2 — Citizen Complaint Portal
+
+```
+Build the Citizen Complaint Portal for SANKALP AI.
+
+This is the public-facing page where any Delhi resident can file a civic complaint online.
+Design reference: Clean Indian fintech/govtech SaaS. sarvam.ai aesthetic.
+Same color system and fonts as master brief.
+
+PAGE LAYOUT: Split-screen desktop layout
+- Left panel (40%): Navy sidebar with branding, live stats, and trust signals
+- Right panel (60%): White complaint form with live AI feedback
+
+LEFT SIDEBAR (navy #0F2D5E):
+- SANKALP AI logo + "सङ्कल्प" in Devanagari
+- Tagline: "Your complaint. Tracked. Verified. Resolved."
+- Live counter cards (animated):
+  - "1,247 complaints resolved today"
+  - "4.2 sec avg AI response time"
+  - "94.3% resolution within SLA"
+- Recent activity feed (live-looking):
+  - Small chips showing: "Ticket #DL-4821 — Sanitation — Ward 42 — Resolved ✓"
+  - "Ticket #DL-4820 — Roads — Ward 17 — In Progress →"
+  - New items appear every 3 seconds (simulated with setTimeout)
+- Language toggle at bottom: EN | हिंदी (switches all labels)
+- "No app needed. No internet? Call 1533." tagline
+
+RIGHT PANEL — COMPLAINT FORM:
+Step 1: Location (mandatory)
+- Input: "Your locality / area in Delhi" with autocomplete
+- Ward auto-detection: when user types "Lajpat Nagar", show "→ Ward 42, South Delhi Zone"
+- Or: "Use my GPS location" button (orange)
+
+Step 2: Complaint Description
+- Large textarea: "Describe the problem (Hindi or English)"
+- Below textarea: LIVE AI FEEDBACK PANEL that appears as user types:
+  - Shows: "AI is reading your complaint..."
+  - Then resolves to:
+    - Category chip: "🗂 Sanitation"
+    - Priority chip: "⚡ P2 — High Priority"  
+    - Department chip: "🏛 MCD — South Zone"
+    - SLA chip: "⏱ 48-hour resolution target"
+  - This panel has a subtle pulsing animation while "thinking"
+  - Use a 1.5 second debounce, then show simulated AI result
+
+Step 3: Photo Upload (optional)
+- Drag-and-drop zone: dashed border, cloud upload icon
+- "Upload photo of the issue (optional but recommended)"
+- Shows thumbnail preview on upload
+
+Step 4: Contact
+- Phone number field (mandatory for updates)
+- "We'll send you SMS updates. No spam."
+- Optional: WhatsApp updates checkbox
+
+SUBMIT BUTTON:
+- Large, full-width, orange: "Submit Complaint →"
+- On click: 
+  - Button shows loading spinner for 1.5 seconds
+  - Then screen transitions to SUCCESS STATE:
+    - Large checkmark animation (Lottie-style CSS)
+    - "Complaint Filed Successfully"
+    - Ticket ID in JetBrains Mono: "DL-4823" (large, copyable)
+    - Classification summary card
+    - "Your assigned officer: Rajesh Kumar (South Zone)"
+    - "Expected resolution: Thursday, March 12 by 5:00 PM"
+    - "You'll receive WhatsApp updates on +91-XXXXXX"
+    - Share button: "Share this complaint on WhatsApp" (with pre-filled message)
+
+INTERACTIONS:
+- Form steps show a progress indicator at top (Step 1 of 4)
+- Validate each step before proceeding
+- AI feedback panel slides in from bottom with spring animation
+- All inputs have floating labels (label moves up on focus)
+- Error states: red border + shake animation
+- The live activity feed on the left sidebar should cycle through realistic Delhi complaint data
+
+Use React + Tailwind + Framer Motion. No form HTML elements — use controlled React state.
+```
+
+---
+
+## PROMPT 3 — Admin / MCD Officer Dashboard
+
+```
+Build the MCD Admin Dashboard for SANKALP AI.
+
+This is the primary screen judges will see during the demo. It must be VISUALLY STUNNING while being functionally credible. Design reference: sarvam.ai meets Linear.app.
+
+Same color system: navy primary, saffron orange accent.
+Fonts: Sora for headings, DM Sans for body, JetBrains Mono for numbers/IDs.
+
+LAYOUT: Fixed sidebar + main content area
+
+SIDEBAR (left, 240px, navy #0F2D5E):
+- Logo: SANKALP AI + सङ्कल्प
+- Nav items with icons:
+  - 📊 Dashboard (active)
+  - 🎫 All Complaints
+  - 🗺️ Ward Map
+  - 👥 Field Officers
+  - 🔮 Predictions
+  - ⛓️ Audit Trail
+  - ⚙️ Settings
+- Bottom: User avatar + "Sector Officer, South Delhi" + logout
+
+TOP BAR:
+- "Good morning, Rajesh Kumar" (personalized)
+- Date/time
+- Alert bell with badge showing "3 SLA breaches"
+- Search bar: "Search complaints, wards, officers..."
+
+MAIN CONTENT — DASHBOARD:
+
+ROW 1 — KPI CARDS (4 across):
+- Total Active Complaints: "847" with "+23 today" delta
+- Avg Resolution Time: "31.4 hrs" with green ↓ from 47.2 hrs
+- SLA Compliance Rate: "89.3%" with progress ring
+- Fake Resolutions Prevented: "142 this month" with shield icon
+Each card: white surface, subtle shadow, navy text, colored accent
+
+ROW 2 — MAIN CHARTS (2 columns):
+
+LEFT (60%): "Live Complaint Map — Delhi"
+- SVG/Canvas map of Delhi with ward boundaries
+- Wards colored by complaint density (green → yellow → red heatmap)
+- Hovering a ward shows tooltip: "Ward 42 — Lajpat Nagar | 12 active | Score: 78/100"
+- Small blinking dots on high-priority complaints
+- Legend at bottom
+
+RIGHT (40%): "Complaint Flow — Today"
+- Area chart (Recharts) showing complaints filed vs resolved over 24 hours
+- Two lines: orange (filed) / green (resolved)
+- X-axis: hourly (12AM → 12PM → now)
+- Clean grid, smooth curves
+
+ROW 3 — LIVE TICKET FEED + AI CLASSIFICATION (2 columns):
+
+LEFT (55%): "Live Complaints — Incoming"
+- Real-time feed of new tickets
+- Each row: Ticket ID | Ward | Category chip | Priority badge | Time | Status | Assigned Officer
+- Priority badges: P1=red pill, P2=orange, P3=yellow, P4=grey
+- NEW tickets slide in from top with a highlight animation (orange flash → normalizes)
+- Simulate 1 new ticket every 4 seconds using setInterval
+- Real Delhi data: Ward names, realistic complaint types (Drainage blockage, Pothole, Streetlight, Water supply, Illegal parking)
+
+RIGHT (45%): "AI Classification Feed"
+- Shows the last 5 complaints being processed by Gemini
+- Each item:
+  - Input text (in Hindi or English)
+  - → Arrow
+  - Output chips: Category + Priority + Ward + Department
+  - Processing time: "Classified in 2.3s"
+- Items slide in with the classification revealing token-by-token (typewriter on the output)
+
+ROW 4 — SLA TRACKER + OFFICER KARMA:
+
+LEFT (50%): "SLA Breaches — Attention Required"
+- Table of complaints past their SLA deadline
+- Each row has escalate button (orange)
+- Sorted by severity
+
+RIGHT (50%): "Officer Performance — This Week"
+- Horizontal bar chart (Recharts)
+- Top 5 officers by Karma Score
+- Bars: green → orange gradient based on score
+- Shows: Name | Complaints Resolved | Avg Time | Karma Score
+
+INTERACTIONS:
+- All data updates in real-time (simulate with setInterval)
+- Clicking a complaint row opens a side drawer (not a modal) with full ticket details
+- The side drawer shows: full complaint text, AI classification, timeline, assigned officer, photo proof (if any), blockchain hash
+- All charts animate on load
+- SLA breach alerts pulse with a red glow
+
+DEMO MAGIC: When the demo starts, simulate a new P2 ticket arriving:
+- It flashes in on the live feed
+- The AI classification box processes it in 2.3 seconds
+- Officer assignment appears on the map
+- All KPI counters tick
+This should feel like watching a real system process a live complaint.
+
+Use React + Tailwind + Recharts + Framer Motion + Socket.IO (can be simulated with setInterval for frontend-only build).
+```
+
+---
+
+## PROMPT 4 — Predictive Prevention Engine Dashboard
+
+```
+Build the Predictive Prevention Engine page for SANKALP AI.
+
+This is the "industry first" feature — predicting civic failures before they happen.
+It should look like a serious data science product, not a student project.
+
+Same design system as master brief. This page should feel like Bloomberg Terminal meets Indian civic data.
+
+LAYOUT: Full-width dashboard, dark variant (use #0A0F1E as background for drama)
+
+TOP: PAGE HEADER
+- "🔮 Predictive Prevention Engine"
+- Subtitle: "3 years of ward-level complaint history × live weather forecasts = failures prevented before they're filed"
+- Badge: "★ INDUSTRY FIRST IN INDIAN CIVIC TECH"
+
+SECTION 1: PREDICTION ALERT CARDS (full-width, horizontal scroll)
+- 4 active prediction alert cards:
+
+Card 1: "⚠️ MONSOON DRAIN BLOCKAGE RISK"
+- "High probability alert — 34 wards"
+- Risk score: 87/100 (red)
+- Trigger: "IMD forecast: 89mm rainfall in next 72 hours"
+- Historical: "Same wards reported 1,247 drainage complaints in July 2023"
+- Action: "Auto-created 34 preventive inspection workorders"
+- Status: "Workorders sent to field teams ✓"
+
+Card 2: "⚠️ SUMMER WATER PRESSURE FAILURE"  
+- Risk score: 74/100 (orange)
+- Trigger: "Temperature forecast: 44°C+ for 5 consecutive days"
+- 18 wards affected
+- Action taken
+
+Card 3: "📋 ROAD SURFACE DEGRADATION"
+- Risk score: 61/100 (yellow)
+- Post-winter analysis
+- 22 wards flagged
+
+Card 4: "✅ STREETLIGHT OUTAGE CYCLE"
+- Risk score: 45/100 (green — low)
+- "Preventive maintenance scheduled"
+
+SECTION 2: PREDICTION ACCURACY CHART
+- Two-column:
+Left: Line chart (Recharts) — "Complaint Volume: Predicted vs Actual — 2023–2025"
+  - 3 years of monthly data
+  - Orange line: Model prediction
+  - Navy line: Actual complaints
+  - They should closely match — showing model accuracy
+  - Monsoon spikes clearly visible (July–September peaks)
+  - Footer: "Model accuracy: 91.3% | Trained on 3 years × 272 wards"
+
+Right: Donut chart — "Complaints Prevented vs Filed (YTD)"
+  - 40% prevented (orange segment)
+  - 60% filed (navy segment)
+  - Center: "40% prevented before filing"
+  - Subtext: "Saving MCD ₹2.3 crore in reactive repair costs"
+
+SECTION 3: WARD RISK MAP
+- Large Delhi ward map
+- Wards colored by current risk level:
+  - 🔴 High risk (>75): 34 wards
+  - 🟡 Medium risk (50-75): 58 wards
+  - 🟢 Low risk (<50): 180 wards
+- Filter tabs: All Risk | Monsoon | Summer | Winter | Year-round
+- Clicking a ward opens a panel showing:
+  - Ward name + number
+  - Risk breakdown by category
+  - Historical complaint trend (sparkline)
+  - Preventive workorders created
+
+SECTION 4: PREVENTIVE WORKORDER LOG
+- Table: "Auto-Created Preventive Workorders — This Season"
+- Columns: WO ID | Ward | Category | Risk Score | Created | Assigned Officer | Status | Outcome
+- Status pills: Pending | In Progress | Completed | Prevented ✓
+- Show 10-15 rows with realistic data
+- Outcome column: "Complaint Avoided ✓" in green — the payoff
+
+Use: React + Recharts + Tailwind + Framer Motion
+Dark theme with orange and teal accents on the dark background.
+Make data visualizations look authoritative and real.
+```
+
+---
+
+## PROMPT 5 — Civic Health Score — Ward DNA Page
+
+```
+Build the Civic Health Score public dashboard for SANKALP AI.
+
+This is the PUBLIC-FACING accountability page — visible to journalists, courts, voters.
+Design tone: Authoritative, clean, slightly editorial. Like a newspaper data visualization.
+
+Same color system but this page is the lightest/most public-friendly.
+
+HEADER:
+- "Delhi Civic Health Scorecard"
+- "Live ward-level governance accountability. Updated every 15 minutes."
+- Last updated timestamp
+- "As reported to: Delhi HC | CAG | MCD Commissioner" — small institutional credibility bar
+
+SEARCH + FILTER BAR:
+- Search: "Find your ward..." with autocomplete
+- Filters: Zone dropdown (North/South/East/West/Central) | Score range slider | Category filter
+
+HERO METRIC:
+- "Delhi Overall Civic Health Score"
+- Large animated gauge/meter showing 67/100
+- Color: amber (67 is mediocre — realistic and credible)
+- Compared to last month: "↑ 4 points from March 2026"
+
+WARD GRID (main content):
+- Grid of ward cards, 4-5 columns
+- Show 20 wards with real Delhi names:
+  (Lajpat Nagar, Govindpuri, Rohini Sec 1, Dwarka Sec 7, Saket, Karol Bagh, Chandni Chowk, Janakpuri, Vasant Kunj, Malviya Nagar, Preet Vihar, Mayur Vihar, Pitampura, Shalimar Bagh, Mehrauli, Mustafabad, Okhla, Shahdara, Trilokpuri, Uttam Nagar)
+
+Each ward card:
+- Ward name + ward number
+- Big circular score with color ring (green/amber/red)
+- 5 sub-metric icons with mini-scores:
+  - ⚡ Resolution Speed
+  - 📊 Complaint Volume  
+  - 😊 Citizen Satisfaction
+  - 🏗️ Infrastructure Age
+  - 💰 Budget Efficiency
+- Bottom: trend sparkline (last 6 months)
+- Hover: card lifts, shows "View Full Report →"
+
+BOTTOM SECTION — LEADERBOARD:
+- "Top Performing Wards This Month" — top 5 in green
+- "Wards Requiring Attention" — bottom 5 in red
+- Each with: rank | ward name | score | change from last month | councillor name
+
+TRANSPARENCY NOTE:
+- Clean info box: "This data is sourced from SANKALP AI's complaint resolution database, cross-verified with MCD's PGMS system, and published under the RTI Act 2005. All records are immutable and blockchain-verified."
+
+Make this page feel like something India Today or The Hindu would screenshot and publish.
+Clean editorial typography. Real ward names. Credible numbers.
+```
+
+---
+
+## PROMPT 6 — Real-Time Demo Dashboard (THE SHOWSTOPPER)
+
+```
+Build the DEMO COMMAND CENTER — a single-page real-time dashboard for the India Innovates 2026 live demo.
+
+This screen will be open on a laptop when judges walk up. It must be the most visually impressive thing they've seen at the expo. 5 minutes of interaction should tell the entire SANKALP AI story.
+
+DESIGN: Dark command center aesthetic — #0A0F1E background, orange accents, green success states. Think NASA mission control crossed with a fintech trading terminal.
+
+FONTS: Sora + JetBrains Mono heavily featured.
+
+LAYOUT: 3-column grid dashboard, full viewport, no scroll.
+
+TOP BAR (full width, 48px):
+- Left: "SANKALP AI — LIVE DEMO" with a pulsing green dot "● LIVE"
+- Center: Large clock showing current time
+- Right: "Demo Mode — Ward 42, Lajpat Nagar" | Reset Demo button (small)
+
+COLUMN 1 (left, 30%): CITIZEN INTAKE FEED
+Header: "📱 Live Citizen Intake"
+
+WhatsApp Message Simulator:
+- Looks like a WhatsApp chat bubble
+- Shows: "Meri gali mein nali band hai" in Hindi
+- Timestamp: "Just now"
+- Green "Received" ticks
+- A "DEMO: Send New Complaint" button at bottom (orange)
+  - Clicking it adds a new WhatsApp bubble with a new complaint
+  - Cycles through 5-6 Hindi complaint messages:
+    "Bijli pole ka wire toota hua hai"
+    "Sadak par bahut bada gaddha hai"
+    "Kachre ka dheer 3 din se nahi utha"
+    "Paani nahi aa raha subah se"
+
+Below WhatsApp: IVR section
+- Shows: "📞 Voice complaint received — +91-98XXX-XXXXX"
+- Whisper transcription appearing: "Transcribing..." → "नाली बंद है गली नंबर 4 में"
+- Language detected: Hindi
+
+COLUMN 2 (center, 40%): AI BRAIN — THE SHOWPIECE
+Header: "🧠 Gemini AI — Processing"
+
+This is the visual heart. Shows AI working in real-time.
+
+For each incoming complaint (triggered by Column 1 action):
+STAGE 1 — Raw Input (0.3s): Show complaint text appearing
+STAGE 2 — NLP Processing (0.8s): Show animated "thinking" state — subtle pulsing glow
+STAGE 3 — Classification output appears token by token:
+  ```
+  Category    ████████░░  Sanitation (94% confidence)
+  Priority    ████████░░  P2 — High Priority
+  Ward        ████████░░  Ward 42 — Lajpat Nagar
+  Department  ███████░░░  MCD South Zone
+  SLA         ████████░░  48 hours
+  ```
+STAGE 4 — Deduplication check:
+  "🔍 Checking 847 nearby complaints..."
+  "⚠️ 12 similar complaints found in 200m radius"
+  "✅ DEDUPLICATED → Master Ticket #DL-4821"
+  
+STAGE 5 — Assignment:
+  "📍 Nearest available officer: Rajesh Kumar — 1.2km away"
+  "📲 Push notification sent — ETA 22 minutes"
+
+Total animation time: 3-4 seconds per complaint. Feels magical.
+
+Below the AI panel: Blockchain Logger
+- Compact log showing entries being added in real time:
+  "Block #8847 | DL-4821 | Filed | 2026-03-28 10:34:22 | Hash: 0x4f7a..."
+  "Block #8848 | DL-4820 | Assigned | Rajesh Kumar | Hash: 0x9c2b..."
+- Monospace font, dark background, green text — looks legit
+
+COLUMN 3 (right, 30%): FIELD OFFICER TRACKER + RESOLUTION
+Header: "📍 Field Officers — Live"
+
+Map-like grid showing 4 officer cards:
+Each card:
+- Officer name + photo avatar (initials)
+- Status pill: 🟢 En Route | 🟡 On Site | ✅ Resolved | ⚫ Available
+- Current ticket: "DL-4821 — Drain Blocked"
+- Location: "1.2km from site"
+- ETA: "18 mins"
+
+"QR SCAN INCOMING" simulation:
+- When demo button is pressed: one card transitions to:
+  "📷 QR Scanned at Site ✓"
+  "📸 Before photo uploaded ✓"
+  "Ticket DL-4821 — RESOLVED ✓"
+- This triggers the green resolution animation across all panels
+
+BOTTOM BAR (full width, 60px):
+- Left: Civic Health Score live widget — "Ward 42: 73/100 ↑ +1"
+- Center: "📊 Delhi Today: 847 active | 1,247 resolved | 89.3% SLA compliance"
+- Right: Citizen confirmation: "✅ SMS sent to +91-98XXX-XXXXX: Your complaint DL-4821 is resolved."
+
+MASTER DEMO BUTTON:
+- Floating orange FAB bottom-right: "▶ Run Full Demo"
+- Clicking it runs the entire 5-step sequence automatically with 2-second delays between steps
+- Judges can watch the whole story without any human interaction
+
+Make this look like a deployed system, not a prototype.
+Dark theme. Orange accents. Green resolution states. JetBrains Mono for all data.
+Everything animated. Everything alive.
+```
+
+---
+
+## PROMPT 7 — Blockchain Audit Trail Page
+
+```
+Build the Blockchain Audit Trail page for SANKALP AI.
+
+This page proves officer accountability and RTI compliance. Design it to feel like a serious compliance dashboard — authoritative, immutable-feeling, institutional.
+
+Design reference: Dark terminal aesthetic mixed with a legal document layout.
+Background: #0A0F1E (very dark navy). Accent: #FF6B2B. Success: #22C55E.
+
+HEADER:
+- "⛓️ Blockchain Audit Trail"  
+- "Immutable. Officer-attributed. RTI-ready. CAG-compliant."
+- Two badges: "RTI Act 2005 Compliant ✓" | "CAG Audit Ready ✓"
+- Total blocks logged: "8,847" (animates up on load)
+
+STATS ROW:
+- Total Actions Logged: 8,847
+- Officers Tracked: 247
+- Avg Actions/Hour: 34.2
+- Fake Resolutions Prevented: 142
+
+LIVE BLOCKCHAIN LOG (main content, full width):
+- Dark background (#0F0F1A), monospace font
+- Each row is a "block":
+  ```
+  Block #8847 | 2026-03-28 10:34:22 IST
+  Action: COMPLAINT_FILED
+  Ticket: DL-4821 | Citizen: +91-98XXX-XXXXX (anonymized)
+  Ward: 42 — Lajpat Nagar | Category: Sanitation | Priority: P2
+  Hash: 0x4f7a2c9b1e3d... | Prev Hash: 0x9c2b1a...
+  ───────────────────────────────────────────────────────
+  Block #8848 | 2026-03-28 10:38:51 IST
+  Action: AI_CLASSIFIED
+  Officer: GEMINI_ENGINE_V2 | Confidence: 94.3%
+  Classification: {category: "Sanitation", priority: "P2", ward: 42}
+  Hash: 0x7b3f... | Verified: ✓
+  ```
+- New blocks appear at top every few seconds (simulated)
+- Color coding: FILED=blue | ASSIGNED=yellow | IN_PROGRESS=orange | RESOLVED=green | ESCALATED=red
+
+SEARCH + FILTER:
+- Search by: Ticket ID | Officer Name | Ward | Date range
+- Filter by action type
+- "Export for RTI" button — downloads a .csv (mock)
+- "Generate CAG Report" button — shows a modal with a formatted report
+
+INTEGRITY PANEL (sidebar):
+- "Chain Integrity: ✅ Verified"
+- Last verified: timestamp
+- Hash of last block: monospace display
+- "0 tampering attempts detected"
+
+Make this look like a real immutable ledger. Use animation for new blocks appearing (slide in from top with a subtle glow).
+```
+
+---
+
+## PROMPT 8 — WhatsApp Bot Demo / Omnichannel Page
+
+```
+Build the Omnichannel Access showcase page for SANKALP AI.
+
+This page demonstrates how ANY citizen — regardless of literacy, device, or language — can file a complaint. It is an interactive showcase, not just a description.
+
+Design: Light, warm, inclusive. Slightly warmer whites than the rest of the app. Still sarvam.ai aesthetic.
+
+HEADER:
+- "🌐 Any Citizen. Any Language. Zero Barriers."
+- "60% of Delhi's working population prefers Hindi. SANKALP AI reaches all of them."
+
+THREE CHANNEL SHOWCASES side by side:
+
+CHANNEL 1: WhatsApp Bot
+- Phone mockup (CSS-drawn, looks like Android)  
+- WhatsApp interface inside the mockup
+- Shows a conversation:
+  Citizen: "Meri gali mein nali band hai"
+  SANKALP AI Bot: "Namaskar! Aapki shikayat darj ho gayi hai ✅
+  Ticket ID: DL-4821
+  Category: Safai (Sanitation)
+  Priority: Zyada Zaroori (P2)
+  Expected resolution: Kal shaam 5 baje tak
+  Status updates aapke is number par bheje jayenge."
+- Interactive: user can type in the WhatsApp box and get an auto-response
+- Below: "No app download required. Works on ₹1,500 smartphones."
+
+CHANNEL 2: Voice IVR
+- Phone icon with audio wave visualization
+- Shows transcript appearing as if being spoken:
+  "Press 1 for Hindi... [user presses 1]
+  Kripya apni samasya bolein...
+  [User speaks]: Mere ward mein sadak toot gayi hai, bade bade gaddhe hain
+  [Transcription appears in real-time using typewriter effect]
+  AI Processing...
+  ✅ Complaint recorded in Hindi — Pothole complaint, Ward 17
+  Ticket ID: DL-4822"
+- Uses OpenAI Whisper branding badge
+- "Works on any phone. No smartphone. No internet. Just a call."
+
+CHANNEL 3: QR Kiosk
+- Tablet/kiosk mockup
+- Shows a simple touch-friendly interface
+- Language buttons: हिंदी | English | ਪੰਜਾਬੀ | اردو
+- Large tap targets, simple icons
+- "Available at all 272 ward offices across Delhi"
+- "Zero internet literacy required"
+
+BELOW THE THREE CHANNELS:
+- Flow diagram: All channels → Single SANKALP AI backend → One unified dashboard
+- "Every complaint, regardless of channel, gets the same AI triage, same SLA, same verification."
+
+LANGUAGE SUPPORT BADGE GRID:
+Show 8 language flags/names in pill badges: Hindi | English | Punjabi | Urdu | Bengali | Marathi | Tamil | Telugu
+"Expandable to any Indian language via OpenAI Whisper"
+```
+
+---
+
+## ASSEMBLY INSTRUCTIONS FOR DAKSH
+
+```
+BUILD ORDER (priority for demo day):
+
+1. Start with PROMPT 6 (Demo Dashboard) — this is what judges SEE
+2. Then PROMPT 3 (Admin Dashboard) — backup/detailed view
+3. Then PROMPT 2 (Complaint Portal) — for the WhatsApp flow demo
+4. Prompts 1, 4, 5, 7, 8 — add as time permits
+
+FILE STRUCTURE:
+/app
+  /page.tsx (landing — PROMPT 1)
+  /portal/page.tsx (citizen — PROMPT 2)
+  /dashboard/page.tsx (admin — PROMPT 3)
+  /predict/page.tsx (prediction — PROMPT 4)
+  /wards/page.tsx (civic health — PROMPT 5)
+  /demo/page.tsx (live demo — PROMPT 6) ← OPEN THIS ON DEMO DAY
+  /audit/page.tsx (blockchain — PROMPT 7)
+  /channels/page.tsx (omnichannel — PROMPT 8)
+
+DEMO DAY SETUP:
+- Open /demo on a 15" laptop, fullscreen, browser chrome hidden (F11)
+- Second screen (if available): /dashboard open
+- Phone: Flutter app open on the QR scan screen
+- Have the "▶ Run Full Demo" button ready to press when judges arrive
+- Practice the 5-step story until you can do it without looking at the screen
+```
+
+---
+
+*These prompts were engineered for SANKALP AI — India Innovates 2026.*
+*Every detail is calibrated for the judge audience at Bharat Mandapam on March 28.*
+*Build in this order. Demo from /demo page. Win.*
