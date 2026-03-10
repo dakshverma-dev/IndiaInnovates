@@ -11,15 +11,15 @@ const team = [
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 32 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
 export default function TeamSection() {
   return (
-    <section id="team" className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#0F2D5E' }}>
+    <section id="team" className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#1A2E2A' }}>
       <div className="absolute inset-0">
-        <div className="absolute top-10 right-20 w-64 h-64 bg-[#FF6B2B] rounded-full blur-[120px] opacity-[0.05]" />
-        <div className="absolute bottom-10 left-20 w-80 h-80 bg-white rounded-full blur-[140px] opacity-[0.03]" />
+        <div className="absolute top-10 right-20 w-64 h-64 bg-[#5D7A6F] rounded-full blur-[120px] opacity-[0.1]" />
+        <div className="absolute bottom-10 left-20 w-80 h-80 bg-[#E7E8E2] rounded-full blur-[140px] opacity-[0.05]" />
       </div>
 
       <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8">
@@ -39,7 +39,7 @@ export default function TeamSection() {
             color: '#FFFFFF',
           }}>
             The Team Behind{" "}
-            <span style={{ color: '#FF6B2B' }}>SANKALP AI</span>
+            <span style={{ color: '#5D7A6F' }}>SANKALP AI</span>
           </h2>
         </motion.div>
 
@@ -53,13 +53,13 @@ export default function TeamSection() {
               transition={{ delay: i * 0.1, duration: 0.5 }}
               className="text-center transition-all duration-200"
               style={{
-                background: 'rgba(255,255,255,0.05)',
+                background: 'rgba(255,255,255,0.03)',
                 backdropFilter: 'blur(8px)',
-                borderRadius: '16px',
+                borderRadius: '24px',
                 padding: '32px 24px',
-                border: '1px solid rgba(255,255,255,0.1)',
+                border: '1px solid rgba(255,255,255,0.08)',
               }}
-              whileHover={{ y: -4, borderColor: 'rgba(255,107,43,0.3)' }}
+              whileHover={{ y: -4, borderColor: 'rgba(93, 122, 111, 0.4)' }}
             >
               <div
                 className="mx-auto mb-5 flex items-center justify-center"
@@ -67,7 +67,7 @@ export default function TeamSection() {
                   width: '72px',
                   height: '72px',
                   borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #FF6B2B 0%, #FF8A50 100%)',
+                  background: 'linear-gradient(135deg, #5D7A6F 0%, #1A2E2A 100%)',
                 }}
               >
                 <span style={{ fontFamily: "'Sora'", fontSize: '22px', fontWeight: 700, color: 'white' }}>
@@ -78,7 +78,7 @@ export default function TeamSection() {
               <h3 style={{ fontFamily: "'Sora'", fontWeight: 700, fontSize: '18px', color: '#FFFFFF', marginBottom: '4px' }}>
                 {member.name}
               </h3>
-              <p style={{ fontFamily: "'DM Sans'", fontSize: '13px', fontWeight: 500, color: '#FF6B2B', marginBottom: '8px' }}>
+              <p style={{ fontFamily: "'DM Sans'", fontSize: "13px", fontWeight: 500, color: "#5D7A6F", marginBottom: "8px" }}>
                 {member.role}
               </p>
               <p style={{ fontFamily: "'DM Sans'", fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>

@@ -18,7 +18,7 @@ const fn = {
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.07, duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+    transition: { delay: i * 0.07, duration: 0.5 },
   }),
 };
 
@@ -26,7 +26,7 @@ export default function ProblemSection() {
   return (
     <section
       id="problem"
-      style={{ background: "#FAFAFA", padding: "96px 0" }}
+      style={{ background: "#E7E8E2", padding: "96px 0" }}
     >
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px" }}>
         {/* Header */}
@@ -43,7 +43,7 @@ export default function ProblemSection() {
               fontSize: "11px",
               letterSpacing: "0.1em",
               fontWeight: 600,
-              color: "rgba(10,10,10,0.4)",
+              color: "rgba(26, 46, 42, 0.4)",
               textTransform: "uppercase",
               marginBottom: "16px",
             }}
@@ -57,7 +57,7 @@ export default function ProblemSection() {
               fontWeight: 700,
               lineHeight: 1.15,
               letterSpacing: "-0.025em",
-              color: "#0A0A0A",
+              color: "#1A2E2A",
               maxWidth: "560px",
               margin: "0 auto",
             }}
@@ -84,15 +84,15 @@ export default function ProblemSection() {
               variants={fn}
               style={{
                 background: "#FFFFFF",
-                borderRadius: "16px",
+                borderRadius: "24px",
                 padding: "24px",
-                border: "1px solid rgba(0,0,0,0.06)",
+                border: "1px solid rgba(93, 122, 111, 0.08)",
                 cursor: "default",
               }}
               whileHover={{
                 y: -2,
-                boxShadow: "0 8px 32px rgba(0,0,0,0.06)",
-                borderColor: "rgba(255,107,43,0.25)",
+                boxShadow: "0 8px 32px rgba(26,46,42,0.06)",
+                borderColor: "rgba(93, 122, 111, 0.25)",
               }}
               transition={{ duration: 0.2 }}
             >
@@ -116,7 +116,7 @@ export default function ProblemSection() {
                   fontFamily: "'Sora', sans-serif",
                   fontSize: "14px",
                   fontWeight: 600,
-                  color: "#0A0A0A",
+                  color: "#1A2E2A",
                   marginBottom: "6px",
                 }}
               >
@@ -126,7 +126,7 @@ export default function ProblemSection() {
                 style={{
                   fontFamily: "'DM Sans'",
                   fontSize: "13px",
-                  color: "rgba(10,10,10,0.5)",
+                  color: "rgba(26, 46, 42, 0.5)",
                   lineHeight: 1.55,
                 }}
               >
@@ -150,7 +150,7 @@ export default function ProblemSection() {
               fontSize: "clamp(20px, 2.5vw, 28px)",
               fontWeight: 600,
               letterSpacing: "-0.02em",
-              color: "#0A0A0A",
+              color: "#1A2E2A",
               lineHeight: 1.35,
             }}
           >
@@ -158,7 +158,7 @@ export default function ProblemSection() {
             <br />
             <span
               style={{
-                color: "rgba(10,10,10,0.45)",
+                color: "rgba(26, 46, 42, 0.45)",
                 fontWeight: 400,
                 fontStyle: "italic",
               }}

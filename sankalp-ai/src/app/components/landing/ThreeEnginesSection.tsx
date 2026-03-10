@@ -7,8 +7,8 @@ const engines = [
     emoji: "🧠",
     name: "AI Intelligence Core",
     desc: "Gemini-powered NLP for Hindi + English. Auto-classifies into 15 categories with 94% accuracy. Smart deduplication collapses 400 tickets into 1.",
-    color: "rgba(99, 102, 241, 0.08)",
-    border: "rgba(99, 102, 241, 0.15)",
+    color: "rgba(93, 122, 111, 0.06)",
+    border: "rgba(93, 122, 111, 0.12)",
   },
   {
     emoji: "📡",
@@ -30,7 +30,7 @@ export default function ThreeEnginesSection() {
   return (
     <section
       id="engines"
-      style={{ background: "#F5F4FF", padding: "96px 0", borderTop: "1px solid rgba(0,0,0,0.05)" }}
+      style={{ background: "#F3F4F0", padding: "96px 0", borderTop: "1px solid rgba(93, 122, 111, 0.08)" }}
     >
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px" }}>
         <motion.div
@@ -45,7 +45,7 @@ export default function ThreeEnginesSection() {
             fontSize: "11px",
             letterSpacing: "0.1em",
             fontWeight: 600,
-            color: "rgba(10,10,10,0.4)",
+            color: "rgba(26, 46, 42, 0.4)",
             textTransform: "uppercase",
             marginBottom: "16px",
           }}>
@@ -57,7 +57,7 @@ export default function ThreeEnginesSection() {
             fontWeight: 700,
             lineHeight: 1.15,
             letterSpacing: "-0.025em",
-            color: "#0A0A0A",
+            color: "#1A2E2A",
           }}>
             Three engines. One unified platform.
           </h2>
@@ -73,13 +73,12 @@ export default function ThreeEnginesSection() {
               transition={{ delay: i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               style={{
                 background: "#FFFFFF",
-                borderRadius: "20px",
+                borderRadius: "24px",
                 padding: "32px",
-                border: `1px solid rgba(0,0,0,0.06)`,
+                border: `1px solid rgba(93, 122, 111, 0.08)`,
                 cursor: "default",
               }}
-              whileHover={{ y: -3, boxShadow: "0 12px 40px rgba(0,0,0,0.07)", borderColor: eng.border }}
-              transition={{ duration: 0.2 }}
+              whileHover={{ y: -3, boxShadow: "0 12px 40px rgba(26, 46, 42, 0.07)", borderColor: eng.border }}
             >
               <div style={{
                 width: "52px", height: "52px", borderRadius: "14px",
@@ -93,7 +92,7 @@ export default function ThreeEnginesSection() {
                 fontFamily: "'Sora'",
                 fontSize: "17px",
                 fontWeight: 700,
-                color: "#0A0A0A",
+                color: "#1A2E2A",
                 marginBottom: "10px",
                 letterSpacing: "-0.01em",
               }}>
@@ -102,7 +101,7 @@ export default function ThreeEnginesSection() {
               <p style={{
                 fontFamily: "'DM Sans'",
                 fontSize: "14px",
-                color: "rgba(10,10,10,0.55)",
+                color: "rgba(26, 46, 42, 0.55)",
                 lineHeight: 1.65,
               }}>
                 {eng.desc}

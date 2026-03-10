@@ -119,7 +119,7 @@ export default function DemoDashboard() {
   return (
     <div style={{
       width: "100%", height: "100vh",
-      background: "#F8F9FC",
+      background: "#E7E8E2",
       color: "#111",
       fontFamily: "'DM Sans', sans-serif",
       display: "flex", flexDirection: "column",
@@ -145,7 +145,7 @@ export default function DemoDashboard() {
 
       {/* TOPBAR */}
       <header style={{
-        height: "56px", background: "#0F2D5E",
+        height: "56px", background: "#1A2E2A",
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "0 32px",
       }}>
@@ -154,7 +154,7 @@ export default function DemoDashboard() {
             <p style={{ fontFamily: "'Sora'", fontWeight: 700, fontSize: "18px", color: "#FFF", margin: 0 }}>SANKALP AI</p>
             <p style={{ fontFamily: "'Noto Sans Devanagari'", fontSize: "11px", color: "#FF6B2B", margin: 0, marginTop: "-2px" }}>सङ्कल्प</p>
           </div>
-          <div style={{ width: "1px", height: "24px", background: "rgba(255,255,255,0.2)" }} />
+          <div style={{ width: "1px", height: "24px", background: "rgba(255,255,255,0.15)" }} />
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
              <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#22C55E', boxShadow: '0 0 0 0 rgba(34,197,94,0.4)', animation: 'pulse-green 2s infinite' }} />
              <span style={{ fontFamily: "'DM Sans'", fontWeight: 500, fontSize: "13px", color: "#FFF" }}>LIVE — Ward 42, Lajpat Nagar</span>
@@ -171,7 +171,7 @@ export default function DemoDashboard() {
             onClick={resetDemo}
             style={{ 
               background: "transparent", border: "1px solid #FFF", borderRadius: "100px", padding: "4px 12px", 
-              fontSize: "12px", color: "#FFF", cursor: "pointer", opacity: 0.8 
+              fontSize: "12px", color: "#FFF", cursor: "pointer", opacity: 0.6 
             }}
           >
             Reset Demo
@@ -236,7 +236,7 @@ export default function DemoDashboard() {
         </section>
 
         {/* COLUMN 2: AI BRAIN */}
-        <section style={{ display: "flex", flexDirection: "column", borderRadius: "16px", overflow: "hidden", boxShadow: "0 4px 16px rgba(15,45,94,0.08)" }}>
+        <section style={{ display: "flex", flexDirection: "column", borderRadius: "16px", overflow: "hidden", boxShadow: "0 4px 20px rgba(26,46,42,0.08)" }}>
           {/* TOP PANEL: AI BRAIN */}
           <div style={{ flex: 1.8, background: "#FFF", padding: "24px", display: "flex", flexDirection: "column", borderBottom: "1px solid #E5E7EB" }}>
             <DashboardCardHeader title="Gemini AI Engine" subtitle="Real-time processing" icon="🧠" badge="Processing" badgeColor="#FF6B2B" noPadding />
@@ -274,7 +274,7 @@ export default function DemoDashboard() {
               <AiStageRow stageNum={3} title="Field Assignment" status={aiStage === "STAGE3_PROCESSING" ? "ACTIVE" : (aiStage === "STAGE3_DONE" ? "DONE" : "PENDING")}>
                  {aiStage === "STAGE3_DONE" && (
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 14px', background:'#F8F9FC', border:'1px solid #E5E7EB', borderRadius:10 }}>
-                      <div style={{ width:40, height:40, borderRadius:'50%', background:'linear-gradient(135deg, #0F2D5E, #1a3a6b)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Sora', fontWeight:700, fontSize:14, color:'white' }}>RK</div>
+                      <div style={{ width:40, height:40, borderRadius:'50%', background:'linear-gradient(135deg, #1A2E2A, #2D4A44)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Sora', fontWeight:700, fontSize:14, color:'white' }}>RK</div>
                       <div style={{flex:1}}>
                         <p style={{fontFamily:'Sora', fontWeight:600, fontSize:13, color:'#0A0F1E', margin:0}}>Rajesh Kumar</p>
                         <p style={{fontFamily:'DM Sans', fontSize:11, color:'#6B7280', margin:0}}>En-route · ETA 12 mins · 1.4km away</p>
@@ -287,7 +287,7 @@ export default function DemoDashboard() {
           </div>
 
           {/* BOTTOM PANEL: BLOCKCHAIN */}
-          <div style={{ flex: 1, background: "#0F2D5E", padding: "16px 24px", color: "white", borderTop: "2px solid #FF6B2B" }}>
+          <div style={{ flex: 1, background: "#1A2E2A", padding: "16px 24px", color: "white", borderTop: "2px solid #5D7A6F" }}>
              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                 <h3 style={{ fontFamily: "Sora", fontSize: "12px", fontWeight: 600, margin: 0, color: "rgba(255,255,255,0.9)" }}>⛓ Immutable Audit Trail</h3>
                 <span style={{ padding: "2px 8px", background: "#FF6B2B", color: "#FFF", fontSize: "9px", borderRadius: "100px", fontWeight: 700 }}>RTI-READY ✓</span>
@@ -297,7 +297,7 @@ export default function DemoDashboard() {
                <AnimatePresence>
                  {logs.map((log) => (
                     <motion.div key={log.block} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} style={{ padding:'8px 0', borderBottom:'1px solid rgba(255,255,255,0.08)', display:'grid', gridTemplateColumns:'60px 1fr auto', gap:12, alignItems:'start' }}>
-                       <span style={{ fontFamily:'JetBrains Mono', fontSize:11, color:'#FF6B2B', fontWeight:500 }}>{log.block}</span>
+                       <span style={{ fontFamily:'JetBrains Mono', fontSize:11, color:'#5D7A6F', fontWeight:500 }}>{log.block}</span>
                        <div>
                           <p style={{fontFamily:'DM Sans', fontSize:11, color:'rgba(255,255,255,0.85)', margin:0}}>{log.text}</p>
                           <p style={{fontFamily:'JetBrains Mono', fontSize:10, color:'rgba(255,255,255,0.35)', margin:0}}>{log.hash}</p>
@@ -368,7 +368,7 @@ export default function DemoDashboard() {
         <div style={{ display: "flex", gap: "48px" }}>
             <Metric label="ACTIVE TICKETS" val="847" delta="+2 incoming" color="#F59E0B" />
             <Metric label="RESOLVED TODAY" val="1,247" delta="↑ 23 this hour" color="#16A34A" />
-            <Metric label="SLA COMPLIANCE" val="89.3%" delta="↑ 1.2%" color="#0F2D5E" />
+            <Metric label="SLA COMPLIANCE" val="89.3%" delta="↑ 1.2%" color="#1A2E2A" />
         </div>
 
         <button
@@ -437,7 +437,7 @@ function AiStageRow({ stageNum, title, status, children }: { stageNum: number; t
       </div>
       <div style={{ flex: 1, paddingBottom: "12px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-          <h4 style={{ fontFamily: "Sora", fontSize: "13px", fontWeight: 700, margin: 0, color: "#0F2D5E" }}>{title}</h4>
+          <h4 style={{ fontFamily: "Sora", fontSize: "13px", fontWeight: 700, margin: 0, color: "#1A2E2A" }}>{title}</h4>
           {status === "DONE" && <span style={{ fontSize: "10px", fontWeight: 700, color: "#16A34A", background: "#F0FDF4", padding: "2px 8px", borderRadius: "100px", border: "1px solid #BBF7D0" }}>DONE</span>}
           {status === "ACTIVE" && <motion.span animate={{ opacity: [1, 0.5, 1] }} transition={{ repeat: Infinity }} style={{ fontSize: "10px", fontWeight: 700, color: "#FF6B2B" }}>PROCESSING...</motion.span>}
         </div>
@@ -477,7 +477,7 @@ function OfficerCard({ name, initials, status, details, task, active }: { name: 
   return (
     <div style={{ padding:'12px', borderRadius:10, border: active ? `1.5px solid #FF6B2B` : '1px solid #E5E7EB', background: active ? '#FFFBF8' : '#FFF', marginBottom:2, transition:'all 0.2s ease' }}>
       <div style={{display:'flex', alignItems:'center', gap:10}}>
-        <div style={{ width:36, height:36, borderRadius:'50%', background:'linear-gradient(135deg, #0F2D5E, #1a3a6b)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Sora', fontWeight:700, fontSize:12, color:'white' }}>{initials}</div>
+        <div style={{ width:36, height:36, borderRadius:'50%', background:'linear-gradient(135deg, #1A2E2A, #2D4A44)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Sora', fontWeight:700, fontSize:12, color:'white' }}>{initials}</div>
         <div style={{flex:1}}>
           <p style={{fontFamily:'Sora', fontWeight:600, fontSize:13, color:'#0A0F1E', margin:0}}>{name}</p>
           <p style={{fontFamily:'DM Sans', fontSize:11, color:'#6B7280', margin:0}}>{details}</p>

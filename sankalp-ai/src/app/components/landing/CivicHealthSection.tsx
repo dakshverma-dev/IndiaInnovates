@@ -48,7 +48,7 @@ function ScoreRing({ score }: { score: number }) {
         style={{ transition: "stroke-dashoffset 1.2s ease-out" }}
       />
       <text x="44" y="44" textAnchor="middle" dominantBaseline="central"
-        style={{ fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: "16px", fill: "#0A0A0A" }}>
+        style={{ fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: "16px", fill: "#1A2E2A" }}>
         {animated}
       </text>
     </svg>
@@ -58,7 +58,7 @@ function ScoreRing({ score }: { score: number }) {
 export default function CivicHealthSection() {
   return (
     <section
-      style={{ background: "#F5F4FF", padding: "96px 0", borderTop: "1px solid rgba(0,0,0,0.05)" }}
+      style={{ background: "#F3F4F0", padding: "96px 0", borderTop: "1px solid rgba(93, 122, 111, 0.08)" }}
     >
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px" }}>
         <motion.div
@@ -73,7 +73,7 @@ export default function CivicHealthSection() {
             fontSize: "11px",
             letterSpacing: "0.1em",
             fontWeight: 600,
-            color: "rgba(10,10,10,0.4)",
+            color: "rgba(26, 46, 42, 0.4)",
             textTransform: "uppercase",
             marginBottom: "16px",
           }}>
@@ -102,13 +102,13 @@ export default function CivicHealthSection() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              whileHover={{ y: -2, boxShadow: "0 8px 24px rgba(0,0,0,0.06)", borderColor: "rgba(0,0,0,0.12)" }}
+              whileHover={{ y: -2, boxShadow: "0 8px 24px rgba(26,46,42,0.06)", borderColor: "rgba(93, 122, 111, 0.12)" }}
               transition={{ delay: i * 0.08, duration: 0.5 }}
               style={{
                 background: "#FFFFFF",
-                borderRadius: "16px",
+                borderRadius: "24px",
                 padding: "24px",
-                border: "1px solid rgba(0,0,0,0.06)",
+                border: "1px solid rgba(93, 122, 111, 0.08)",
                 display: "flex",
                 alignItems: "center",
                 gap: "20px",
@@ -129,7 +129,7 @@ export default function CivicHealthSection() {
                 <p style={{
                   fontFamily: "'JetBrains Mono'",
                   fontSize: "11px",
-                  color: "rgba(10,10,10,0.4)",
+                  color: "rgba(26, 46, 42, 0.4)",
                 }}>
                   Ward {w.ward}
                 </p>
@@ -149,7 +149,7 @@ export default function CivicHealthSection() {
             fontFamily: "'DM Sans'",
             fontSize: "13px",
             fontStyle: "italic",
-            color: "rgba(10,10,10,0.35)",
+            color: "rgba(26, 46, 42, 0.35)",
           }}
         >
           Visible to courts, journalists, councillors, and voters.

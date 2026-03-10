@@ -43,7 +43,7 @@ export default function DataFlowSection() {
     <section
       id="dataflow"
       ref={ref}
-      style={{ background: "#FAFAFA", padding: "96px 0", borderTop: "1px solid rgba(0,0,0,0.05)" }}
+      style={{ background: "#E7E8E2", padding: "96px 0", borderTop: "1px solid rgba(93, 122, 111, 0.08)" }}
     >
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px" }}>
         <motion.div
@@ -58,7 +58,7 @@ export default function DataFlowSection() {
             fontSize: "11px",
             letterSpacing: "0.1em",
             fontWeight: 600,
-            color: "rgba(10,10,10,0.4)",
+            color: "rgba(26, 46, 42, 0.4)",
             textTransform: "uppercase",
             marginBottom: "16px",
           }}>
@@ -112,16 +112,16 @@ export default function DataFlowSection() {
                     justifyContent: "center",
                     fontSize: "28px",
                     background: isCurrent
-                      ? "#FF6B2B"
+                      ? "#5D7A6F"
                       : isActive
-                      ? "rgba(255,107,43,0.08)"
+                      ? "rgba(93, 122, 111, 0.08)"
                       : "#FFFFFF",
                     border: isCurrent
-                      ? "2px solid #FF6B2B"
+                      ? "2px solid #5D7A6F"
                       : isActive
-                      ? "2px solid rgba(255,107,43,0.2)"
-                      : "2px solid rgba(0,0,0,0.06)",
-                    boxShadow: isCurrent ? "0 0 24px rgba(255,107,43,0.3)" : "none",
+                      ? "2px solid rgba(93, 122, 111, 0.2)"
+                      : "2px solid rgba(93, 122, 111, 0.06)",
+                    boxShadow: isCurrent ? "0 0 24px rgba(93, 122, 111, 0.3)" : "none",
                     transition: "all 0.35s ease",
                   }}
                 >
@@ -132,7 +132,7 @@ export default function DataFlowSection() {
                     fontFamily: "'DM Sans'",
                     fontSize: "13px",
                     fontWeight: isActive ? 600 : 400,
-                    color: isActive ? "#0A0A0A" : "rgba(10,10,10,0.4)",
+                    color: isActive ? "#1A2E2A" : "rgba(26, 46, 42, 0.4)",
                     transition: "color 0.3s",
                   }}
                 >
@@ -142,7 +142,7 @@ export default function DataFlowSection() {
                   style={{
                     fontFamily: "'JetBrains Mono'",
                     fontSize: "10px",
-                    color: isActive ? "#FF6B2B" : "rgba(10,10,10,0.2)",
+                    color: isActive ? "#5D7A6F" : "rgba(26, 46, 42, 0.2)",
                     transition: "color 0.3s",
                   }}
                 >

@@ -37,8 +37,8 @@ export default function Navbar() {
         left: 0,
         right: 0,
         zIndex: 100,
-        borderBottom: scrolled ? "1px solid rgba(0,0,0,0.06)" : "1px solid transparent",
-        background: scrolled ? "rgba(250,250,250,0.85)" : "transparent",
+        borderBottom: scrolled ? "1px solid rgba(93, 122, 111, 0.08)" : "1px solid transparent",
+        background: scrolled ? "rgba(231, 232, 226, 0.85)" : "transparent",
         backdropFilter: scrolled ? "blur(20px)" : "none",
         transition: "background 0.3s, border-color 0.3s",
       }}
@@ -61,7 +61,7 @@ export default function Navbar() {
               fontFamily: "'Sora', sans-serif",
               fontSize: "17px",
               fontWeight: 700,
-              color: "#0A0A0A",
+              color: "#1A2E2A",
               letterSpacing: "-0.02em",
             }}
           >
@@ -82,15 +82,15 @@ export default function Navbar() {
                 fontFamily: "'DM Sans', sans-serif",
                 fontSize: "14px",
                 fontWeight: 500,
-                color: "rgba(10,10,10,0.55)",
+                color: "rgba(26, 46, 42, 0.55)",
                 textDecoration: "none",
                 transition: "color 0.2s",
               }}
               onMouseEnter={(e) =>
-                ((e.target as HTMLElement).style.color = "#0A0A0A")
+                ((e.target as HTMLElement).style.color = "#1A2E2A")
               }
               onMouseLeave={(e) =>
-                ((e.target as HTMLElement).style.color = "rgba(10,10,10,0.55)")
+                ((e.target as HTMLElement).style.color = "rgba(26, 46, 42, 0.55)")
               }
             >
               {l.label}
@@ -105,7 +105,7 @@ export default function Navbar() {
               fontFamily: "'DM Sans', sans-serif",
               fontSize: "14px",
               fontWeight: 500,
-              color: "#0A0A0A",
+              color: "#1A2E2A",
               background: "transparent",
               border: "none",
               padding: "8px 16px",
@@ -121,7 +121,7 @@ export default function Navbar() {
               fontSize: "14px",
               fontWeight: 600,
               color: "#FFFFFF",
-              background: "#0A0A0A",
+              background: "#1A2E2A",
               border: "none",
               padding: "9px 20px",
               cursor: "pointer",
@@ -138,7 +138,7 @@ export default function Navbar() {
           onClick={() => setMobileOpen(!mobileOpen)}
           style={{ background: "none", border: "none", cursor: "pointer", padding: "4px" }}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" strokeWidth="2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A2E2A" strokeWidth="2">
             {mobileOpen ? (
               <path d="M6 18L18 6M6 6l12 12" />
             ) : (
@@ -157,9 +157,9 @@ export default function Navbar() {
             exit={{ height: 0, opacity: 0 }}
             style={{
               overflow: "hidden",
-              background: "rgba(250,250,250,0.95)",
+              background: "rgba(231, 232, 226, 0.95)",
               backdropFilter: "blur(20px)",
-              borderTop: "1px solid rgba(0,0,0,0.06)",
+              borderTop: "1px solid rgba(93, 122, 111, 0.08)",
             }}
           >
             <div style={{ padding: "16px 24px 20px", display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -168,7 +168,7 @@ export default function Navbar() {
                   key={l.label}
                   href={l.href}
                   onClick={() => setMobileOpen(false)}
-                  style={{ fontFamily: "'DM Sans'", fontSize: "15px", color: "#0A0A0A", textDecoration: "none" }}
+                  style={{ fontFamily: "'DM Sans'", fontSize: "15px", color: "#1A2E2A", textDecoration: "none" }}
                 >
                   {l.label}
                 </a>
@@ -180,7 +180,7 @@ export default function Navbar() {
                   fontSize: "14px",
                   fontWeight: 600,
                   color: "#FFF",
-                  background: "#0A0A0A",
+                  background: "#1A2E2A",
                   border: "none",
                   padding: "10px 20px",
                   borderRadius: "100px",

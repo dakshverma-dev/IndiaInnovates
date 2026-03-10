@@ -69,7 +69,7 @@ export default function HeroSection() {
             fontWeight: 400,
             lineHeight: 1.06,
             letterSpacing: "-0.01em",
-            color: "#1A1A1A",
+            color: "#1A2E2A",
             marginBottom: "4px",
           }}
         >
@@ -90,7 +90,7 @@ export default function HeroSection() {
               fontWeight: 400,
               lineHeight: 1.06,
               letterSpacing: "-0.01em",
-              color: "#E8541A",
+              color: "#5D7A6F",
             }}
           >
             {text}
@@ -101,7 +101,7 @@ export default function HeroSection() {
               fontFamily: "'DM Serif Display', serif",
               fontSize: "clamp(48px, 6.5vw, 78px)",
               fontWeight: 300,
-              color: "#E8541A",
+              color: "#5D7A6F",
               marginLeft: "2px",
             }}
           >
@@ -118,7 +118,7 @@ export default function HeroSection() {
             fontFamily: "'DM Sans', sans-serif",
             fontSize: "18px",
             fontWeight: 400,
-            color: "rgba(26,26,26,0.5)",
+            color: "rgba(26, 46, 42, 0.5)",
             lineHeight: 1.7,
             maxWidth: "500px",
             margin: "0 auto 40px",
@@ -143,7 +143,7 @@ export default function HeroSection() {
               fontSize: "15px",
               fontWeight: 600,
               color: "#FFFFFF",
-              background: "#0A0A0A",
+              background: "#1A2E2A",
               border: "none",
               padding: "14px 32px",
               borderRadius: "100px",
@@ -159,9 +159,9 @@ export default function HeroSection() {
               fontFamily: "'DM Sans'",
               fontSize: "15px",
               fontWeight: 500,
-              color: "#0A0A0A",
-              background: "rgba(0,0,0,0.05)",
-              border: "1px solid rgba(0,0,0,0.1)",
+              color: "#1A2E2A",
+              background: "rgba(93, 122, 111, 0.05)",
+              border: "1px solid rgba(93, 122, 111, 0.1)",
               padding: "14px 32px",
               borderRadius: "100px",
               cursor: "pointer",
@@ -182,7 +182,7 @@ export default function HeroSection() {
             fontSize: "11px",
             letterSpacing: "0.1em",
             fontWeight: 500,
-            color: "rgba(10,10,10,0.3)",
+            color: "rgba(26, 46, 42, 0.3)",
             textTransform: "uppercase",
           }}
         >

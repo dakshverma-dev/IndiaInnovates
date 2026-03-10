@@ -16,7 +16,7 @@ export default function PillarsSection() {
   return (
     <section
       id="pillars"
-      style={{ background: "#FFFFFF", padding: "96px 0", borderTop: "1px solid rgba(0,0,0,0.05)" }}
+      style={{ background: "#FFFFFF", padding: "96px 0", borderTop: "1px solid rgba(93, 122, 111, 0.08)" }}
     >
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px" }}>
         <motion.div
@@ -31,7 +31,7 @@ export default function PillarsSection() {
             fontSize: "11px",
             letterSpacing: "0.1em",
             fontWeight: 600,
-            color: "rgba(10,10,10,0.4)",
+            color: "rgba(26, 46, 42, 0.4)",
             textTransform: "uppercase",
             marginBottom: "16px",
           }}>
@@ -43,7 +43,7 @@ export default function PillarsSection() {
             fontWeight: 700,
             lineHeight: 1.15,
             letterSpacing: "-0.025em",
-            color: "#0A0A0A",
+            color: "#1A2E2A",
           }}>
             Zero precedent in Indian civic tech.
           </h2>
@@ -73,7 +73,7 @@ export default function PillarsSection() {
                   fontFamily: "'JetBrains Mono', monospace",
                   fontSize: "clamp(36px, 5vw, 52px)",
                   fontWeight: 700,
-                  color: "rgba(255,107,43,0.15)",
+                  color: "rgba(93, 122, 111, 0.12)",
                   lineHeight: 1,
                   userSelect: "none",
                   transition: "color 0.2s",
@@ -89,7 +89,7 @@ export default function PillarsSection() {
                     fontFamily: "'Sora'",
                     fontSize: "17px",
                     fontWeight: 700,
-                    color: "#0A0A0A",
+                    color: "#1A2E2A",
                     letterSpacing: "-0.01em",
                   }}>
                     {p.title}
@@ -126,7 +126,7 @@ export default function PillarsSection() {
                   fontFamily: "'Sora'",
                   fontSize: "13px",
                   fontWeight: 600,
-                  color: "#FF6B2B",
+                  color: "#5D7A6F",
                   whiteSpace: "nowrap",
                 }}>
                   → {p.metric}

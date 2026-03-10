@@ -15,9 +15,9 @@ export default function CredibilityBar() {
   return (
     <section
       style={{
-        background: "#FAFAFA",
-        borderTop: "1px solid rgba(0,0,0,0.06)",
-        borderBottom: "1px solid rgba(0,0,0,0.06)",
+        background: "#E7E8E2",
+        borderTop: "1px solid rgba(93, 122, 111, 0.08)",
+        borderBottom: "1px solid rgba(93, 122, 111, 0.08)",
         padding: "28px 0",
       }}
     >
@@ -35,7 +35,7 @@ export default function CredibilityBar() {
             fontSize: "11px",
             letterSpacing: "0.1em",
             fontWeight: 500,
-            color: "rgba(10,10,10,0.35)",
+            color: "rgba(26, 46, 42, 0.35)",
             textTransform: "uppercase",
             textAlign: "center",
             marginBottom: "20px",
@@ -65,7 +65,7 @@ export default function CredibilityBar() {
                 flexDirection: "column",
                 alignItems: "center",
                 padding: "0 32px",
-                borderRight: i < stats.length - 1 ? "1px solid rgba(0,0,0,0.08)" : "none",
+                borderRight: i < stats.length - 1 ? "1px solid rgba(93, 122, 111, 0.1)" : "none",
               }}
             >
               <span

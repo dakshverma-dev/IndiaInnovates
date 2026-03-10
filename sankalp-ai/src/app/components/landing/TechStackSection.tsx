@@ -38,7 +38,7 @@ const categories = [
 export default function TechStackSection() {
   return (
     <section
-      style={{ background: "#FAFAFA", padding: "96px 0", borderTop: "1px solid rgba(0,0,0,0.05)" }}
+      style={{ background: "#E7E8E2", padding: "96px 0", borderTop: "1px solid rgba(93, 122, 111, 0.08)" }}
     >
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px" }}>
         <motion.div
@@ -53,7 +53,7 @@ export default function TechStackSection() {
             fontSize: "11px",
             letterSpacing: "0.1em",
             fontWeight: 600,
-            color: "rgba(10,10,10,0.4)",
+            color: "rgba(26, 46, 42, 0.4)",
             textTransform: "uppercase",
             marginBottom: "16px",
           }}>
@@ -85,9 +85,9 @@ export default function TechStackSection() {
               transition={{ delay: i * 0.07, duration: 0.5 }}
               style={{
                 background: "#FFFFFF",
-                borderRadius: "16px",
+                borderRadius: "24px",
                 padding: "24px",
-                border: "1px solid rgba(0,0,0,0.06)",
+                border: "1px solid rgba(93, 122, 111, 0.08)",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
@@ -107,7 +107,7 @@ export default function TechStackSection() {
                 {cat.techs.map((t) => (
                   <motion.span
                     key={t}
-                    whileHover={{ background: "#0A0A0A", color: "#FFFFFF" }}
+                    whileHover={{ background: "#1A2E2A", color: "#FFFFFF" }}
                     transition={{ duration: 0.15 }}
                     style={{
                       fontFamily: "'JetBrains Mono', monospace",

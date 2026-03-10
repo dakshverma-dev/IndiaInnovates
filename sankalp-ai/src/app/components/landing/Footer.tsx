@@ -8,7 +8,7 @@ const policies = ["Digital India Aligned", "Smart Cities Mission", "RTI Act 2005
 
 export default function Footer() {
   return (
-    <footer style={{ background: "#0A0A0A", padding: "72px 0 32px" }}>
+    <footer style={{ background: "#1A2E2A", padding: "72px 0 32px" }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px" }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -31,7 +31,7 @@ export default function Footer() {
               <p style={{ fontFamily: "'Sora'", fontSize: "18px", fontWeight: 700, color: "#FFFFFF", letterSpacing: "-0.02em", marginBottom: "4px" }}>
                 SANKALP AI
               </p>
-              <p style={{ fontFamily: "'Noto Sans Devanagari'", fontSize: "11px", color: "#FF6B2B", marginBottom: "16px" }}>
+              <p style={{ fontFamily: "'Noto Sans Devanagari'", fontSize: "11px", color: "#5D7A6F", marginBottom: "16px" }}>
                 सङ्कल्प
               </p>
               <p style={{ fontFamily: "'DM Sans'", fontSize: "13px", color: "rgba(255,255,255,0.35)", lineHeight: 1.65, maxWidth: "240px" }}>
