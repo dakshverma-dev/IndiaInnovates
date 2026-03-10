@@ -10,213 +10,341 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  BarChart,
-  Bar,
-  Cell
+  LineChart,
+  Line
 } from "recharts";
 
 // --- Mock Data ---
-const CHART_DATA = [
-  { name: "00:00", filed: 40, resolved: 35 },
-  { name: "04:00", filed: 20, resolved: 18 },
-  { name: "08:00", filed: 85, resolved: 40 },
-  { name: "12:00", filed: 120, resolved: 90 },
-  { name: "16:00", filed: 150, resolved: 110 },
-  { name: "20:00", filed: 95, resolved: 105 },
-  { name: "23:59", filed: 50, resolved: 70 },
+const TREND_DATA = [
+  { name: "Mon", value: 30 },
+  { name: "Tue", value: 45 },
+  { name: "Wed", value: 25 },
+  { name: "Thu", value: 60 },
+  { name: "Fri", value: 35 },
+  { name: "Sat", value: 50 },
+  { name: "Sun", value: 40 },
 ];
 
-const OFFICER_DATA = [
-  { name: "Rajesh Kumar", resolved: 42, score: 98 },
-  { name: "Amit Sharma", resolved: 38, score: 92 },
-  { name: "Suresh Gupta", resolved: 35, score: 88 },
-  { name: "Priya Singh", resolved: 31, score: 85 },
-  { name: "Vikram Rathore", resolved: 28, score: 82 },
+const WAVY_CHART_DATA = [
+  { x: 0, y: 10 }, { x: 1, y: 25 }, { x: 2, y: 15 }, 
+  { x: 3, y: 35 }, { x: 4, y: 20 }, { x: 5, y: 30 }, 
+  { x: 6, y: 18 }
 ];
 
-const RECENT_TICKETS = [
-  { id: "DL-4821", ward: "42", cat: "Sanitation", priority: "P2", time: "2m ago", status: "ASSIGNED", officer: "Rajesh Kumar" },
-  { id: "DL-4820", ward: "17", cat: "Roads", priority: "P2", time: "5m ago", status: "IN_PROGRESS", officer: "Amit Sharma" },
-  { id: "DL-4819", ward: "31", cat: "Water", priority: "P1", time: "12m ago", status: "RESOLVED", officer: "Suresh Gupta" },
-  { id: "DL-4818", cat: "Light", priority: "P3", ward: "09", time: "18m ago", status: "NEW", officer: "—" },
-];
-
-const AI_LOGS = [
-  { text: "Nali band hai street 4 mein", cat: "Sanitation", conf: 94, time: "2.3s" },
-  { text: "Street light not working", cat: "Electricity", conf: 98, time: "1.1s" },
-  { text: "Road pothole near gate 2", cat: "Roads", conf: 91, time: "2.8s" },
+const RECENT_TRANSFERS = [
+  { name: "Anna Jones", time: "Today, 14:34", delta: "+2.45%", color: "#4ADE80" },
+  { name: "Carlos Brown III", time: "Today, 15:23", delta: "-4.75%", color: "#EF4444" },
+  { name: "Joel Cannan", time: "Today, 17:54", delta: "+2.45%", color: "#4ADE80" }
 ];
 
 // ============================================================
-// ADMIN DASHBOARD
+// REDESIGNED ADMIN DASHBOARD (SAGE & BEIGE)
 // ============================================================
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("Dashboard");
 
   return (
-    <div style={{ display: "flex", height: "100vh", background: "#F8F9FB", fontFamily: "'DM Sans', sans-serif" }}>
+    <div style={{ 
+      display: "flex", 
+      height: "100vh", 
+      background: "#E7E8E2", // Soft Beige background
+      fontFamily: "'DM Sans', sans-serif",
+      padding: "24px",
+      gap: "24px",
+      overflow: "hidden" 
+    }}>
       
-      {/* SIDEBAR */}
-      <aside style={{ width: "240px", background: "#0B1F42", color: "#FFF", display: "flex", flexDirection: "column", padding: "24px 0" }}>
-        <div style={{ padding: "0 24px", marginBottom: "40px" }}>
-          <p style={{ fontFamily: "'Sora'", fontSize: "18px", fontWeight: 800 }}>SANKALP AI</p>
-          <p style={{ fontFamily: "'Noto Sans Devanagari'", fontSize: "11px", color: "#FB923C", marginTop: "2px" }}>सङ्कल्प</p>
+      {/* 1. PILL SIDEBAR */}
+      <aside style={{ 
+        width: "80px", 
+        background: "#FFFFFF", 
+        borderRadius: "40px", 
+        display: "flex", 
+        flexDirection: "column", 
+        alignItems: "center", 
+        padding: "32px 0",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.03)"
+      }}>
+        {/* Logo Icon */}
+        <div style={{ 
+          width: "48px", height: "48px", 
+          background: "#1A2E2A", // Dark Sage
+          borderRadius: "50%", 
+          display: "flex", alignItems: "center", justifyContent: "center",
+          marginBottom: "40px",
+          color: "#FFF", fontSize: "20px"
+        }}>
+          ❄️
         </div>
 
-        <nav style={{ flex: 1 }}>
-          {[
-            { n: "Dashboard", i: "📊" },
-            { n: "All Complaints", i: "🎫" },
-            { n: "Ward Map", i: "🗺️" },
-            { n: "Field Officers", i: "👥" },
-            { n: "Predictions", i: "🔮" },
-            { n: "Audit Trail", i: "⛓️" },
-            { n: "Settings", i: "⚙️" },
-          ].map((item) => (
-            <div
-              key={item.n}
-              onClick={() => setActiveTab(item.n)}
-              style={{
-                padding: "10px 24px", cursor: "pointer", display: "flex", alignItems: "center", gap: "12px",
-                background: activeTab === item.n ? "rgba(255,255,255,0.08)" : "transparent",
-                borderLeft: activeTab === item.n ? "3px solid #FB923C" : "3px solid transparent",
-                transition: "all 0.2s",
-              }}
-            >
-              <span style={{ fontSize: "16px" }}>{item.i}</span>
-              <span style={{ fontSize: "13px", fontWeight: activeTab === item.n ? 600 : 400, opacity: activeTab === item.n ? 1 : 0.6 }}>{item.n}</span>
-            </div>
-          ))}
+        <nav style={{ display: "flex", flexDirection: "column", gap: "24px", flex: 1 }}>
+          <SidebarIcon icon="📁" active={activeTab === "Dashboard"} onClick={() => setActiveTab("Dashboard")} />
+          <SidebarIcon icon="📊" active={activeTab === "Stats"} onClick={() => setActiveTab("Stats")} />
+          <SidebarIcon icon="🏛️" active={activeTab === "Ward"} onClick={() => setActiveTab("Ward")} />
+          <SidebarIcon icon="👥" active={activeTab === "Officers"} onClick={() => setActiveTab("Officers")} />
+          <SidebarIcon icon="📋" active={activeTab === "Logs"} onClick={() => setActiveTab("Logs")} />
         </nav>
 
-        <div style={{ padding: "0 24px", marginTop: "auto" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 700 }}>RK</div>
-            <div style={{ minWidth: 0 }}>
-              <p style={{ fontSize: "12px", fontWeight: 600, color: "#FFF" }}>Rajesh Kumar</p>
-              <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Sector Officer, South</p>
-            </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px", marginTop: "auto" }}>
+          <SidebarIcon icon="⚙️" />
+          <SidebarIcon icon="📤" />
+          <div style={{ 
+            width: "40px", height: "40px", 
+            borderRadius: "50%", overflow: "hidden", 
+            border: "2px solid #E7E8E2" 
+          }}>
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Rajesh" alt="Avatar" />
           </div>
         </div>
       </aside>
 
-      {/* MAIN CONTENT */}
-      <main style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+      {/* 2. MAIN CONTENT AREA */}
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", gap: "32px", overflowY: "auto", paddingRight: "8px" }}>
         
-        {/* TOP BAR */}
-        <header style={{ height: "64px", background: "#FFF", borderBottom: "1px solid #E9EAEC", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 32px", position: "sticky", top: 0, zIndex: 10 }}>
+        {/* HEADER */}
+        <header style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <h1 style={{ fontSize: "18px", fontWeight: 700, color: "#111" }}>Good morning, Rajesh</h1>
-            <p style={{ fontSize: "11px", color: "#999", marginTop: "2px" }}>March 28, 2026 · 10:42 AM IST</p>
+            <h1 style={{ fontFamily: "'Sora'", fontSize: "32px", fontWeight: 700, color: "#1A1A1A", margin: 0 }}>Hello, Rajesh!</h1>
+            <p style={{ fontSize: "16px", color: "#6B6B6B", marginTop: "4px" }}>Manage Delhi’s civic health and real-time triage.</p>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-             <div style={{ position: "relative" }}>
-               <span style={{ fontSize: "20px", cursor: "pointer" }}>🔔</span>
-               <div style={{ position: "absolute", top: "0", right: "0", width: "8px", height: "8px", background: "#EF4444", borderRadius: "50%", border: "2px solid #FFF" }} />
-             </div>
-             <div style={{ width: "1px", height: "24px", background: "#E9EAEC" }} />
-             <input placeholder="Search complaints..." style={{ padding: "8px 16px", borderRadius: "8px", border: "1px solid #E9EAEC", fontSize: "13px", width: "220px", background: "#F8F9FB", outline: "none" }} />
+          
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <div style={{ 
+              background: "#FFF", borderRadius: "100px", padding: "8px 24px", 
+              display: "flex", alignItems: "center", gap: "12px", 
+              width: "320px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)"
+            }}>
+              <span style={{ opacity: 0.5 }}>🔍</span>
+              <input 
+                placeholder="Search wards, tickets..." 
+                style={{ border: "none", background: "transparent", outline: "none", fontSize: "14px", width: "100%" }} 
+              />
+              <div style={{ 
+                width: "32px", height: "32px", background: "#111", borderRadius: "50%", 
+                display: "flex", alignItems: "center", justifyContent: "center", color: "#FFF" 
+              }}>
+                ➔
+              </div>
+            </div>
+            
+            <div style={{ 
+              width: "48px", height: "48px", background: "#FFF", borderRadius: "50%", 
+              display: "flex", alignItems: "center", justifyContent: "center", 
+              fontSize: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)"
+            }}>
+              💬
+            </div>
+            <div style={{ 
+              width: "48px", height: "48px", background: "#FFF", borderRadius: "50%", 
+              display: "flex", alignItems: "center", justifyContent: "center", 
+              fontSize: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)", position: "relative"
+            }}>
+              🔔
+              <div style={{ position: "absolute", top: "12px", right: "12px", width: "8px", height: "8px", background: "#EF4444", borderRadius: "50%", border: "2px solid #FFF" }} />
+            </div>
           </div>
         </header>
 
-        <div style={{ padding: "32px" }}>
+        {/* TOP KPI ROW */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "24px" }}>
+          <KpiCard label="Total Complaints" val="847" icon="📊" trendType="bar" />
+          <KpiCard label="Active Officers" val="321" icon="👥" trendType="line" />
+          <KpiCard label="Avg Resolution" val="31.4h" icon="⌛" />
+          <div style={{ 
+            background: "#5D7A6F", // Sage Green
+            borderRadius: "24px", padding: "24px", color: "#FFF",
+            display: "flex", flexDirection: "column", justifyContent: "space-between"
+          }}>
+             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+                <span style={{ fontWeight: 600, fontSize: "14px", opacity: 0.8 }}>Pending Budget</span>
+                <span style={{ fontSize: "20px" }}>📈</span>
+             </div>
+             <div style={{ marginTop: "12px" }}>
+                <h2 style={{ fontSize: "24px", fontWeight: 700, margin: 0 }}>₹42L Saved</h2>
+                <div style={{ height: "40px", marginTop: "8px" }}>
+                   <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={WAVY_CHART_DATA}>
+                         <Line type="monotone" dataKey="y" stroke="#FFFFFF" strokeWidth={2} dot={false} />
+                      </LineChart>
+                   </ResponsiveContainer>
+                </div>
+             </div>
+          </div>
+        </div>
+
+        {/* MAIN COMPONENT ROW */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 340px 380px", gap: "24px", flex: 1 }}>
           
-          {/* ROW 1: KPIs */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "20px", marginBottom: "32px" }}>
-            <KpiCard label="Active Complaints" val="847" delta="+23 today" color="#FB923C" />
-            <KpiCard label="Avg Resolution" val="31.4 hrs" delta="-14% v/s LW" color="#4ADE80" />
-            <KpiCard label="SLA Compliance" val="89.3%" delta="↑ 2.1%" color="#4ADE80" />
-            <KpiCard label="Fake Prevents" val="142" delta="Protected" color="#6366F1" />
-          </div>
+          {/* LEFT COLUMN: ACTIVITY CHART */}
+          <section style={{ background: "#FFF", borderRadius: "24px", padding: "24px", display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
+              <h3 style={{ fontFamily: "'Sora'", fontSize: "18px", fontWeight: 700, color: "#1A1A1A", display: "flex", alignItems: "center", gap: "8px" }}>
+                Complaint Flow <span style={{ fontSize: "12px", fontWeight: 600, color: "#16A34A", background: "#F0FDF4", padding: "4px 12px", borderRadius: "100px" }}>● On track</span>
+              </h3>
+              <select style={{ border: "none", background: "#F8F9FA", padding: "4px 12px", borderRadius: "8px", fontSize: "12px", color: "#666" }}>
+                <option>Monthly</option>
+                <option>Weekly</option>
+              </select>
+            </div>
 
-          {/* ROW 2: MAP & CHART */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 400px", gap: "32px", marginBottom: "32px" }}>
-             <Card title="Live Complaint Map — South Zone">
-                <div style={{ height: "400px", background: "#F4F5F7", borderRadius: "12px", position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                   {/* Simplified SVG map viz */}
-                   <svg width="600" height="400" viewBox="0 0 400 300">
-                      <path d="M50 150 L150 50 L250 100 L350 50 L300 250 L100 200 Z" fill="rgba(251,146,60,0.15)" stroke="#FB923C" strokeWidth="2" />
-                      <circle cx="150" cy="120" r="12" fill="rgba(239,68,68,0.3)">
-                        <animate attributeName="r" values="8;16;8" dur="2s" repeatCount="indefinite" />
-                      </circle>
-                      <circle cx="280" cy="180" r="8" fill="#F59E0B" />
-                      <circle cx="100" cy="180" r="6" fill="#16A34A" />
-                   </svg>
-                   <div style={{ position: "absolute", bottom: "16px", right: "16px", background: "rgba(255,255,255,0.9)", padding: "10px", borderRadius: "8px", fontSize: "10px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
-                      <p style={{ fontWeight: 700, marginBottom: "4px" }}>Density Heatmap</p>
-                      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                         <div style={{ width: "30px", height: "6px", background: "linear-gradient(to right, #4ADE80, #F59E0B, #EF4444)", borderRadius: "100px" }} />
-                         <span>Low → High</span>
-                      </div>
+            <div style={{ display: "flex", gap: "48px", marginBottom: "24px" }}>
+               <div>
+                  <p style={{ fontSize: "12px", color: "#999", marginBottom: "4px" }}>Resolution Rate</p>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
+                     <span style={{ fontSize: "24px", fontWeight: 700 }}>89.30%</span>
+                     <span style={{ fontSize: "12px", color: "#16A34A", fontWeight: 600 }}>+2.45%</span>
+                  </div>
+               </div>
+               <div>
+                  <p style={{ fontSize: "12px", color: "#999", marginBottom: "4px" }}>SLA Compliance</p>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
+                     <span style={{ fontSize: "24px", fontWeight: 700 }}>91.2%</span>
+                     <span style={{ fontSize: "12px", color: "#EF4444", fontWeight: 600 }}>-1.15%</span>
+                  </div>
+               </div>
+            </div>
+
+            <div style={{ flex: 1 }}>
+               <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={TREND_DATA}>
+                    <defs>
+                      <linearGradient id="colorSage" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#5D7A6F" stopOpacity={0.1}/>
+                        <stop offset="95%" stopColor="#5D7A6F" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <Area type="monotone" dataKey="value" stroke="#5D7A6F" strokeWidth={3} fillOpacity={1} fill="url(#colorSage)" />
+                  </AreaChart>
+               </ResponsiveContainer>
+            </div>
+          </section>
+
+          {/* CENTER COLUMN: GAUGE & STATS */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+             <section style={{ background: "#FFF", borderRadius: "24px", padding: "24px", flex: 1 }}>
+                <h3 style={{ fontFamily: "Sora", fontSize: "16px", fontWeight: 700, marginBottom: "4px" }}>System Efficiency</h3>
+                <p style={{ fontSize: "12px", color: "#999", marginBottom: "24px" }}>Total civic engine performance</p>
+                
+                <div style={{ position: "relative", height: "180px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                   {/* Custom Gauge Viz */}
+                   <div style={{ 
+                      width: "160px", height: "80px", border: "16px solid #F3F4F0", 
+                      borderTopLeftRadius: "100px", borderTopRightRadius: "100px", borderBottom: 0,
+                      position: "relative", overflow: "hidden" 
+                   }}>
+                      <div style={{ 
+                         width: "160px", height: "80px", border: "16px solid #5D7A6F", 
+                         borderTopLeftRadius: "100px", borderTopRightRadius: "100px", borderBottom: 0,
+                         position: "absolute", top: -16, left: -16,
+                         transformOrigin: "bottom center", transform: "rotate(40deg)"
+                      }} />
+                   </div>
+                   <div style={{ position: "absolute", bottom: "10px", textAlign: "center" }}>
+                      <span style={{ fontSize: "32px", fontWeight: 800 }}>80%</span>
                    </div>
                 </div>
-             </Card>
 
-             <Card title="Complaint Flow — 24h">
-                <div style={{ height: "400px" }}>
-                   <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={CHART_DATA}>
-                         <defs>
-                            <linearGradient id="colF" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#FB923C" stopOpacity={0.3}/><stop offset="95%" stopColor="#FB923C" stopOpacity={0}/></linearGradient>
-                            <linearGradient id="colR" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#4ADE80" stopOpacity={0.3}/><stop offset="95%" stopColor="#4ADE80" stopOpacity={0}/></linearGradient>
-                         </defs>
-                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#EEE" />
-                         <XAxis dataKey="name" fontSize={10} axisLine={false} tickLine={false} />
-                         <YAxis fontSize={10} axisLine={false} tickLine={false} />
-                         <Tooltip contentStyle={{ borderRadius: "10px", border: "none", boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }} />
-                         <Area type="monotone" dataKey="filed" stroke="#FB923C" fillOpacity={1} fill="url(#colF)" strokeWidth={2} />
-                         <Area type="monotone" dataKey="resolved" stroke="#4ADE80" fillOpacity={1} fill="url(#colR)" strokeWidth={2} />
-                      </AreaChart>
-                   </ResponsiveContainer>
+                <div style={{ marginTop: "24px", textAlign: "center" }}>
+                   <p style={{ fontSize: "18px", fontWeight: 700, color: "#16A34A" }}>Excellent</p>
+                   <p style={{ fontSize: "12px", color: "#999" }}>Profit is 34% More than last Month</p>
                 </div>
-             </Card>
+             </section>
+
+             <section style={{ background: "#FFF", borderRadius: "24px", padding: "24px", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
+                <div style={{ 
+                  width: "64px", height: "64px", borderRadius: "50%", 
+                  background: "#F3F4F0", display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: "32px"
+                }}>
+                  🛡️
+                </div>
+                <h3 style={{ fontSize: "16px", fontWeight: 700, marginTop: "16px", marginBottom: "4px" }}>Keep you safe!</h3>
+                <p style={{ fontSize: "12px", color: "#999", textAlign: "center", marginBottom: "16px" }}>Updated your security protocols for Ward 42.</p>
+                <button style={{ 
+                  background: "#1A2E2A", color: "#FFF", border: "none", 
+                  borderRadius: "100px", padding: "8px 24px", fontSize: "12px", fontWeight: 600 
+                }}>
+                  Update Protocols
+                </button>
+             </section>
           </div>
 
-          {/* ROW 3: TICKETS & AI */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: "32px" }}>
-             <Card title="Incoming Tickets — Live">
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                   {RECENT_TICKETS.map((t, i) => (
-                      <div key={t.id} style={{ padding: "14px 0", borderBottom: i === RECENT_TICKETS.length - 1 ? "none" : "1px solid #F0F1F3", display: "grid", gridTemplateColumns: "100px 60px 100px 80px 1fr", alignItems: "center" }}>
-                         <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "12px", fontWeight: 700, color: "#0F2D5E" }}>{t.id}</span>
-                         <span style={{ fontSize: "12px", color: "#666" }}>W{t.ward}</span>
-                         <span style={{ fontSize: "11px", fontWeight: 600, padding: "3px 8px", borderRadius: "100px", background: "rgba(15,45,94,0.06)", color: "#0F2D5E", width: "fit-content" }}>{t.cat}</span>
-                         <span style={{ fontSize: "10px", fontWeight: 800, color: t.priority === "P1" ? "#EF4444" : "#F59E0B" }}>{t.priority} PRIORITY</span>
-                         <span style={{ fontSize: "11px", color: "#999", textAlign: "right" }}>{t.time} · {t.status}</span>
-                      </div>
-                   ))}
-                </div>
-             </Card>
+          {/* RIGHT COLUMN: PRIORITY STACK & TRANSFERS */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+            
+            {/* Triage Card Stack */}
+            <section style={{ 
+              background: "#FFF", borderRadius: "24px", padding: "24px", position: "relative", 
+              minHeight: "260px", overflow: "hidden" 
+            }}>
+               <h3 style={{ fontFamily: "Sora", fontSize: "16px", fontWeight: 700, marginBottom: "16px" }}>Active Priority Triage</h3>
+               
+               {/* Visual Stack Effect */}
+               <div style={{ position: "relative", marginTop: "20px" }}>
+                  <div style={{ 
+                    width: "100%", height: "180px", background: "linear-gradient(135deg, #1A2E2A, #2D4A44)", 
+                    borderRadius: "20px", padding: "20px", position: "relative", zIndex: 3,
+                    color: "#FFF", display: "flex", flexDirection: "column", justifyContent: "space-between",
+                    boxShadow: "0 10px 40px rgba(0,0,0,0.15)"
+                  }}>
+                     <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <span style={{ fontSize: "12px", opacity: 0.6 }}>MAINTENANCE PASS</span>
+                        <span style={{ fontSize: "18px" }}>📡</span>
+                     </div>
+                     <div>
+                        <p style={{ fontFamily: "'JetBrains Mono'", fontSize: "20px", margin: 0 }}>4248 1234 5678 XXXX</p>
+                        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "12px", fontSize: "11px", opacity: 0.6 }}>
+                           <span>LAJPAT NAGAR</span>
+                           <span>06/28</span>
+                        </div>
+                     </div>
+                  </div>
+                  {/* Background cards */}
+                  <div style={{ 
+                    position: "absolute", top: 10, left: 10, right: 10, height: "180px", 
+                    background: "#5D7A6F", borderRadius: "20px", zIndex: 2, opacity: 0.6, transform: "rotate(-2deg)" 
+                  }} />
+                  <div style={{ 
+                    position: "absolute", top: 20, left: 20, right: 20, height: "180px", 
+                    background: "#A3B2AC", borderRadius: "20px", zIndex: 1, opacity: 0.3, transform: "rotate(-4deg)" 
+                  }} />
+               </div>
+               
+               <button style={{ 
+                  marginTop: "32px", width: "100%", background: "#F3F4F0", border: "none", 
+                  borderRadius: "12px", padding: "12px", fontSize: "13px", fontWeight: 600, color: "#1A2E2A" 
+               }}>
+                  Add New Protocol +
+               </button>
+            </section>
 
-             <Card title="Officer Leaderboard">
-                <div style={{ height: "240px" }}>
-                   <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={OFFICER_DATA} layout="vertical" margin={{ left: 40 }}>
-                         <XAxis type="number" hide />
-                         <YAxis type="category" dataKey="name" fontSize={10} width={80} axisLine={false} tickLine={false} />
-                         <Tooltip cursor={{ fill: "transparent" }} />
-                         <Bar dataKey="score" radius={[0, 4, 4, 0]} barSize={12}>
-                            {OFFICER_DATA.map((entry, index) => (
-                               <Cell key={index} fill={entry.score > 90 ? "#4ADE80" : "#FB923C"} />
-                            ))}
-                         </Bar>
-                      </BarChart>
-                   </ResponsiveContainer>
-                   <div style={{ marginTop: "12px", borderTop: "1px solid #F0F1F3", paddingTop: "12px" }}>
-                      <p style={{ fontSize: "11px", color: "#666", display: "flex", justifyContent: "space-between" }}>
-                         <span>Top performer: Rajesh Kumar</span>
-                         <span style={{ fontWeight: 700, color: "#16A34A" }}>98 Karma</span>
-                      </p>
-                   </div>
-                </div>
-             </Card>
+            <section style={{ background: "#FFF", borderRadius: "24px", padding: "24px", flex: 1 }}>
+               <h3 style={{ fontFamily: "Sora", fontSize: "16px", fontWeight: 700, marginBottom: "20px" }}>Recent Resolutions</h3>
+               <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                  {RECENT_TRANSFERS.map((t, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                       <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#F3F4F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>
+                          👤
+                       </div>
+                       <div style={{ flex: 1 }}>
+                          <p style={{ fontSize: "14px", fontWeight: 600, margin: 0 }}>{t.name}</p>
+                          <p style={{ fontSize: "11px", color: "#999", margin: 0 }}>{t.time}</p>
+                       </div>
+                       <span style={{ fontSize: "12px", fontWeight: 700, color: t.color }}>{t.delta}</span>
+                    </div>
+                  ))}
+               </div>
+            </section>
           </div>
 
         </div>
       </main>
 
       <style jsx global>{`
-        body { margin: 0; background: #F8F9FB; }
+        body { margin: 0; background: #E7E8E2; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.05); borderRadius: 10px; }
       `}</style>
     </div>
   );
@@ -226,26 +354,56 @@ export default function AdminDashboard() {
 // SUB-COMPONENTS
 // ============================================================
 
-function KpiCard({ label, val, delta, color }: { label: string; val: string; delta: string; color: string }) {
+function SidebarIcon({ icon, active, onClick }: { icon: string; active?: boolean; onClick?: () => void }) {
   return (
-    <div style={{ background: "#FFF", padding: "24px", borderRadius: "16px", border: "1px solid #E9EAEC", boxShadow: "0 2px 8px rgba(0,0,0,0.02)" }}>
-      <p style={{ fontSize: "12px", fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "8px" }}>{label}</p>
-      <div style={{ display: "flex", alignItems: "baseline", gap: "10px" }}>
-         <h2 style={{ fontSize: "28px", fontWeight: 800, color: "#111", lineHeight: 1 }}>{val}</h2>
-         <span style={{ fontSize: "11px", fontWeight: 700, color }}>{delta}</span>
-      </div>
+    <div 
+      onClick={onClick}
+      style={{ 
+        width: "48px", height: "48px", borderRadius: "16px", 
+        background: active ? "#111" : "transparent",
+        color: active ? "#FFF" : "#000",
+        display: "flex", alignItems: "center", justifyContent: "center", 
+        fontSize: "20px", cursor: "pointer", transition: "all 0.2s"
+      }}
+    >
+      {icon}
     </div>
   );
 }
 
-function Card({ title, children }: { title: string; children: React.ReactNode }) {
+function KpiCard({ label, val, icon, trendType }: { label: string; val: string; icon: string; trendType?: "bar" | "line" }) {
   return (
-    <div style={{ background: "#FFF", borderRadius: "16px", border: "1px solid #E9EAEC", padding: "24px", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-         <h3 style={{ fontSize: "15px", fontWeight: 700, color: "#111" }}>{title}</h3>
-         <button style={{ background: "transparent", border: "none", color: "#94A3B8", fontSize: "12px", cursor: "pointer" }}>···</button>
+    <div style={{ background: "#FFF", borderRadius: "24px", padding: "24px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <p style={{ fontSize: "13px", color: "#999", fontWeight: 500, margin: 0 }}>{label}</p>
+        <div style={{ 
+          width: "32px", height: "32px", borderRadius: "10px", 
+          background: "#F3F4F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px" 
+        }}>
+          {icon}
+        </div>
       </div>
-      {children}
+      
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginTop: "12px" }}>
+        <h2 style={{ fontSize: "28px", fontWeight: 700, margin: 0 }}>{val}</h2>
+        {trendType === "bar" && (
+          <div style={{ display: "flex", gap: "2px", alignItems: "flex-end" }}>
+            <div style={{ width: "3px", height: "12px", background: "#111", borderRadius: "1px" }} />
+            <div style={{ width: "3px", height: "18px", background: "#111", borderRadius: "1px" }} />
+            <div style={{ width: "3px", height: "15px", background: "#111", borderRadius: "1px" }} />
+            <div style={{ width: "3px", height: "24px", background: "#111", borderRadius: "1px" }} />
+          </div>
+        )}
+        {trendType === "line" && (
+           <div style={{ height: "24px", width: "60px" }}>
+              <ResponsiveContainer width="100%" height="100%">
+                 <LineChart data={WAVY_CHART_DATA}>
+                    <Line type="monotone" dataKey="y" stroke="#111" strokeWidth={2} dot={false} />
+                 </LineChart>
+              </ResponsiveContainer>
+           </div>
+        )}
+      </div>
     </div>
   );
 }
