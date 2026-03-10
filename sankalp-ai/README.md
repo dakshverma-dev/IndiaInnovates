@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SANKALP AI — Delhi's Civic Nervous System
 
-## Getting Started
+SANKALP AI is a premium, AI-powered civic intelligence layer designed to unify and optimize Delhi's municipal grievance redressal systems. Built for the India Innovates 2026 Hackathon, it bridges the gap between 20 million citizens and the Municipal Corporation of Delhi (MCD).
 
-First, run the development server:
+![SANKALP AI Banner](https://images.unsplash.com/photo-1557683311-eac922347aa1?auto=format&fit=crop&w=1200&q=80) 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🏛️ The Vision
+In a city where complaints often disappear into silence, SANKALP AI provides the missing intelligence layer. It uses advanced machine learning to triage grievances, predict infrastructure failures, and ensure accountability through real-time SLA enforcement.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Key Features
+- **Universal Design Unification**: A museum-style "Sage & Beige" aesthetic that builds trust and institutional clarity.
+- **AI Triage Engine**: Automatically classifies and routes complaints to the correct department (MCD, PWD, DJB) in under 5 seconds.
+- **Blockchain Verified Timeline**: A transparent audit trail for every complaint, preventing "fake resolutions."
+- **Institutional Admin Dashboard**: High-fidelity data visualization for ward officers to manage Delhi's civic health.
+- **Multilingual Support**: Full English and Hindi support to ensure accessibility for all citizens.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Tech Stack
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: Vanilla CSS with TailwindCSS integration
+- **Animations**: Framer Motion
+- **Data Viz**: Recharts
+- **Languages**: TypeScript, Hindi (Devanagari)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Getting Started
 
-## Learn More
+### Prerequisites
+- Node.js 18+
+- npm / pnpm / yarn
 
-To learn more about Next.js, take a look at the following resources:
+### Installation
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📁 Project Structure
+- `/src/app`: Application routes (Home, Demo, Dashboard, Complaint)
+- `/src/app/components/landing`: Modular UI components for the landing page
+- `/src/app/globals.css`: Universal design system tokens (Sage & Beige)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Developed for India Innovates 2026 — SANKALP AI: सङ्कल्प*

@@ -57,25 +57,27 @@ export default function AdminDashboard() {
       {/* 1. PILL SIDEBAR */}
       <aside style={{ 
         width: "80px", 
-        background: "#FFFFFF", 
+        background: "#1A2E2A", // Dark Sage
         borderRadius: "40px", 
         display: "flex", 
         flexDirection: "column", 
         alignItems: "center", 
         padding: "32px 0",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.03)"
+        boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
+        border: "1px solid rgba(255,255,255,0.05)"
       }}>
         {/* Logo Icon */}
-        <div style={{ 
-          width: "48px", height: "48px", 
-          background: "#1A2E2A", // Dark Sage
-          borderRadius: "50%", 
-          display: "flex", alignItems: "center", justifyContent: "center",
-          marginBottom: "40px",
-          color: "#FFF", fontSize: "20px"
-        }}>
-          ❄️
-        </div>
+        <a href="/" style={{ textDecoration: "none", marginBottom: "40px" }}>
+          <div style={{ 
+            width: "48px", height: "48px", 
+            background: "#1A2E2A", // Dark Sage
+            borderRadius: "50%", 
+            display: "flex", alignItems: "center", justifyContent: "center",
+            color: "#FFF", fontSize: "20px"
+          }}>
+            ❄️
+          </div>
+        </a>
 
         <nav style={{ display: "flex", flexDirection: "column", gap: "24px", flex: 1 }}>
           <SidebarIcon icon="📁" active={activeTab === "Dashboard"} onClick={() => setActiveTab("Dashboard")} />
@@ -104,23 +106,24 @@ export default function AdminDashboard() {
         {/* HEADER */}
         <header style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <h1 style={{ fontFamily: "'Sora'", fontSize: "32px", fontWeight: 700, color: "#1A1A1A", margin: 0 }}>Hello, Rajesh!</h1>
-            <p style={{ fontSize: "16px", color: "#6B6B6B", marginTop: "4px" }}>Manage Delhi’s civic health and real-time triage.</p>
+            <h1 style={{ fontFamily: "'Sora'", fontSize: "32px", fontWeight: 700, color: "#1A2E2A", margin: 0 }}>Hello, Rajesh!</h1>
+            <p style={{ fontSize: "16px", color: "rgba(26, 46, 42, 0.5)", marginTop: "4px" }}>Manage Delhi’s civic health and real-time triage.</p>
           </div>
           
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <div style={{ 
-              background: "#FFF", borderRadius: "100px", padding: "8px 24px", 
-              display: "flex", alignItems: "center", gap: "12px", 
-              width: "320px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)"
+            <div style={{
+              background: "#FFF", borderRadius: "100px", padding: "8px 24px",
+              display: "flex", alignItems: "center", gap: "12px",
+              width: "320px", boxShadow: "0 2px 10px rgba(26,46,42,0.02)",
+              border: "1px solid rgba(26,46,42,0.05)"
             }}>
-              <span style={{ opacity: 0.5 }}>🔍</span>
+              <span style={{ opacity: 0.4 }}>🔍</span>
               <input 
                 placeholder="Search wards, tickets..." 
-                style={{ border: "none", background: "transparent", outline: "none", fontSize: "14px", width: "100%" }} 
+                style={{ border: "none", background: "transparent", outline: "none", fontSize: "14px", width: "100%", color: "#1A2E2A" }} 
               />
               <div style={{ 
-                width: "32px", height: "32px", background: "#111", borderRadius: "50%", 
+                width: "32px", height: "32px", background: "#1A2E2A", borderRadius: "50%", 
                 display: "flex", alignItems: "center", justifyContent: "center", color: "#FFF" 
               }}>
                 ➔
@@ -130,17 +133,17 @@ export default function AdminDashboard() {
             <div style={{ 
               width: "48px", height: "48px", background: "#FFF", borderRadius: "50%", 
               display: "flex", alignItems: "center", justifyContent: "center", 
-              fontSize: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)"
+              fontSize: "20px", boxShadow: "0 2px 10px rgba(26,46,42,0.02)", border: "1px solid rgba(26,46,42,0.05)"
             }}>
               💬
             </div>
             <div style={{ 
               width: "48px", height: "48px", background: "#FFF", borderRadius: "50%", 
               display: "flex", alignItems: "center", justifyContent: "center", 
-              fontSize: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)", position: "relative"
+              fontSize: "20px", boxShadow: "0 2px 10px rgba(26,46,42,0.02)", border: "1px solid rgba(26,46,42,0.05)", position: "relative"
             }}>
               🔔
-              <div style={{ position: "absolute", top: "12px", right: "12px", width: "8px", height: "8px", background: "#EF4444", borderRadius: "50%", border: "2px solid #FFF" }} />
+              <div style={{ position: "absolute", top: "12px", right: "12px", width: "8px", height: "8px", background: "#FF6B2B", borderRadius: "50%", border: "2px solid #FFF" }} />
             </div>
           </div>
         </header>
@@ -360,8 +363,8 @@ function SidebarIcon({ icon, active, onClick }: { icon: string; active?: boolean
       onClick={onClick}
       style={{ 
         width: "48px", height: "48px", borderRadius: "16px", 
-        background: active ? "#111" : "transparent",
-        color: active ? "#FFF" : "#000",
+        background: active ? "rgba(255,255,255,0.1)" : "transparent",
+        color: active ? "#FFF" : "rgba(255,255,255,0.4)",
         display: "flex", alignItems: "center", justifyContent: "center", 
         fontSize: "20px", cursor: "pointer", transition: "all 0.2s"
       }}

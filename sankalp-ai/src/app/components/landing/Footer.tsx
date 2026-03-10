@@ -2,7 +2,14 @@
 
 import { motion } from "framer-motion";
 
-const navLinks = ["Problem", "Solution", "Features", "Demo"];
+const navLinks = [
+  { name: "Problem", href: "#problem" },
+  { name: "Solution", href: "#engines" },
+  { name: "Features", href: "#pillars" },
+  { name: "Live Demo", href: "/demo" },
+  { name: "MCD Dashboard", href: "/dashboard" },
+  { name: "File Complaint", href: "/complaint" },
+];
 const resources = ["GitHub ↗", "Demo Video ↗", "Proposal Doc ↗"];
 const policies = ["Digital India Aligned", "Smart Cities Mission", "RTI Act 2005", "CAG Audit Ready"];
 
@@ -46,8 +53,8 @@ export default function Footer() {
               </p>
               <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                 {navLinks.map((l) => (
-                  <a key={l} href={`#${l.toLowerCase()}`} style={{ fontFamily: "'DM Sans'", fontSize: "14px", color: "rgba(255,255,255,0.45)", textDecoration: "none" }}>
-                    {l}
+                  <a key={l.name} href={l.href} style={{ fontFamily: "'DM Sans'", fontSize: "14px", color: "rgba(255,255,255,0.45)", textDecoration: "none" }}>
+                    {l.name}
                   </a>
                 ))}
               </div>

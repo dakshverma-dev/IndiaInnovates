@@ -150,10 +150,10 @@ export default function DemoDashboard() {
         padding: "0 32px",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <div>
+          <a href="/" style={{ textDecoration: "none" }}>
             <p style={{ fontFamily: "'Sora'", fontWeight: 700, fontSize: "18px", color: "#FFF", margin: 0 }}>SANKALP AI</p>
             <p style={{ fontFamily: "'Noto Sans Devanagari'", fontSize: "11px", color: "#FF6B2B", margin: 0, marginTop: "-2px" }}>सङ्कल्प</p>
-          </div>
+          </a>
           <div style={{ width: "1px", height: "24px", background: "rgba(255,255,255,0.15)" }} />
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
              <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#22C55E', boxShadow: '0 0 0 0 rgba(34,197,94,0.4)', animation: 'pulse-green 2s infinite' }} />
@@ -358,7 +358,7 @@ export default function DemoDashboard() {
             <div style={{display:'flex', alignItems:'baseline', gap:4}}>
               <span style={{fontFamily:'Sora', fontWeight:700, fontSize:24, color:'#0A0F1E'}}>{civicScore}</span>
               <span style={{fontFamily:'Sora', fontSize:14, color:'#6B7280'}}>/100</span>
-              <motion.span key={civicScore} initial={{ color: "#16A34A", scale: 1.2 }} animate={{ color: "#16A34A", scale: 1 }} style={{fontFamily:'DM Sans', fontSize:11, color:'#16A34A', marginLeft:4}}>↑ +0.3</motion.span>
+              <motion.span key={civicScore} initial={{ color: "#16A34A", scale: 1.2 }} animate={{ color: "#16A34A", scale: 1 }} style={{fontFamily:'DM Sans', fontSize:11, color:'#16A34A', marginLeft:4}}>{"\u2191"} +0.3</motion.span>
             </div>
           </div>
           <div style={{width:1, height:32, background:'#E5E7EB'}} />
@@ -466,11 +466,11 @@ function ClassificationRow({ label, value, bar, color }: { label: string; value:
 
 function OfficerCard({ name, initials, status, details, task, active }: { name: string; initials: string; status: string; details: string; task?: string | null; active?: boolean }) {
   const S: any = {
-    EN_ROUTE:  { bg:'#FFF7ED', border:'#FED7AA', text:'#F59E0B', label:"→ En Route" },
-    ON_SITE:   { bg:'#FFF0E8', border:'#FFCBA4', text:'#FF6B2B', label:"● On Site" },
-    AVAILABLE: { bg:'#F0FDF4', border:'#BBF7D0', text:'#16A34A', label:"✓ Available" },
-    RESOLVED:  { bg:'#F0FDF4', border:'#BBF7D0', text:'#16A34A', label:"✓ Resolved" },
-    QR_SCANNED:{ bg:'#F0FDF4', border:'#16A34A', text:'#16A34A', label:"● Scanning..." }
+    EN_ROUTE:  { bg:'#FFF7ED', border:'#FED7AA', text:'#F59E0B', label:<>{"\u2192"} En Route</> },
+    ON_SITE:   { bg:'#FFF0E8', border:'#FFCBA4', text:'#FF6B2B', label:<>{"\u25CF"} On Site</> },
+    AVAILABLE: { bg:'#F0FDF4', border:'#BBF7D0', text:'#16A34A', label:<>{"\u2713"} Available</> },
+    RESOLVED:  { bg:'#F0FDF4', border:'#BBF7D0', text:'#16A34A', label:<>{"\u2713"} Resolved</> },
+    QR_SCANNED:{ bg:'#F0FDF4', border:'#16A34A', text:'#16A34A', label:<>{"\u25CF"} Scanning...</> }
   };
   const cfg = S[status] || S.AVAILABLE;
 

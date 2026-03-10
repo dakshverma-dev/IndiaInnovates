@@ -135,19 +135,19 @@ function Sidebar({ lang }: { lang: Lang }) {
   return (
     <aside style={{
       width: "100%", height: "100%",
-      background: "#0B1F42",
+      background: "#1A2E2A", // Dark Sage
       display: "flex", flexDirection: "column",
       padding: "28px 24px",
       position: "relative", overflow: "hidden",
     }}>
       {/* Subtle glow */}
-      <div style={{ position: "absolute", top: "-80px", left: "50%", transform: "translateX(-50%)", width: "280px", height: "280px", background: "radial-gradient(circle, rgba(255,107,43,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: "-80px", left: "50%", transform: "translateX(-50%)", width: "280px", height: "280px", background: "radial-gradient(circle, rgba(93,122,111,0.1) 0%, transparent 70%)", pointerEvents: "none" }} />
 
       {/* Brand */}
       <div style={{ marginBottom: "28px" }}>
         <p style={{ fontFamily: "'Sora',sans-serif", fontSize: "15px", fontWeight: 700, color: "#FFFFFF", letterSpacing: "-0.01em" }}>SANKALP AI</p>
-        <p style={{ fontFamily: "'Noto Sans Devanagari',sans-serif", fontSize: "11px", color: "#FB923C", marginTop: "1px" }}>सङ्कल्प</p>
-        <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "12px", color: "rgba(255,255,255,0.4)", marginTop: "10px", lineHeight: 1.5 }}>
+        <p style={{ fontFamily: "'Noto Sans Devanagari',sans-serif", fontSize: "11px", color: "#5D7A6F", marginTop: "1px" }}>सङ्कल्प</p>
+        <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "12px", color: "rgba(255,255,255,0.45)", marginTop: "10px", lineHeight: 1.5 }}>
           {t.tagline}
         </p>
       </div>
@@ -156,14 +156,14 @@ function Sidebar({ lang }: { lang: Lang }) {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px", marginBottom: "24px" }}>
         {STATS.map((s) => (
           <div key={s.label} style={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.07)",
-            borderRadius: "10px",
+            background: "rgba(255,255,255,0.05)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: "12px",
             padding: "10px 8px",
             textAlign: "center",
           }}>
-            <p style={{ fontFamily: s.mono ? "'JetBrains Mono',monospace" : "'Sora',sans-serif", fontSize: "16px", fontWeight: 700, color: s.color, lineHeight: 1 }}>{s.val}</p>
-            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "9px", color: "rgba(255,255,255,0.3)", marginTop: "4px", lineHeight: 1.3 }}>{s.label}</p>
+            <p style={{ fontFamily: s.mono ? "'JetBrains Mono',monospace" : "'Sora',sans-serif", fontSize: "16px", fontWeight: 700, color: s.color === "#FB923C" ? "#E7E8E2" : s.color, lineHeight: 1 }}>{s.val}</p>
+            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "9px", color: "rgba(255,255,255,0.35)", marginTop: "4px", lineHeight: 1.3 }}>{s.label}</p>
           </div>
         ))}
       </div>
@@ -183,10 +183,10 @@ function Sidebar({ lang }: { lang: Lang }) {
               exit={{ opacity: 0, height: 0, marginBottom: 0 }}
               transition={{ duration: 0.25 }}
               style={{
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.05)",
-                borderRadius: "8px",
-                padding: "8px 10px",
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: "12px",
+                padding: "10px 12px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
@@ -194,15 +194,15 @@ function Sidebar({ lang }: { lang: Lang }) {
               }}
             >
               <div style={{ minWidth: 0 }}>
-                <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "10px", color: "#FB923C", lineHeight: 1 }}>{item.id}</p>
-                <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "11px", color: "rgba(255,255,255,0.35)", marginTop: "2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.cat} · W{item.ward}</p>
+                <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "10px", color: "#5D7A6F", lineHeight: 1 }}>{item.id}</p>
+                <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "11px", color: "rgba(255,255,255,0.4)", marginTop: "2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.cat} · W{item.ward}</p>
               </div>
               <span style={{
                 fontFamily: "'DM Sans',sans-serif", fontSize: "10px", fontWeight: 600,
-                color: item.ok ? "#4ADE80" : "#FB923C",
+                color: item.ok ? "#A3E635" : "#5D7A6F",
                 whiteSpace: "nowrap", flexShrink: 0,
               }}>
-                {item.ok ? "✓ Done" : "→ Live"}
+                {item.ok ? "✓ Done" : <>\u2192 Live</>}
               </span>
             </motion.div>
           ))}
@@ -282,7 +282,7 @@ export default function ComplaintPage() {
   const onBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => (e.target.style.borderColor = "#E5E7EB");
 
   return (
-    <div style={{ display: "flex", height: "100vh", overflow: "hidden", background: "#F4F5F7" }}>
+    <div style={{ display: "flex", height: "100vh", overflow: "hidden", background: "#E7E8E2" }}>
       {/* SIDEBAR — 36% */}
       <div style={{ width: "36%", minWidth: "300px", maxWidth: "400px", flexShrink: 0, height: "100%" }}>
         <Sidebar lang={lang} />
@@ -295,8 +295,9 @@ export default function ComplaintPage() {
         <div style={{
           width: "100%", padding: "14px 32px",
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          background: "#F4F5F7",
-          borderBottom: "1px solid #E9EAEC",
+          background: "rgba(231, 232, 226, 0.8)",
+          backdropFilter: "blur(20px)",
+          borderBottom: "1px solid rgba(26, 46, 42, 0.05)",
           position: "sticky", top: 0, zIndex: 10,
         }}>
           {/* Step wizaard */}
@@ -306,25 +307,25 @@ export default function ComplaintPage() {
                 <div style={{
                   display: "flex", alignItems: "center", gap: "6px",
                   padding: "4px 10px", borderRadius: "100px",
-                  background: step === s ? "#0F2D5E" : step > s ? "rgba(15,45,94,0.08)" : "transparent",
+                  background: step === s ? "#1A2E2A" : step > s ? "rgba(26, 46, 42, 0.05)" : "transparent",
                   transition: "all 0.2s",
                 }}>
-                  <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "10px", fontWeight: 700, color: step === s ? "#FFF" : step > s ? "#0F2D5E" : "rgba(0,0,0,0.25)" }}>{s}</span>
-                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "11px", fontWeight: 600, color: step === s ? "#FFF" : step > s ? "#0F2D5E" : "rgba(0,0,0,0.25)" }}>{t.stepLabels[i]}</span>
+                  <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "10px", fontWeight: 700, color: step === s ? "#FFF" : step > s ? "#1A2E2A" : "rgba(0,0,0,0.25)" }}>{s}</span>
+                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "11px", fontWeight: 600, color: step === s ? "#FFF" : step > s ? "#1A2E2A" : "rgba(0,0,0,0.25)" }}>{t.stepLabels[i]}</span>
                 </div>
-                {s < 4 && <span style={{ color: "#D1D5DB", fontSize: "10px" }}>›</span>}
+                {s < 4 && <span style={{ color: "#D1D5DB", fontSize: "10px" }}>{"\u203A"}</span>}
               </div>
             ))}
           </div>
 
           {/* Lang toggle */}
-          <div style={{ display: "flex", background: "#E9EAEC", borderRadius: "8px", padding: "2px", gap: "2px" }}>
+          <div style={{ display: "flex", background: "rgba(26, 46, 42, 0.05)", borderRadius: "8px", padding: "2px", gap: "2px" }}>
             {(["en", "hi"] as Lang[]).map((l) => (
               <button key={l} onClick={() => setLang(l)} style={{
                 fontFamily: "'DM Sans',sans-serif", fontSize: "12px", fontWeight: 600,
                 padding: "4px 12px", borderRadius: "6px", border: "none", cursor: "pointer",
-                background: lang === l ? "#0F2D5E" : "transparent",
-                color: lang === l ? "#FFF" : "rgba(0,0,0,0.45)",
+                background: lang === l ? "#1A2E2A" : "transparent",
+                color: lang === l ? "#FFF" : "rgba(26, 46, 42, 0.45)",
                 transition: "all 0.15s",
               }}>{l === "en" ? "EN" : "हिं"}</button>
             ))}
@@ -339,8 +340,8 @@ export default function ComplaintPage() {
             ) : (
               <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                 <div style={{ marginBottom: "24px" }}>
-                  <h1 style={{ fontFamily: "'DM Serif Display',serif", fontSize: "26px", fontWeight: 400, color: "#111", lineHeight: 1.15 }}>{t.formTitle}</h1>
-                  <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "13px", color: "rgba(0,0,0,0.4)", marginTop: "4px" }}>{t.formSub}</p>
+                  <h1 style={{ fontFamily: "'DM Serif Display',serif", fontSize: "32px", fontWeight: 400, color: "#1A2E2A", lineHeight: 1.15 }}>{t.formTitle}</h1>
+                  <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "14px", color: "rgba(26, 46, 42, 0.5)", marginTop: "4px" }}>{t.formSub}</p>
                 </div>
 
                 <AnimatePresence mode="wait">
@@ -459,20 +460,20 @@ export default function ComplaintPage() {
                 <div style={{ display: "flex", gap: "8px", marginTop: "24px" }}>
                   {step > 1 && (
                     <motion.button whileTap={{ scale: 0.97 }} onClick={() => setStep((s) => (s - 1) as Step)}
-                      style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "13px", fontWeight: 500, padding: "10px 18px", borderRadius: "9px", border: "1.5px solid #E5E7EB", background: "transparent", color: "#555", cursor: "pointer" }}>
+                      style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "13px", fontWeight: 500, padding: "10px 18px", borderRadius: "100px", border: "1px solid rgba(26, 46, 42, 0.1)", background: "rgba(26, 46, 42, 0.05)", color: "#1A2E2A", cursor: "pointer" }}>
                       {t.back}
                     </motion.button>
                   )}
                   {step < 4 ? (
-                    <motion.button whileHover={{ boxShadow: "0 4px 16px rgba(15,45,94,0.2)" }} whileTap={{ scale: 0.97 }}
+                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                       onClick={() => setStep((s) => (s + 1) as Step)}
-                      style={{ flex: 1, fontFamily: "'DM Sans',sans-serif", fontSize: "14px", fontWeight: 600, padding: "11px", borderRadius: "9px", border: "none", background: "#0F2D5E", color: "#FFF", cursor: "pointer" }}>
-                      {t.next} →
+                      style={{ flex: 1, fontFamily: "'DM Sans',sans-serif", fontSize: "14px", fontWeight: 600, padding: "11px", borderRadius: "100px", border: "none", background: "#1A2E2A", color: "#FFF", cursor: "pointer" }}>
+                      {t.next} {"\u2192"}
                     </motion.button>
                   ) : (
-                    <motion.button whileHover={{ boxShadow: "0 4px 20px rgba(234,88,12,0.3)" }} whileTap={{ scale: 0.97 }}
+                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                       onClick={handleSubmit} disabled={submitting}
-                      style={{ flex: 1, fontFamily: "'DM Sans',sans-serif", fontSize: "14px", fontWeight: 700, padding: "13px", borderRadius: "9px", border: "none", background: "#EA580C", color: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+                      style={{ flex: 1, fontFamily: "'DM Sans',sans-serif", fontSize: "14px", fontWeight: 600, padding: "13px", borderRadius: "100px", border: "none", background: "#1A2E2A", color: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
                       {submitting ? (
                         <><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.7, ease: "linear" }}
                           style={{ width: "16px", height: "16px", border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#FFF", borderRadius: "50%" }} /></>

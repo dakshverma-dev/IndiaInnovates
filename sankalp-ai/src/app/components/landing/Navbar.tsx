@@ -7,7 +7,9 @@ const navLinks = [
   { label: "Problem", href: "#problem" },
   { label: "Solution", href: "#engines" },
   { label: "Features", href: "#pillars" },
-  { label: "Demo", href: "#dataflow" },
+  { label: "Demo", href: "/demo" },
+  { label: "Dashboard", href: "/dashboard" },
+  { label: "Complaint", href: "/complaint" },
 ];
 
 export default function Navbar() {
@@ -101,6 +103,7 @@ export default function Navbar() {
         {/* CTAs */}
         <div className="hidden md:flex" style={{ gap: "8px", alignItems: "center" }}>
           <button
+            onClick={() => document.getElementById("dataflow")?.scrollIntoView({ behavior: "smooth" })}
             style={{
               fontFamily: "'DM Sans', sans-serif",
               fontSize: "14px",
@@ -116,6 +119,7 @@ export default function Navbar() {
             Talk to us
           </button>
           <button
+            onClick={() => window.location.href = "/demo"}
             style={{
               fontFamily: "'DM Sans', sans-serif",
               fontSize: "14px",
@@ -174,6 +178,7 @@ export default function Navbar() {
                 </a>
               ))}
               <button
+                onClick={() => { setMobileOpen(false); window.location.href = "/demo"; }}
                 style={{
                   marginTop: "4px",
                   fontFamily: "'DM Sans'",

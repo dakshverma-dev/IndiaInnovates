@@ -138,6 +138,7 @@ export default function HeroSection() {
           <motion.button
             whileHover={{ scale: 1.02, boxShadow: "0 8px 32px rgba(10,10,10,0.15)" }}
             whileTap={{ scale: 0.98 }}
+            onClick={() => window.location.href = "/demo"}
             style={{
               fontFamily: "'DM Sans'",
               fontSize: "15px",
@@ -155,6 +156,7 @@ export default function HeroSection() {
           <motion.button
             whileHover={{ scale: 1.02, background: "rgba(0,0,0,0.04)" }}
             whileTap={{ scale: 0.98 }}
+            onClick={() => document.getElementById("dataflow")?.scrollIntoView({ behavior: "smooth" })}
             style={{
               fontFamily: "'DM Sans'",
               fontSize: "15px",

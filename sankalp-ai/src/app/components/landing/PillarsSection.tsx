@@ -129,7 +129,7 @@ export default function PillarsSection() {
                   color: "#5D7A6F",
                   whiteSpace: "nowrap",
                 }}>
-                  → {p.metric}
+                  {"\u2192"} {p.metric}
                 </span>
               </div>
             </motion.div>
