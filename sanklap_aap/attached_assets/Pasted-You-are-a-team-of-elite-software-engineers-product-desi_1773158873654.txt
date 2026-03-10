@@ -1,0 +1,468 @@
+You are a team of elite software engineers, product designers, and civic-tech architects.
+
+Your mission is to build a **world-class full stack platform called SANKALP AI — Delhi’s Civic Nervous System.**
+
+This platform must look and feel like a **national-scale government technology product**, not a student project.
+
+The UI must be **beautiful, modern, animated, and extremely intuitive**.
+
+Design inspiration:
+
+• Stripe Dashboard
+• Linear.app
+• Tesla Control Interface
+• Google Maps
+• Notion
+
+The final result must feel like a **live civic command center used by city governments**.
+
+The system must support **real-time dashboards, maps, analytics, AI automation, emergency alerts, and field worker verification**.
+
+---
+
+PROJECT NAME
+
+SANKALP AI
+
+Meaning:
+Resolve, commitment, determination.
+
+Tagline:
+
+"Delhi’s Civic Nervous System"
+
+---
+
+MISSION
+
+Fix India’s broken civic grievance ecosystem by adding an **AI intelligence layer** over government systems.
+
+Delhi has:
+
+• 20 million citizens
+• 272 wards
+• thousands of civic complaints daily
+
+But today’s systems suffer from:
+
+• complaints disappearing without updates
+• duplicate tickets flooding the system
+• no SLA enforcement
+• officers closing complaints without visiting the site
+• confusion between multiple agencies
+• language barriers for citizens
+• no predictive infrastructure maintenance
+• no emergency civic response system
+
+SANKALP AI solves these problems with automation, AI, verification, and transparency.
+
+---
+
+TECH STACK
+
+Frontend
+
+Next.js
+React
+TailwindCSS
+Framer Motion animations
+Recharts analytics
+Leaflet / Mapbox map visualizations
+Socket.IO real-time updates
+
+Backend
+
+Node.js
+Express.js
+REST API
+WebSocket server
+
+Database
+
+PostgreSQL
+
+AI Services
+
+Python FastAPI microservice
+
+Libraries:
+
+spaCy
+HuggingFace
+Scikit-learn
+
+Mobile
+
+Mobile-first responsive design
+
+PWA support
+
+Camera access
+
+QR scanning
+
+---
+
+CORE FEATURES
+
+1. Citizen Complaint System
+
+Citizens can submit complaints easily.
+
+Complaint form fields
+
+• complaint text
+• upload photo
+• location selection
+• category
+• phone number
+• optional voice complaint
+
+After submission
+
+• ticket ID generated
+• AI classification triggered
+• real-time dashboard update
+• worker assignment triggered
+
+---
+
+2. AI Complaint Intelligence Engine
+
+The AI engine must automatically detect:
+
+• complaint category
+• priority level P1–P4
+• ward location
+• duplicate detection
+• urgency prediction
+
+AI analysis panel must display:
+
+Category
+Priority
+Ward
+Duplicate probability
+Urgency score
+
+---
+
+3. Duplicate Complaint Collapse
+
+If 100 citizens report the same issue:
+
+System merges them into **one master complaint cluster**.
+
+Dashboard displays
+
+Cluster size
+Total citizens affected
+Geo cluster map
+
+---
+
+4. Civic Command Center Dashboard
+
+Admin dashboard must include:
+
+Live complaint feed
+
+Ward heatmap
+
+Resolution statistics
+
+Complaint category charts
+
+Worker productivity charts
+
+Ticket timeline
+
+Cluster map visualization
+
+All charts must be animated and interactive.
+
+---
+
+5. Field Worker Resolution App
+
+Workers must be able to
+
+Login with phone number
+
+View assigned complaints
+
+Navigate using GPS map
+
+Upload before photo
+
+Scan QR code at location
+
+Upload after photo
+
+Submit resolution
+
+System verifies:
+
+QR scan
+GPS location
+Photo evidence
+
+---
+
+6. QR Verified Complaint Closure
+
+A complaint cannot close unless
+
+Worker scans QR at location
+
+Uploads geo-tagged photo
+
+Uploads completion proof
+
+This prevents fake resolution.
+
+---
+
+7. SOS Emergency Civic System
+
+Add a **large SOS button** for emergency situations.
+
+Emergency categories:
+
+Gas leak
+
+Major water pipeline burst
+
+Electric hazard
+
+Fire risk
+
+Road accident
+
+Collapsed infrastructure
+
+When SOS is triggered
+
+• P1 ticket created instantly
+• nearest worker alerted
+• dashboard shows flashing emergency alert
+• emergency marker appears on map
+• admin receives notification
+
+---
+
+8. Civic Health Score
+
+Every ward receives a **Civic Health Score from 0–100**.
+
+Calculated using:
+
+Resolution speed
+
+Complaint density
+
+Infrastructure issues
+
+Citizen ratings
+
+Display:
+
+Ward leaderboard
+
+Color-coded civic health map
+
+---
+
+9. Worker Reputation System
+
+Each worker gets a **performance score**.
+
+Based on:
+
+Response time
+
+Citizen feedback
+
+Successful closures
+
+Verified work
+
+Displayed in dashboard.
+
+---
+
+10. Citizen Feedback System
+
+After resolution citizens receive:
+
+SMS or notification
+
+They can rate
+
+1–5 stars
+
+Leave feedback.
+
+---
+
+11. Civic Prediction Engine
+
+Using historical complaint data and weather patterns.
+
+Predict issues like:
+
+Monsoon flooding
+
+Garbage overflow
+
+Streetlight failure zones
+
+Display predictions on map.
+
+---
+
+12. Multilingual Citizen Interface
+
+Support
+
+English
+
+Hindi
+
+Simple language interface.
+
+Add voice complaint option.
+
+---
+
+13. Civic Map Visualization
+
+Display map of Delhi showing:
+
+Complaints
+
+Worker locations
+
+SOS alerts
+
+Predicted risk zones
+
+Use animated map markers.
+
+---
+
+14. Demo Data Generator
+
+Generate realistic demo dataset:
+
+200 complaints
+
+10 wards
+
+20 workers
+
+Common issue types:
+
+Potholes
+Garbage overflow
+Streetlight failure
+Water leakage
+Blocked drains
+
+---
+
+UI DESIGN REQUIREMENTS
+
+Design must be **extremely polished and impressive.**
+
+Use:
+
+Glassmorphism cards
+
+Gradient backgrounds
+
+Animated counters
+
+Smooth hover effects
+
+Framer Motion transitions
+
+Color palette
+
+Primary deep blue #0F172A
+Civic green #22C55E
+Amber alert #F59E0B
+Danger red #EF4444
+
+Add dark mode.
+
+---
+
+KEY PAGES
+
+Landing page
+
+Citizen complaint page
+
+SOS emergency page
+
+Admin command center dashboard
+
+Worker panel
+
+Analytics page
+
+Ward health page
+
+---
+
+DEMO FLOW SUPPORT
+
+The system must support this demo:
+
+Citizen submits complaint
+
+Ticket appears on dashboard instantly
+
+AI classifies complaint
+
+Worker receives task
+
+Worker resolves using QR verification
+
+Dashboard updates live
+
+Civic health score changes
+
+SOS emergency triggered
+
+Emergency response visible on map
+
+---
+
+PROJECT STRUCTURE
+
+frontend/
+
+backend/
+
+ai-service/
+
+database/
+
+Include setup instructions in README.
+
+---
+
+FINAL GOAL
+
+Build a beautiful, interactive civic governance platform that looks like a **deployable government product ready for pilot deployment in Delhi wards.**
+
+Focus on:
+
+polish
+real-time experience
+visual impact
+modern UI
+smooth animations
+scalable architecture

@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #E7E8E2;
+  --color-foreground: #1A2E2A;
+  --color-sage: #5D7A6F;
+  --color-sage-dark: #1A2E2A;
+  --color-beige: #E7E8E2;
+  --color-beige-light: #F3F4F0;
+  --color-orange: #FF6B2B;
+
+  --font-sora: 'Sora', sans-serif;
+  --font-dm: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-devanagari: 'Noto Sans Devanagari', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Global heading font — DM Serif Display (editorial serif, like sarvam) */
+h1, h2 {
+  font-family: 'DM Serif Display', serif;
+  font-weight: 400;
+  color: #1A2E2A;
+}
+
+h3, h4, h5 {
+  font-family: 'Sora', sans-serif;
+  color: #1A2E2A;
+}
+
+
+html {
+  scroll-behavior: smooth;
+  /* Prevent sub-pixel rendering jitter */
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: #E7E8E2;
+  color: #1A2E2A;
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  /* Momentum-based scrolling on iOS/macOS trackpads */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* All sections paint on GPU — eliminates scroll jank */
+section {
+  will-change: auto;
+  transform: translateZ(0);
+}
+
+::selection {
+  background: rgba(255, 107, 43, 0.2);
+  color: #0A0A0A;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(15, 45, 94, 0.3); border-radius: 4px; }
+
+/* Hero gradient — saffron amber orb top-center bleeding into periwinkle/lavender sides */
+.hero-gradient {
+  background:
+    /* Muted Sage/Beige glow top center */
+    radial-gradient(ellipse 70% 45% at 50% 0%, rgba(93, 122, 111, 0.15) 0%, rgba(231, 232, 226, 0.1) 40%, transparent 65%),
+    /* Soft warm beige bloom on left */
+    radial-gradient(ellipse 55% 55% at -5% 40%, rgba(255, 248, 230, 0.4) 0%, transparent 55%),
+    /* Soft warm beige bloom on right */
+    radial-gradient(ellipse 55% 55% at 105% 40%, rgba(255, 248, 230, 0.4) 0%, transparent 55%),
+    /* Base: muted cream-beige */
+    linear-gradient(180deg, #E7E8E2 0%, #FAFAF8 60%, #FFFFFF 100%);
+}
+
+/* Blink for typewriter cursor */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.cursor-blink { animation: blink 1s step-end infinite; }
+
+/* Subtle float for decorative elements */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-6px) rotate(1deg); }
+}
+.float-slow { animation: float-slow 6s ease-in-out infinite; }
+
+/* Node pulse */
+@keyframes node-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 43, 0); }
+  50% { box-shadow: 0 0 16px 4px rgba(255, 107, 43, 0.3); }
+}
+
+/* Section divider fade */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.06) 20%, rgba(0,0,0,0.06) 80%, transparent 100%);
+}
