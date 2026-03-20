@@ -7,6 +7,8 @@ export const metadata: Metadata = {
     "SANKALP AI is the AI intelligence layer that makes civic governance work for 20 million citizens, 272 wards.",
 };
 
+import { AuthProvider } from "./components/AuthProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,7 +24,11 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+      </body>
     </html>
   );
 }
