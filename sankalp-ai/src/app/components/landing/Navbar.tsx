@@ -74,7 +74,7 @@ export default function Navbar() {
         {/* Desktop links — centered */}
         <nav
           className="desktop-nav"
-          style={{ gap: "32px", alignItems: "center" }}
+          style={{ display: "flex", gap: "32px", alignItems: "center" }}
         >
           {navLinks.map((l) => (
             <a
@@ -101,7 +101,7 @@ export default function Navbar() {
         </nav>
 
         {/* CTAs */}
-        <div className="desktop-ctas" style={{ gap: "8px", alignItems: "center" }}>
+        <div className="desktop-ctas" style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <button
             onClick={() => document.getElementById("dataflow")?.scrollIntoView({ behavior: "smooth" })}
             style={{
