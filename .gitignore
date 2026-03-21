@@ -1,0 +1,10 @@
+node_modules/
+package-lock.json
+.claude/
+.claire/
+.DS_Store
+*.log
+build_error.txt
+.env
+.env.local
+.env.*.local
