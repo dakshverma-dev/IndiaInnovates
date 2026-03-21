@@ -59,8 +59,14 @@ app.use((req, _res, next) => {
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
+import { optionalAuth } from "./middleware/auth";
+
+// Public routes
 app.use(authRouter);
 app.use(complaintsRouter);
+
+// Protected routes (optional auth — attaches user if token present)
+app.use(optionalAuth);
 app.use(ticketsRouter);
 app.use(wardsRouter);
 app.use(predictionsRouter);

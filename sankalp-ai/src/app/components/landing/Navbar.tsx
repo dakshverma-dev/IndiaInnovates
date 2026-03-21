@@ -200,6 +200,8 @@ export default function Navbar() {
         )}
       </AnimatePresence>
       <style jsx>{`
+        .desktop-nav { display: flex !important; gap: 32px; align-items: center; }
+        .desktop-ctas { display: flex !important; gap: 8px; align-items: center; }
         .mobile-burger { display: none; }
         @media (max-width: 768px) {
           .mobile-burger { display: block; }

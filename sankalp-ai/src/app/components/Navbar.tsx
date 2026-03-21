@@ -234,6 +234,9 @@ export default function Navbar() {
       </AnimatePresence>
 
       <style jsx>{`
+        .desk-nav { display: flex !important; gap: 32px; align-items: center; }
+        .desk-cta { display: flex !important; gap: 10px; align-items: center; }
+        .mob-burger { display: none; }
         @media (max-width: 768px) {
           .desk-nav { display: none !important; }
           .desk-cta { display: none !important; }

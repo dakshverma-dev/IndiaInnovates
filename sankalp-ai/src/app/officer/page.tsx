@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import PageLayout from "../components/PageLayout";
+import { useAuth } from "../components/AuthProvider";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Ticket {
@@ -16,7 +18,8 @@ interface Ticket {
   officer_name?: string;
 }
 
-const BACKEND = "http://localhost:3001";
+const BACKEND = "";
+const WS_URL = "http://localhost:3001";
 
 const PRIORITY_COLOR: Record<string, string> = {
   P1: "#FF6B2B",
@@ -45,32 +48,43 @@ function timeAgo(iso?: string) {
 type VerifyState = "idle" | "scanning" | "gps" | "photo" | "done";
 
 export default function OfficerPage() {
+  const router = useRouter();
+  const { isAuthenticated, token } = useAuth();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [verifying, setVerifying] = useState<string | null>(null);
   const [verifyStep, setVerifyStep] = useState<VerifyState>("idle");
   const [resolved, setResolved] = useState<Set<string>>(new Set());
   const [justResolved, setJustResolved] = useState<string | null>(null);
+  const [backendOnline, setBackendOnline] = useState(true);
 
   useEffect(() => {
-    fetch(BACKEND + "/api/tickets?status=pending&limit=20")
+    if (!isAuthenticated) router.push("/auth/login");
+  }, [isAuthenticated, router]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const headers: Record<string, string> = {};
+    if (token) headers.Authorization = "Bearer " + token;
+    fetch(BACKEND + "/api/tickets?status=pending&limit=20", { headers })
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data)) setTickets(data);
       })
-      .catch(() => {})
+      .catch(() => setBackendOnline(false))
       .finally(() => setLoading(false));
 
     // Also listen for new tickets via Socket.IO
     let socket: { on: (e: string, cb: (d: unknown) => void) => void; disconnect: () => void } | null = null;
     import("socket.io-client").then(({ io }) => {
-      socket = io(BACKEND, { transports: ["websocket", "polling"] });
+      socket = io(WS_URL, { transports: ["websocket", "polling"] });
       socket.on("new_ticket", (data: unknown) => {
         setTickets((prev) => [data as Ticket, ...prev]);
       });
     }).catch(() => {});
     return () => { socket?.disconnect(); };
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, token]);
 
   const simulateVerify = async (ticket: Ticket) => {
     if (resolved.has(ticket.id)) return;
@@ -86,7 +100,7 @@ export default function OfficerPage() {
     try {
       await fetch(BACKEND + "/api/tickets/" + ticket.id + "/verify", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...(token ? { Authorization: "Bearer " + token } : {}) },
         body: JSON.stringify({
           qrCode: ticket.id.slice(0, 8),
           gpsLat: 28.5 + Math.random() * 0.3,
@@ -110,6 +124,8 @@ export default function OfficerPage() {
     );
   };
 
+  if (!isAuthenticated) return null;
+
   const pendingTickets = tickets.filter((t) => t.status !== "resolved" && !resolved.has(t.id));
   const resolvedTickets = tickets.filter((t) => t.status === "resolved" || resolved.has(t.id));
 
@@ -122,6 +138,12 @@ export default function OfficerPage() {
   return (
     <PageLayout showFooter>
       <div style={{ maxWidth: "760px", margin: "0 auto", padding: "0 24px 80px" }}>
+
+        {!backendOnline && (
+          <div style={{ background: "rgba(255,107,43,0.06)", border: "1px solid rgba(255,107,43,0.18)", borderRadius: "12px", padding: "12px 16px", marginBottom: "20px", fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "#FF6B2B" }}>
+            Backend offline — no live data. Start backend: <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "12px" }}>cd backend && npm run dev</span>
+          </div>
+        )}
 
         {/* Header */}
         <div style={{ marginBottom: "40px", paddingBottom: "28px", borderBottom: "1px solid rgba(26,46,42,0.08)" }}>

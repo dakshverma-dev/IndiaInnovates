@@ -5,3 +5,6 @@ package-lock.json
 .DS_Store
 *.log
 build_error.txt
+.env
+.env.local
+.env.*.local

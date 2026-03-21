@@ -147,7 +147,7 @@ export default function ComplaintPage() {
     setSubmitting(true);
     const normalizedPhone = phone.replace(/\D/g, "").slice(-10);
     try {
-      const res = await fetch("http://localhost:3001/api/complaints", {
+      const res = await fetch("/api/complaints", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

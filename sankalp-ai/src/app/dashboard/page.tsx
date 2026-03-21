@@ -51,7 +51,8 @@ interface AuditEntry {
   curr_hash?: string;
 }
 
-const BACKEND_URL = "http://localhost:3001";
+const BACKEND_URL = "";
+const WS_URL = "http://localhost:3001";
 
 const PRIORITY_COLORS: Record<string, string> = {
   P1: "#FF6B2B",
@@ -90,6 +91,7 @@ export default function DashboardPage() {
   const [auditData, setAuditData] = useState<AuditEntry[]>([]);
   const [resolving, setResolving] = useState<string | null>(null);
   const [wsConnected, setWsConnected] = useState(false);
+  const [backendOnline, setBackendOnline] = useState(true);
 
   const fallbackWards = [
     { ward: 14, name: "Karol Bagh", health: 91 },
@@ -114,10 +116,10 @@ export default function DashboardPage() {
     const headers = { Authorization: "Bearer " + token };
 
     fetch(BACKEND_URL + "/api/admin/stats", { headers })
-      .then((r) => r.json()).then(setStats).catch(() => {});
+      .then((r) => r.json()).then(setStats).catch(() => setBackendOnline(false));
 
     fetch(BACKEND_URL + "/api/admin/complaints?limit=20", { headers })
-      .then((r) => r.json()).then(setTickets).catch(() => {});
+      .then((r) => r.json()).then(setTickets).catch(() => setBackendOnline(false));
 
     fetch(BACKEND_URL + "/api/wards", { headers })
       .then((r) => r.json())
@@ -136,7 +138,7 @@ export default function DashboardPage() {
 
     let socket: { on: (e: string, cb: (d: unknown) => void) => void; disconnect: () => void } | null = null;
     import("socket.io-client").then(({ io }) => {
-      socket = io(BACKEND_URL, { transports: ["websocket", "polling"], auth: { token } });
+      socket = io(WS_URL, { transports: ["websocket", "polling"], auth: { token } });
       socket.on("connect", () => setWsConnected(true));
       socket.on("disconnect", () => setWsConnected(false));
       socket.on("stats_update", (data: unknown) => setStats(data as LiveStats));
@@ -203,6 +205,12 @@ export default function DashboardPage() {
   return (
     <PageLayout showFooter>
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px 80px", width: "100%" }}>
+
+        {!backendOnline && (
+          <div style={{ background: "rgba(255,107,43,0.06)", border: "1px solid rgba(255,107,43,0.18)", borderRadius: "12px", padding: "12px 16px", marginBottom: "20px", fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "#FF6B2B" }}>
+            Backend offline — showing demo data. Start backend: <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "12px" }}>cd backend && npm run dev</span>
+          </div>
+        )}
 
         {/* Header */}
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "40px", paddingBottom: "28px", borderBottom: "1px solid rgba(26,46,42,0.08)" }}>
