@@ -2,9 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import PageLayout from "../components/PageLayout";
-import { Card } from "../components/ui/Card";
-import { Button } from "../components/ui/Button";
 
 type Lang = "en" | "hi";
 type Step = 1 | 2 | 3 | 4;
@@ -96,6 +93,13 @@ function getAI(text: string) {
   return { cat: "General Grievance", dept: "MCD", priority: "P3 · Medium", sla: "72 hr SLA" };
 }
 
+const LIVE_TICKETS = [
+  { id: "DL-4817", type: "Drainage", ward: "W42", status: "done" },
+  { id: "DL-4821", type: "Sanitation", ward: "W42", status: "done" },
+  { id: "DL-4829", type: "Roads", ward: "W17", status: "live" },
+  { id: "DL-4819", type: "Water Supply", ward: "W31", status: "done" },
+];
+
 export default function ComplaintPage() {
   const [lang, setLang] = useState<Lang>("en");
   const [step, setStep] = useState<Step>(1);
@@ -150,6 +154,7 @@ export default function ComplaintPage() {
       const res = await fetch("/api/complaints", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: AbortSignal.timeout(5000),
         body: JSON.stringify({
           message: desc.trim() || "General complaint",
           phone: normalizedPhone || "9999999999",
@@ -169,216 +174,420 @@ export default function ComplaintPage() {
       setRealTicketId(data.shortId);
       setRealAi({
         cat: data.category,
-        priority: `${data.priority} · ${data.priority === "P1" ? "Critical" : data.priority === "P2" ? "High" : data.priority === "P3" ? "Medium" : "Low"}`,
+        priority: `${data.priority} · ${data.priority === "P1" ? "Critical" : data.priority === "P2" ? "High" : "Medium"}`,
         dept: data.department,
         sla: `${data.sla_hours}h SLA`,
       });
       setRealOfficerName(data.officerName);
       setSubmitting(false);
       setDone(true);
-    } catch (_err) {
-      console.warn("[SANKALP] Backend unavailable, using demo mode");
-      setTimeout(() => { setSubmitting(false); setDone(true); }, 1600);
+    } catch {
+      setTimeout(() => { setSubmitting(false); setDone(true); }, 1200);
     }
   };
 
-  const handleCopy = () => { navigator.clipboard.writeText(ticketId); setCopied(true); setTimeout(() => setCopied(false), 2000); };
-
-  const inp: React.CSSProperties = {
-    width: "100%", fontFamily: "'DM Sans',sans-serif", fontSize: "14px",
-    color: "#1A2E2A", background: "#FFF",
-    border: "1.5px solid #E5E7EB", borderRadius: "10px",
-    padding: "12px 14px", outline: "none", transition: "border-color 0.15s",
-    boxSizing: "border-box",
+  const handleCopy = () => {
+    navigator.clipboard.writeText(ticketId);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
-  const onFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => (e.target.style.borderColor = "#1A2E2A");
-  const onBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => (e.target.style.borderColor = "#E5E7EB");
-
   return (
-    <PageLayout showFooter>
-      <div className="flex flex-col items-center justify-start px-4 pt-8 pb-24 min-h-screen">
-        
-        {/* Step wizard & Lang Toggle Header */}
-        <div className="w-full max-w-[560px] flex gap-4 items-center justify-between mb-8 overflow-x-auto pb-2">
-          <div className="flex items-center gap-1 shrink-0">
-            {([1, 2, 3, 4] as Step[]).map((s, i) => (
-              <div key={s} className="flex items-center gap-1">
-                <div
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-200"
-                  style={{
-                    background: step === s ? "#1A2E2A" : step > s ? "rgba(26,46,42,0.06)" : "transparent",
-                  }}
-                >
-                  <span className={`font-mono text-xs font-bold ${step === s ? "text-white" : step > s ? "text-[#1A2E2A]" : "text-gray-300"}`}>
-                    {s}
-                  </span>
-                  <span className={`font-sans text-xs font-semibold ${step === s ? "text-white" : step > s ? "text-[#1A2E2A]" : "text-gray-300"}`}>
-                    {t.stepLabels[i]}
-                  </span>
+    <div style={{ display: "flex", height: "100dvh", overflow: "hidden", fontFamily: "'DM Sans', sans-serif" }}>
+      {/* ── LEFT PANEL ─────────────────────────────────────────────────────── */}
+      <div style={{
+        width: "clamp(240px, 28%, 340px)",
+        background: "#1A2E2A",
+        display: "flex",
+        flexDirection: "column",
+        padding: "32px 24px",
+        flexShrink: 0,
+        overflowY: "auto",
+      }}>
+        {/* Branding */}
+        <div style={{ marginBottom: "28px" }}>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700, fontSize: "18px", color: "#fff", letterSpacing: "-0.3px" }}>
+            SANKALP AI
+          </div>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "12px", color: "rgba(255,255,255,0.45)", marginTop: "2px" }}>
+            सहूत
+          </div>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", color: "rgba(255,255,255,0.35)", marginTop: "10px", lineHeight: 1.5 }}>
+            Your complaint. Tracked.<br />Verified. Resolved.
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "28px" }}>
+          {[
+            { val: "1,247", label: "resolved today", color: "#E7E8E2" },
+            { val: "4.2s", label: "avg AI classify", color: "#E7E8E2" },
+            { val: "94.3%", label: "within SLA", color: "#5BBFFF" },
+          ].map((s) => (
+            <div key={s.label} style={{
+              background: "rgba(255,255,255,0.05)",
+              borderRadius: "10px",
+              padding: "10px 14px",
+              border: "1px solid rgba(255,255,255,0.06)",
+            }}>
+              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "20px", fontWeight: 700, color: s.color }}>{s.val}</div>
+              <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.4)", marginTop: "2px" }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Live Activity */}
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.12em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", marginBottom: "10px" }}>
+            Live Activity
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            {LIVE_TICKETS.map((tk) => (
+              <div key={tk.id} style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                background: "rgba(255,255,255,0.04)",
+                borderRadius: "8px",
+                padding: "8px 12px",
+                border: "1px solid rgba(255,255,255,0.05)",
+              }}>
+                <div>
+                  <div style={{ fontSize: "11px", fontWeight: 600, color: "rgba(255,255,255,0.7)", fontFamily: "'DM Mono', monospace" }}>{tk.id}</div>
+                  <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)", marginTop: "1px" }}>{tk.type} · {tk.ward}</div>
                 </div>
-                {s < 4 && <span className="text-gray-300 text-xs px-1">{">"}</span>}
+                {tk.status === "done" ? (
+                  <span style={{ fontSize: "10px", color: "#4ADE80", fontWeight: 600 }}>✓ Done</span>
+                ) : (
+                  <span style={{ fontSize: "10px", color: "#FBBF24", fontWeight: 600 }}>● Live</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div style={{ marginTop: "20px", fontSize: "11px", color: "rgba(255,255,255,0.25)", borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "14px" }}>
+          No app? Call <span style={{ color: "rgba(255,255,255,0.5)", fontWeight: 600 }}>1533</span>
+        </div>
+      </div>
+
+      {/* ── RIGHT PANEL ────────────────────────────────────────────────────── */}
+      <div style={{
+        flex: 1,
+        background: "#EEEEE8",
+        display: "flex",
+        flexDirection: "column",
+        overflowY: "auto",
+      }}>
+        {/* Top bar: steps + lang toggle */}
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "20px 40px 0",
+          flexShrink: 0,
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+            {([1, 2, 3, 4] as Step[]).map((s, i) => (
+              <div key={s} style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "6px 12px",
+                  borderRadius: "999px",
+                  background: step === s ? "#1A2E2A" : step > s ? "rgba(26,46,42,0.08)" : "transparent",
+                  transition: "all 0.2s",
+                }}>
+                  <span style={{
+                    fontFamily: "'DM Mono', monospace",
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    color: step === s ? "#fff" : step > s ? "#1A2E2A" : "#9CA3AF",
+                  }}>{s}</span>
+                  <span style={{
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    color: step === s ? "#fff" : step > s ? "#1A2E2A" : "#9CA3AF",
+                  }}>{t.stepLabels[i]}</span>
+                </div>
+                {s < 4 && <span style={{ color: "#D1D5DB", fontSize: "12px", padding: "0 2px" }}>›</span>}
               </div>
             ))}
           </div>
 
-          <div className="flex bg-[rgba(26,46,42,0.06)] rounded-lg p-0.5 shrink-0">
+          {/* Lang toggle */}
+          <div style={{ display: "flex", background: "rgba(26,46,42,0.08)", borderRadius: "8px", padding: "2px" }}>
             {(["en", "hi"] as Lang[]).map((l) => (
-              <button
-                key={l}
-                onClick={() => setLang(l)}
-                className={`font-sans text-xs font-semibold px-3 py-1 rounded-md transition-colors ${
-                  lang === l ? "bg-[#1A2E2A] text-white" : "text-[#1A2E2A]/60 hover:text-[#1A2E2A]"
-                }`}
-              >
-                {l === "en" ? "EN" : "हिं"}
+              <button key={l} onClick={() => setLang(l)} style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "12px",
+                fontWeight: 600,
+                padding: "4px 12px",
+                borderRadius: "6px",
+                border: "none",
+                cursor: "pointer",
+                background: lang === l ? "#1A2E2A" : "transparent",
+                color: lang === l ? "#fff" : "rgba(26,46,42,0.5)",
+                transition: "all 0.15s",
+              }}>
+                {l === "en" ? "EN" : "हि"}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Form Container */}
-        <div className="w-full max-w-[560px]">
-          <AnimatePresence mode="wait">
-            {done ? (
-              <SuccessView key="done" t={t} ticketId={ticketId} eta={eta} phone={phone} ai={realAi ?? ai} officerName={realOfficerName} copied={copied} onCopy={handleCopy} />
-            ) : (
-              <Card key="form" className="w-full relative shadow-md">
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <div className="mb-8">
-                    <h1 className="font-serif text-[32px] font-normal text-[#1A2E2A] leading-tight">{t.formTitle}</h1>
-                    <p className="font-sans text-sm text-[#1A2E2A]/60 mt-1">{t.formSub}</p>
-                  </div>
+        {/* Form content */}
+        <div style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "center",
+          padding: "48px 40px 48px",
+        }}>
+          <div style={{ width: "100%", maxWidth: "480px" }}>
+            <AnimatePresence mode="wait">
+              {done ? (
+                <SuccessView key="done" t={t} ticketId={ticketId} eta={eta} phone={phone} ai={realAi ?? ai} officerName={realOfficerName} copied={copied} onCopy={handleCopy} />
+              ) : (
+                <motion.div key="form" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                  {/* Heading */}
+                  <h1 style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontSize: "clamp(28px,4vw,40px)", fontWeight: 400, color: "#1A2E2A", margin: "0 0 6px", lineHeight: 1.15 }}>
+                    {t.formTitle}
+                  </h1>
+                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "14px", color: "rgba(26,46,42,0.55)", margin: "0 0 36px" }}>
+                    {t.formSub}
+                  </p>
 
                   <AnimatePresence mode="wait">
-                    {step === 1 && <motion.div key="s1" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.2 }}>
-                      <FieldLabel>{t.locationLabel}</FieldLabel>
-                      <input
-                        style={inp} placeholder={t.locationPlaceholder}
-                        value={location} onChange={(e) => setLocation(e.target.value)}
-                        onFocus={onFocus} onBlur={onBlur}
-                      />
-                      <AnimatePresence>
-                        {ward && (
-                          <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="mt-2 px-3 py-2 rounded-lg bg-[#5D7A6F]/10 border border-[#5D7A6F]/20 font-sans text-xs text-[#5D7A6F] font-semibold">
-                            Ward {ward.ward} · {ward.zone}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                      <button
-                        onClick={() => setLocation("Lajpat Nagar")}
-                        className="mt-4 w-full font-sans text-sm font-semibold text-[#FF6B2B] bg-[#FF6B2B]/5 border border-dashed border-[#FF6B2B]/30 rounded-lg p-2.5 hover:bg-[#FF6B2B]/10 hover:border-[#FF6B2B]/50 transition-all"
-                      >
-                       {t.gpsBtn}
-                      </button>
-                    </motion.div>}
+                    {step === 1 && (
+                      <motion.div key="s1" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: 0.18 }}>
+                        <FieldLabel>{t.locationLabel}</FieldLabel>
+                        <input
+                          style={{
+                            width: "100%",
+                            fontFamily: "'DM Sans', sans-serif",
+                            fontSize: "15px",
+                            color: "#1A2E2A",
+                            background: "#FFFFFF",
+                            border: "1.5px solid rgba(26,46,42,0.12)",
+                            borderRadius: "12px",
+                            padding: "14px 16px",
+                            outline: "none",
+                            boxSizing: "border-box",
+                            boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                          }}
+                          placeholder={t.locationPlaceholder}
+                          value={location}
+                          onChange={(e) => setLocation(e.target.value)}
+                          onFocus={(e) => (e.target.style.borderColor = "#1A2E2A")}
+                          onBlur={(e) => (e.target.style.borderColor = "rgba(26,46,42,0.12)")}
+                        />
 
-                    {step === 2 && <motion.div key="s2" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.2 }}>
-                      <FieldLabel>{t.descLabel}</FieldLabel>
-                      <textarea
-                        rows={5} style={{ ...inp, resize: "none" } as React.CSSProperties}
-                        placeholder={t.descPlaceholder}
-                        value={desc} onChange={(e) => setDesc(e.target.value)}
-                        onFocus={onFocus} onBlur={onBlur}
-                      />
-                      <AnimatePresence>
-                        {(aiLoading || ai) && (
-                          <motion.div key="ai" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ type: "spring", stiffness: 400, damping: 28 }}
-                            className="mt-3 p-4 rounded-xl bg-[#E7E8E2]/50 border border-[rgba(26,46,42,0.06)]">
-                            {aiLoading ? (
-                              <div className="flex items-center gap-2">
-                                {[0, 1, 2].map((i) => (
-                                  <motion.div key={i} animate={{ opacity: [0.2, 1, 0.2] }} transition={{ repeat: Infinity, delay: i * 0.2, duration: 0.9 }}
-                                    className="w-1.5 h-1.5 rounded-full bg-[#1A2E2A]" />
-                                ))}
-                                <span className="font-sans text-xs font-medium text-[#1A2E2A]/70">{t.aiReading}</span>
-                              </div>
-                            ) : ai && (
-                              <div>
-                                <div className="flex flex-wrap gap-2 mb-2">
-                                  {[
-                                    { label: ai.cat, css: "bg-[rgba(26,46,42,0.06)] text-[#1A2E2A]" },
-                                    { label: ai.priority, css: "bg-[#FF6B2B]/10 text-[#FF6B2B]" },
-                                    { label: ai.dept, css: "bg-[rgba(26,46,42,0.06)] text-[#1A2E2A]" },
-                                    { label: ai.sla, css: "bg-[#16A34A]/10 text-[#16A34A]" },
-                                  ].map((c) => (
-                                    <motion.span key={c.label} initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
-                                      className={`font-sans text-xs font-semibold px-2.5 py-1 rounded-full ${c.css}`}>
-                                      {c.label}
-                                    </motion.span>
-                                  ))}
-                                </div>
-                                <span className="font-mono text-[10px] text-gray-400 font-medium">{t.aiDone}</span>
-                              </div>
-                            )}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </motion.div>}
+                        <AnimatePresence>
+                          {ward && (
+                            <motion.div
+                              initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                              style={{
+                                marginTop: "8px",
+                                padding: "10px 14px",
+                                borderRadius: "10px",
+                                background: "rgba(93,122,111,0.12)",
+                                border: "1px solid rgba(93,122,111,0.2)",
+                                fontFamily: "'DM Sans', sans-serif",
+                                fontSize: "13px",
+                                fontWeight: 600,
+                                color: "#3D6B5F",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                              }}
+                            >
+                              <span style={{ opacity: 0.7 }}>→</span>
+                              Ward {ward.ward} · {ward.zone}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
 
-                    {step === 3 && <motion.div key="s3" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.2 }}>
-                      <FieldLabel>{t.photoLabel}</FieldLabel>
-                      <p className="font-sans text-xs text-gray-400 mb-3">{t.photoHint}</p>
-                      <input ref={fileRef} type="file" accept="image/*" onChange={handlePhoto} className="hidden" />
-                      {photo ? (
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative rounded-xl overflow-hidden shadow-sm">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={photo} alt="preview" className="w-full max-h-[200px] object-cover block" />
-                          <button onClick={() => setPhoto(null)} className="absolute top-2 right-2 bg-[#1A2E2A]/80 text-[#E7E8E2] border-none rounded-full w-7 h-7 cursor-pointer text-xs font-sans hover:bg-[#1A2E2A] transition-colors">✕</button>
-                        </motion.div>
-                      ) : (
                         <button
-                          onClick={() => fileRef.current?.click()}
-                          className="w-full border-2 border-dashed border-[rgba(26,46,42,0.15)] rounded-xl py-12 px-5 text-center cursor-pointer hover:border-[#5D7A6F] hover:bg-[#5D7A6F]/5 transition-all text-gray-500 font-sans text-sm"
+                          onClick={() => setLocation("Lajpat Nagar")}
+                          style={{
+                            marginTop: "12px",
+                            width: "100%",
+                            fontFamily: "'DM Sans', sans-serif",
+                            fontSize: "14px",
+                            fontWeight: 600,
+                            color: "#C2552A",
+                            background: "rgba(255,107,43,0.08)",
+                            border: "none",
+                            borderRadius: "10px",
+                            padding: "12px",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "6px",
+                            transition: "background 0.15s",
+                          }}
+                          onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,107,43,0.14)")}
+                          onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,107,43,0.08)")}
                         >
-                          <span className="block mb-2 font-serif text-xl text-[#1A2E2A]/40">+</span>
-                          {t.photoDrag}
+                          <span>📍</span> {t.gpsBtn}
                         </button>
-                      )}
-                    </motion.div>}
+                      </motion.div>
+                    )}
 
-                    {step === 4 && <motion.div key="s4" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.2 }}>
-                      <FieldLabel>{t.phoneLabel}</FieldLabel>
-                      <input type="tel" style={inp} placeholder={t.phonePlaceholder}
-                        value={phone} onChange={(e) => setPhone(e.target.value)}
-                        onFocus={onFocus} onBlur={onBlur} />
-                      <p className="font-sans text-xs text-gray-400 mt-2">{t.noSpam}</p>
-                      <label className="flex items-center gap-2 mt-5 cursor-pointer">
-                        <input type="checkbox" checked={wa} onChange={(e) => setWa(e.target.checked)} className="w-4 h-4 accent-[#1A2E2A]" />
-                        <span className="font-sans text-sm font-medium text-[#1A2E2A]">{t.whatsapp}</span>
-                      </label>
-                    </motion.div>}
+                    {step === 2 && (
+                      <motion.div key="s2" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: 0.18 }}>
+                        <FieldLabel>{t.descLabel}</FieldLabel>
+                        <textarea
+                          rows={5}
+                          style={{
+                            width: "100%",
+                            fontFamily: "'DM Sans', sans-serif",
+                            fontSize: "15px",
+                            color: "#1A2E2A",
+                            background: "#FFFFFF",
+                            border: "1.5px solid rgba(26,46,42,0.12)",
+                            borderRadius: "12px",
+                            padding: "14px 16px",
+                            outline: "none",
+                            resize: "none",
+                            boxSizing: "border-box",
+                            boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                          }}
+                          placeholder={t.descPlaceholder}
+                          value={desc}
+                          onChange={(e) => setDesc(e.target.value)}
+                          onFocus={(e) => (e.target.style.borderColor = "#1A2E2A")}
+                          onBlur={(e) => (e.target.style.borderColor = "rgba(26,46,42,0.12)")}
+                        />
+                        <AnimatePresence>
+                          {(aiLoading || ai) && (
+                            <motion.div key="ai" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                              style={{ marginTop: "12px", padding: "14px 16px", borderRadius: "12px", background: "rgba(26,46,42,0.05)", border: "1px solid rgba(26,46,42,0.07)" }}>
+                              {aiLoading ? (
+                                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                  {[0, 1, 2].map((i) => (
+                                    <motion.div key={i} animate={{ opacity: [0.2, 1, 0.2] }} transition={{ repeat: Infinity, delay: i * 0.2, duration: 0.9 }}
+                                      style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#1A2E2A" }} />
+                                  ))}
+                                  <span style={{ fontSize: "12px", color: "rgba(26,46,42,0.6)" }}>{t.aiReading}</span>
+                                </div>
+                              ) : ai && (
+                                <div>
+                                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "8px" }}>
+                                    {[
+                                      { label: ai.cat, bg: "rgba(26,46,42,0.07)", color: "#1A2E2A" },
+                                      { label: ai.priority, bg: "rgba(255,107,43,0.1)", color: "#C2552A" },
+                                      { label: ai.dept, bg: "rgba(26,46,42,0.07)", color: "#1A2E2A" },
+                                      { label: ai.sla, bg: "rgba(22,163,74,0.1)", color: "#15803D" },
+                                    ].map((c) => (
+                                      <span key={c.label} style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 600, padding: "4px 10px", borderRadius: "999px", background: c.bg, color: c.color }}>
+                                        {c.label}
+                                      </span>
+                                    ))}
+                                  </div>
+                                  <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "#9CA3AF" }}>{t.aiDone}</span>
+                                </div>
+                              )}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+                    )}
+
+                    {step === 3 && (
+                      <motion.div key="s3" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: 0.18 }}>
+                        <FieldLabel>{t.photoLabel}</FieldLabel>
+                        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "12px", color: "#9CA3AF", margin: "0 0 12px" }}>{t.photoHint}</p>
+                        <input ref={fileRef} type="file" accept="image/*" onChange={handlePhoto} style={{ display: "none" }} />
+                        {photo ? (
+                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ position: "relative", borderRadius: "12px", overflow: "hidden" }}>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={photo} alt="preview" style={{ width: "100%", maxHeight: "200px", objectFit: "cover", display: "block" }} />
+                            <button onClick={() => setPhoto(null)} style={{ position: "absolute", top: "8px", right: "8px", background: "rgba(26,46,42,0.8)", color: "#fff", border: "none", borderRadius: "50%", width: "28px", height: "28px", cursor: "pointer", fontSize: "12px" }}>✕</button>
+                          </motion.div>
+                        ) : (
+                          <button
+                            onClick={() => fileRef.current?.click()}
+                            style={{ width: "100%", border: "2px dashed rgba(26,46,42,0.15)", borderRadius: "12px", padding: "48px 20px", textAlign: "center", cursor: "pointer", background: "transparent", color: "#9CA3AF", fontFamily: "'DM Sans', sans-serif", fontSize: "14px", transition: "all 0.15s" }}
+                            onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#5D7A6F"; e.currentTarget.style.background = "rgba(93,122,111,0.05)"; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(26,46,42,0.15)"; e.currentTarget.style.background = "transparent"; }}
+                          >
+                            <span style={{ display: "block", marginBottom: "6px", fontSize: "24px", opacity: 0.4 }}>+</span>
+                            {t.photoDrag}
+                          </button>
+                        )}
+                      </motion.div>
+                    )}
+
+                    {step === 4 && (
+                      <motion.div key="s4" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: 0.18 }}>
+                        <FieldLabel>{t.phoneLabel}</FieldLabel>
+                        <input
+                          type="tel"
+                          style={{ width: "100%", fontFamily: "'DM Sans', sans-serif", fontSize: "15px", color: "#1A2E2A", background: "#FFFFFF", border: "1.5px solid rgba(26,46,42,0.12)", borderRadius: "12px", padding: "14px 16px", outline: "none", boxSizing: "border-box", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
+                          placeholder={t.phonePlaceholder}
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          onFocus={(e) => (e.target.style.borderColor = "#1A2E2A")}
+                          onBlur={(e) => (e.target.style.borderColor = "rgba(26,46,42,0.12)")}
+                        />
+                        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "12px", color: "#9CA3AF", margin: "8px 0 20px" }}>{t.noSpam}</p>
+                        <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+                          <input type="checkbox" checked={wa} onChange={(e) => setWa(e.target.checked)} style={{ width: "16px", height: "16px", accentColor: "#1A2E2A" }} />
+                          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "14px", fontWeight: 500, color: "#1A2E2A" }}>{t.whatsapp}</span>
+                        </label>
+                      </motion.div>
+                    )}
                   </AnimatePresence>
 
-                  <div className="flex gap-3 mt-10">
+                  {/* Nav buttons */}
+                  <div style={{ display: "flex", gap: "10px", marginTop: "32px" }}>
                     {step > 1 && (
-                      <Button variant="secondary" onClick={() => setStep((s) => (s - 1) as Step)}>
+                      <button
+                        onClick={() => setStep((s) => (s - 1) as Step)}
+                        style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "14px", fontWeight: 600, padding: "14px 24px", borderRadius: "999px", border: "1.5px solid rgba(26,46,42,0.2)", background: "transparent", color: "#1A2E2A", cursor: "pointer", transition: "all 0.15s", flexShrink: 0 }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(26,46,42,0.05)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                      >
                         {t.back}
-                      </Button>
+                      </button>
                     )}
                     {step < 4 ? (
-                      <Button variant="primary" fullWidth onClick={() => setStep((s) => (s + 1) as Step)}>
-                        {t.next}
-                      </Button>
+                      <button
+                        onClick={() => setStep((s) => (s + 1) as Step)}
+                        style={{ flex: 1, fontFamily: "'DM Sans', sans-serif", fontSize: "15px", fontWeight: 600, padding: "14px 24px", borderRadius: "999px", border: "none", background: "#1A2E2A", color: "#fff", cursor: "pointer", transition: "background 0.15s", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "#25423C"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "#1A2E2A"; }}
+                      >
+                        {t.next} <span style={{ fontSize: "16px" }}>→</span>
+                      </button>
                     ) : (
-                      <Button variant="primary" fullWidth onClick={handleSubmit} disabled={submitting}>
+                      <button
+                        onClick={handleSubmit}
+                        disabled={submitting}
+                        style={{ flex: 1, fontFamily: "'DM Sans', sans-serif", fontSize: "15px", fontWeight: 600, padding: "14px 24px", borderRadius: "999px", border: "none", background: submitting ? "rgba(26,46,42,0.4)" : "#1A2E2A", color: "#fff", cursor: submitting ? "not-allowed" : "pointer", transition: "background 0.15s" }}
+                      >
                         {submitting ? "..." : t.submit}
-                      </Button>
+                      </button>
                     )}
                   </div>
                 </motion.div>
-              </Card>
-            )}
-          </AnimatePresence>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
-    </PageLayout>
+    </div>
   );
 }
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-sans text-xs font-bold tracking-widest uppercase text-gray-400 mb-2">
+    <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(26,46,42,0.45)", margin: "0 0 8px" }}>
       {children}
     </p>
   );
@@ -389,52 +598,50 @@ function SuccessView({ t, ticketId, eta, phone, ai, officerName, copied, onCopy 
   ai: ReturnType<typeof getAI> | null; officerName: string; copied: boolean; onCopy: () => void;
 }) {
   return (
-    <motion.div key="success" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="w-full">
-      <div className="text-center mb-8">
-        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 280, delay: 0.1 }}
-          className="w-16 h-16 rounded-full bg-[#16A34A]/10 border border-[#16A34A]/20 flex items-center justify-center mx-auto mb-5 text-[#16A34A]">
-          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+      <div style={{ textAlign: "center", marginBottom: "32px" }}>
+        <motion.div
+          initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 280, delay: 0.1 }}
+          style={{ width: "64px", height: "64px", borderRadius: "50%", background: "rgba(22,163,74,0.1)", border: "1px solid rgba(22,163,74,0.2)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}
+        >
+          <svg width="32" height="32" fill="none" stroke="#16A34A" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
         </motion.div>
-        <h1 className="font-serif text-[32px] text-[#1A2E2A] mb-1 leading-tight">{t.successTitle}</h1>
-        <p className="font-sans text-sm text-[#1A2E2A]/60">{t.successSub}</p>
+        <h1 style={{ fontFamily: "Georgia, serif", fontSize: "32px", fontWeight: 400, color: "#1A2E2A", margin: "0 0 6px" }}>{t.successTitle}</h1>
+        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "14px", color: "rgba(26,46,42,0.55)", margin: 0 }}>{t.successSub}</p>
       </div>
 
-      <div className="bg-[#1A2E2A] rounded-2xl p-6 text-center mb-5 shadow-lg relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-        <p className="font-sans text-[10px] font-bold tracking-[0.2em] text-white/50 uppercase mb-2">{t.successTicket}</p>
-        <div className="flex items-center justify-center gap-4">
-          <span className="font-mono text-3xl font-bold text-[#FF6B2B] relative z-10">{ticketId}</span>
-          <button onClick={onCopy} className="relative z-10 font-sans text-xs font-semibold px-3 py-1.5 border border-white/20 rounded-lg text-white/80 hover:bg-white/10 transition-colors">
+      <div style={{ background: "#1A2E2A", borderRadius: "16px", padding: "24px", textAlign: "center", marginBottom: "16px" }}>
+        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "0.15em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", margin: "0 0 8px" }}>{t.successTicket}</p>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px" }}>
+          <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "32px", fontWeight: 700, color: "#FF6B2B" }}>{ticketId}</span>
+          <button onClick={onCopy} style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "12px", fontWeight: 600, padding: "6px 14px", border: "1px solid rgba(255,255,255,0.2)", borderRadius: "8px", color: "rgba(255,255,255,0.7)", background: "transparent", cursor: "pointer" }}>
             {copied ? t.copied : t.copy}
           </button>
         </div>
       </div>
 
-      <Card className="flex flex-col gap-4 mb-6 !p-5">
+      <div style={{ background: "#fff", borderRadius: "16px", padding: "20px", marginBottom: "16px", border: "1px solid rgba(26,46,42,0.07)" }}>
         {ai && (
-          <div className="flex flex-wrap gap-2 pb-4 border-b border-[rgba(26,46,42,0.06)]">
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", paddingBottom: "14px", marginBottom: "14px", borderBottom: "1px solid rgba(26,46,42,0.06)" }}>
             {[ai.cat, ai.priority, ai.sla].map((c) => (
-              <span key={c} className="font-sans text-[11px] font-semibold px-2.5 py-1 rounded-full bg-[rgba(26,46,42,0.04)] text-[#1A2E2A]">{c}</span>
+              <span key={c} style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 600, padding: "4px 10px", borderRadius: "999px", background: "rgba(26,46,42,0.05)", color: "#1A2E2A" }}>{c}</span>
             ))}
           </div>
         )}
-        <Row label={t.officer} value={officerName} />
-        <Row label={t.eta} value={eta} green />
-        {phone && <Row label={t.whatsapp} value={phone} />}
-      </Card>
+        {[{ label: t.officer, value: officerName }, { label: t.eta, value: eta, green: true }, ...(phone ? [{ label: t.whatsapp, value: phone }] : [])].map(({ label, value, green }) => (
+          <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "'DM Sans', sans-serif", fontSize: "13px", padding: "4px 0" }}>
+            <span style={{ color: "rgba(26,46,42,0.55)" }}>{label}</span>
+            <span style={{ fontWeight: 600, color: green ? "#16A34A" : "#1A2E2A" }}>{value}</span>
+          </div>
+        ))}
+      </div>
 
-      <Button variant="cta" fullWidth onClick={() => window.open(`https://wa.me/?text=Complaint ${ticketId} filed with SANKALP AI`, "_blank")}>
+      <button
+        onClick={() => window.open(`https://wa.me/?text=Complaint ${ticketId} filed with SANKALP AI`, "_blank")}
+        style={{ width: "100%", fontFamily: "'DM Sans', sans-serif", fontSize: "15px", fontWeight: 600, padding: "14px", borderRadius: "999px", border: "none", background: "#FF6B2B", color: "#fff", cursor: "pointer" }}
+      >
         {t.whatsappShare}
-      </Button>
+      </button>
     </motion.div>
-  );
-}
-
-function Row({ label, value, green }: { label: string; value: string; green?: boolean }) {
-  return (
-    <div className="flex justify-between items-center text-sm font-sans pt-1 first:pt-0">
-      <span className="text-[#1A2E2A]/60">{label}</span>
-      <span className={`font-semibold ${green ? "text-[#16A34A]" : "text-[#1A2E2A]"}`}>{value}</span>
-    </div>
   );
 }

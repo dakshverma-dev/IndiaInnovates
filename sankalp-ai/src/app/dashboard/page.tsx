@@ -52,7 +52,7 @@ interface AuditEntry {
 }
 
 const BACKEND_URL = "";
-const WS_URL = "http://localhost:3001";
+const WS_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
 
 const PRIORITY_COLORS: Record<string, string> = {
   P1: "#FF6B2B",
