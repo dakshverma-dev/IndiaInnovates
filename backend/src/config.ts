@@ -12,6 +12,7 @@ export const config = {
     "http://localhost:3001",
     "http://localhost:8081",
     "http://localhost:19006",
+    ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
   ],
 };
 
