@@ -3,14 +3,14 @@
 import { motion } from "framer-motion";
 
 const problems = [
-  { icon: "🔍", title: "No Tracking", desc: "Complaints vanish into phone calls and file registers with zero digital trail." },
-  { icon: "⏱️", title: "Zero SLA Enforcement", desc: "No automatic escalation. Officers resolve when convenient, not when required." },
-  { icon: "🏛️", title: "Agency Confusion", desc: "Citizens don't know if MCD, DJB, or BSES is responsible. Neither do officers." },
-  { icon: "📋", title: "Duplicate Overload", desc: "400 people report the same pothole. Each gets a separate ticket, wasting resources." },
-  { icon: "🔥", title: "Purely Reactive", desc: "Every monsoon, same drains flood. No prediction. No prevention. Just reaction." },
-  { icon: "🎭", title: "Fake Resolutions", desc: "Officers mark 'resolved' without visiting. No photo proof. No GPS verification." },
-  { icon: "🗣️", title: "Language Barrier", desc: "Portals in English. 60% of Delhi's working population prefers Hindi." },
-  { icon: "📱", title: "Delhi Mitra Gap", desc: "The existing app has 1.2★ rating. Smart city funds spent, citizens still suffering." },
+  { abbr: "01", title: "No Tracking", desc: "Complaints vanish into phone calls and file registers with zero digital trail." },
+  { abbr: "02", title: "Zero SLA Enforcement", desc: "No automatic escalation. Officers resolve when convenient, not when required." },
+  { abbr: "03", title: "Agency Confusion", desc: "Citizens don't know if MCD, DJB, or BSES is responsible. Neither do officers." },
+  { abbr: "04", title: "Duplicate Overload", desc: "400 people report the same pothole. Each gets a separate ticket, wasting resources." },
+  { abbr: "05", title: "Purely Reactive", desc: "Every monsoon, same drains flood. No prediction. No prevention. Just reaction." },
+  { abbr: "06", title: "Fake Resolutions", desc: "Officers mark 'resolved' without visiting. No photo proof. No GPS verification." },
+  { abbr: "07", title: "Language Barrier", desc: "Portals in English. 60% of Delhi's working population prefers Hindi." },
+  { abbr: "08", title: "Delhi Mitra Gap", desc: "The existing app has 1.2 rating. Smart city funds spent, citizens still suffering." },
 ];
 
 const fn = {
@@ -105,11 +105,14 @@ export default function ProblemSection() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "20px",
+                  fontFamily: "'DM Mono', monospace",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  color: "rgba(255,107,43,0.7)",
                   marginBottom: "14px",
                 }}
               >
-                {p.icon}
+                {p.abbr}
               </div>
               <h3
                 style={{

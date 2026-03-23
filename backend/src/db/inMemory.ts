@@ -37,6 +37,12 @@ export interface Complaint {
   gps_lng: number | null;
   photo_path: string | null;
   ai_summary: string | null;
+  // community features
+  upvotes: number;
+  upvoted_by: string[];
+  satisfaction: "satisfied" | "unsatisfied" | null;
+  feedback_note: string | null;
+  feedback_at: string | null;
   // joined fields
   ward_name?: string;
   officer_name?: string;
@@ -68,7 +74,7 @@ export interface User {
   name: string;
   phone: string;
   pin: string;
-  role: "admin" | "citizen";
+  role: "admin" | "citizen" | "officer";
   created_at: string;
 }
 
@@ -214,6 +220,11 @@ function buildComplaints(wards: Ward[], officers: Officer[]): Complaint[] {
       gps_lng: ward.id <= 50 ? (76.9 + Math.random() * 0.8) : null,
       photo_path: null,
       ai_summary: `${category} issue reported in ${ward.name}`,
+      upvotes: i < 5 ? Math.floor(Math.random() * 8) + 1 : 0,
+      upvoted_by: [],
+      satisfaction: status === "resolved" && i % 3 === 0 ? "satisfied" : status === "resolved" && i % 3 === 1 ? "unsatisfied" : null,
+      feedback_note: null,
+      feedback_at: null,
     });
   }
   return complaints;
@@ -231,6 +242,7 @@ class InMemoryStore {
   users: User[] = [
     { id: "admin-001", name: "Admin", phone: "9999999999", pin: "000000", role: "admin", created_at: new Date().toISOString() },
     { id: "citizen-001", name: "Demo Citizen", phone: "9876543210", pin: "123456", role: "citizen", created_at: new Date().toISOString() },
+    { id: "officer-001", name: "Amit Kumar", phone: "9876500001", pin: "111111", role: "officer", created_at: new Date().toISOString() },
   ];
 
   constructor() {
@@ -312,12 +324,17 @@ class InMemoryStore {
     return { ...c, ward_name: ward?.name, officer_name: officer?.name };
   }
 
-  createComplaint(data: Omit<Complaint, "id" | "created_at" | "resolved_at">): Complaint {
+  createComplaint(data: Omit<Complaint, "id" | "created_at" | "resolved_at" | "upvotes" | "upvoted_by" | "satisfaction" | "feedback_note" | "feedback_at">): Complaint {
     const complaint: Complaint = {
       ...data,
       id: uuidv4(),
       created_at: new Date().toISOString(),
       resolved_at: null,
+      upvotes: 0,
+      upvoted_by: [],
+      satisfaction: null,
+      feedback_note: null,
+      feedback_at: null,
     };
     this.complaints.unshift(complaint);
     // update ward counts
@@ -334,6 +351,40 @@ class InMemoryStore {
     const ward = this.wards.find((w) => w.id === complaint.ward_id);
     if (ward) ward.resolved_count++;
     return this.enrichComplaint(complaint);
+  }
+
+  findById(ref: string): Complaint | null {
+    // accepts full UUID or shortId (DL-XXXXXX)
+    const normalized = ref.replace(/^DL-/i, "").toLowerCase();
+    return this.complaints.find(
+      (c) => c.id === ref || c.id.slice(0, 6).toLowerCase() === normalized
+    ) ?? null;
+  }
+
+  upvoteComplaint(ref: string, phone: string): { complaint: Complaint | null; alreadyVoted: boolean } {
+    const complaint = this.findById(ref);
+    if (!complaint) return { complaint: null, alreadyVoted: false };
+    if (complaint.upvoted_by.includes(phone)) return { complaint: this.enrichComplaint(complaint), alreadyVoted: true };
+    complaint.upvotes++;
+    complaint.upvoted_by.push(phone);
+    return { complaint: this.enrichComplaint(complaint), alreadyVoted: false };
+  }
+
+  addFeedback(ref: string, phone: string, rating: "satisfied" | "unsatisfied", note?: string): Complaint | null {
+    const complaint = this.findById(ref);
+    if (!complaint || complaint.phone !== phone) return null;
+    complaint.satisfaction = rating;
+    complaint.feedback_note = note ?? null;
+    complaint.feedback_at = new Date().toISOString();
+    return this.enrichComplaint(complaint);
+  }
+
+  getSimilar(wardId: number, category: string, limit = 3): Complaint[] {
+    return this.complaints
+      .filter((c) => c.ward_id === wardId && c.category === category && !["resolved", "closed"].includes(c.status))
+      .sort((a, b) => b.upvotes - a.upvotes)
+      .slice(0, limit)
+      .map((c) => this.enrichComplaint(c));
   }
 
   findDuplicate(wardId: number, category: string): string | null {
@@ -441,6 +492,11 @@ class InMemoryStore {
     const avgHealth =
       this.wards.reduce((sum, w) => sum + w.health_score, 0) / this.wards.length;
 
+    const satisfied = this.complaints.filter((c) => c.satisfaction === "satisfied").length;
+    const unsatisfied = this.complaints.filter((c) => c.satisfaction === "unsatisfied").length;
+    const totalFeedback = satisfied + unsatisfied;
+    const satisfaction_pct = totalFeedback > 0 ? Math.round((satisfied / totalFeedback) * 100) : null;
+
     return {
       total,
       pending,
@@ -448,6 +504,9 @@ class InMemoryStore {
       resolved,
       avg_resolution_hours: Math.round(avgResolutionHours * 10) / 10,
       avg_health: Math.round(avgHealth),
+      satisfaction_pct,
+      satisfied,
+      unsatisfied,
     };
   }
 

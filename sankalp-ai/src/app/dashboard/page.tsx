@@ -18,6 +18,8 @@ interface LiveTicket {
   created_at?: string;
   assigned_officer_id?: number;
   officer_name?: string;
+  upvotes?: number;
+  satisfaction?: "satisfied" | "unsatisfied" | null;
 }
 
 interface LiveStats {
@@ -27,6 +29,7 @@ interface LiveStats {
   resolved: number;
   avg_resolution_hours: number;
   avg_health: number;
+  satisfaction_pct?: number | null;
 }
 
 interface WardHealth {
@@ -195,11 +198,12 @@ export default function DashboardPage() {
 
   if (!isAuthenticated || !user) return null;
 
+  const satisfactionDisplay = stats?.satisfaction_pct != null ? `${stats.satisfaction_pct}%` : "—";
   const displayStats = [
     { label: "Total Tickets", value: stats?.total ?? "—", color: "#1A2E2A" },
     { label: "Pending", value: stats?.pending ?? "—", color: "#FF6B2B" },
     { label: "Resolved", value: stats?.resolved ?? "—", color: "#16A34A" },
-    { label: "Avg Health", value: stats?.avg_health ? stats.avg_health + "/100" : "—/100", color: "#5D7A6F" },
+    { label: "Citizen Satisfaction", value: satisfactionDisplay, color: "#5D7A6F" },
   ];
 
   return (
@@ -315,13 +319,23 @@ export default function DashboardPage() {
                       <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "rgba(26,46,42,0.65)", marginTop: "8px", lineHeight: 1.5 }}>
                         {t.ai_summary || ("Complaint regarding " + t.category.toLowerCase() + " in " + (t.ward_name || "Delhi"))}
                       </p>
-                      <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+                      <div style={{ display: "flex", gap: "12px", marginTop: "8px", flexWrap: "wrap", alignItems: "center" }}>
                         <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", color: "rgba(26,46,42,0.4)" }}>
-                          📍 {t.ward_name || "Unknown Ward"}
+                          {t.ward_name || "Unknown Ward"}
                         </span>
                         <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 600, color: PRIORITY_COLORS[t.priority] }}>
                           {t.priority}
                         </span>
+                        {(t.upvotes ?? 0) > 0 && (
+                          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 600, color: "#FF6B2B", background: "rgba(255,107,43,0.08)", padding: "2px 8px", borderRadius: "999px" }}>
+                            +{t.upvotes} upvotes
+                          </span>
+                        )}
+                        {t.satisfaction && (
+                          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 600, color: t.satisfaction === "satisfied" ? "#16A34A" : "#9CA3AF", background: t.satisfaction === "satisfied" ? "rgba(22,163,74,0.08)" : "rgba(0,0,0,0.04)", padding: "2px 8px", borderRadius: "999px" }}>
+                            {t.satisfaction === "satisfied" ? "Satisfied" : "Not satisfied"}
+                          </span>
+                        )}
                       </div>
 
                       {/* Audit trail */}

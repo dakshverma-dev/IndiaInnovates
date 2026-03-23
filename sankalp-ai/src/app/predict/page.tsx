@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Navbar from "../components/Navbar";
 import {
   LineChart,
   Line,
@@ -102,12 +103,12 @@ function PredictionCard({ title, subtitle, risk, trigger, history, action, statu
 export default function PredictPage() {
   return (
     <div style={{ minHeight: "100vh", background: "#0A0F1E", color: "#FFF", fontFamily: "'DM Sans', sans-serif" }}>
+      <Navbar />
       {/* HEADER */}
-      <header style={{ padding: "40px 24px", maxWidth: "1200px", margin: "0 auto" }}>
+      <header style={{ padding: "104px 24px 40px", maxWidth: "1200px", margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-              <span style={{ fontSize: "24px" }}>🔮</span>
               <h1 style={{ fontFamily: "Sora", fontSize: "32px", fontWeight: 700, margin: 0 }}>Predictive Prevention Engine</h1>
             </div>
             <p style={{ fontSize: "16px", color: "rgba(255,255,255,0.6)", maxWidth: "600px" }}>
