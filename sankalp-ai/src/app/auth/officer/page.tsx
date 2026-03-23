@@ -7,7 +7,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import PageLayout from "../../components/PageLayout";
 
-export default function LoginPage() {
+export default function OfficerLoginPage() {
   const router = useRouter();
   const { isAuthenticated, login } = useAuth();
   const [phone, setPhone] = useState("");
@@ -16,7 +16,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated) router.push("/dashboard");
+    if (isAuthenticated) router.push("/officer");
   }, [isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,18 +33,17 @@ export default function LoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Login failed");
       login(data.token, data.user);
-      const dest = data.user?.role === "officer" ? "/officer" : "/dashboard";
-      router.push(dest);
+      router.push("/officer");
     } catch (_err) {
-      if (phone === "9999999999" && pin === "000000") {
+      if (phone === "9876500001" && pin === "111111") {
         login(
           "demo-token-offline",
-          { id: "admin-001", name: "Admin", phone: "9999999999", role: "admin" }
+          { id: "officer-001", name: "Amit Kumar", phone: "9876500001", role: "officer" }
         );
-        router.push("/dashboard");
+        router.push("/officer");
         return;
       }
-      setError("Backend offline. Use demo credentials: 9999999999 / 000000");
+      setError("Backend offline. Use demo credentials: 9876500001 / 111111");
     } finally {
       setLoading(false);
     }
@@ -73,14 +72,14 @@ export default function LoginPage() {
             padding: "40px 36px",
           }}
         >
-          <div style={{ display: "inline-block", padding: "4px 12px", borderRadius: "999px", background: "rgba(26,46,42,0.06)", marginBottom: "16px" }}>
-            <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(26,46,42,0.5)" }}>Admin Portal</span>
+          <div style={{ display: "inline-block", padding: "4px 12px", borderRadius: "999px", background: "rgba(93,122,111,0.1)", marginBottom: "16px" }}>
+            <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#3D6B5F" }}>Field Officer Portal</span>
           </div>
           <h1 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "32px", color: "#1A2E2A", marginBottom: "8px", lineHeight: 1.1 }}>
-            Admin Sign In
+            Officer Sign In
           </h1>
           <p style={{ color: "rgba(26,46,42,0.5)", fontSize: "14px", marginBottom: "36px", fontFamily: "'DM Sans', sans-serif" }}>
-            Access the live civic dashboard and complaint analytics.
+            Verify complaints, upload resolution photos, and scan QR codes on-site.
           </p>
 
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
@@ -95,7 +94,7 @@ export default function LoginPage() {
                 placeholder="10-digit number"
                 required
                 style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = "#1A2E2A")}
+                onFocus={(e) => (e.target.style.borderColor = "#5D7A6F")}
                 onBlur={(e) => (e.target.style.borderColor = "rgba(26,46,42,0.15)")}
               />
             </div>
@@ -111,7 +110,7 @@ export default function LoginPage() {
                 placeholder="4-6 digits"
                 required
                 style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = "#1A2E2A")}
+                onFocus={(e) => (e.target.style.borderColor = "#5D7A6F")}
                 onBlur={(e) => (e.target.style.borderColor = "rgba(26,46,42,0.15)")}
               />
             </div>
@@ -127,35 +126,29 @@ export default function LoginPage() {
               disabled={loading}
               style={{
                 width: "100%", padding: "14px", borderRadius: "100px",
-                background: loading ? "rgba(26,46,42,0.5)" : "#1A2E2A",
-                color: "#E7E8E2", fontSize: "14px", fontWeight: 600,
+                background: loading ? "rgba(93,122,111,0.5)" : "#5D7A6F",
+                color: "#fff", fontSize: "14px", fontWeight: 600,
                 fontFamily: "'DM Sans', sans-serif", border: "none",
                 cursor: loading ? "not-allowed" : "pointer",
                 transition: "background 0.15s", marginTop: "4px",
               }}
             >
-              {loading ? "Signing in..." : "Sign In"}
+              {loading ? "Signing in..." : "Sign In to Officer Portal"}
             </button>
 
-            <div style={{ background: "rgba(26,46,42,0.04)", borderRadius: "12px", padding: "14px 16px", border: "1px solid rgba(26,46,42,0.06)" }}>
+            <div style={{ background: "rgba(93,122,111,0.06)", borderRadius: "12px", padding: "14px 16px", border: "1px solid rgba(93,122,111,0.1)" }}>
               <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(26,46,42,0.35)", marginBottom: "6px", fontFamily: "'DM Sans', sans-serif" }}>
                 Demo Access
               </p>
               <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "13px", color: "#1A2E2A", fontWeight: 500 }}>
-                9999999999 / 000000
+                9876500001 / 111111
               </p>
             </div>
 
             <p style={{ textAlign: "center", fontSize: "13px", color: "rgba(26,46,42,0.5)", fontFamily: "'DM Sans', sans-serif" }}>
-              Field officer?{" "}
-              <Link href="/auth/officer" style={{ color: "#FF6B2B", fontWeight: 600, textDecoration: "none" }}>
-                Officer sign in
-              </Link>
-            </p>
-            <p style={{ textAlign: "center", fontSize: "13px", color: "rgba(26,46,42,0.5)", fontFamily: "'DM Sans', sans-serif" }}>
-              Track a complaint?{" "}
-              <Link href="/track" style={{ color: "#5D7A6F", fontWeight: 600, textDecoration: "none" }}>
-                Enter ticket ID
+              Admin?{" "}
+              <Link href="/auth/login" style={{ color: "#FF6B2B", fontWeight: 600, textDecoration: "none" }}>
+                Admin sign in
               </Link>
             </p>
           </form>

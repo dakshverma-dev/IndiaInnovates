@@ -115,8 +115,16 @@ export default function ComplaintPage() {
   const [done, setDone] = useState(false);
   const [copied, setCopied] = useState(false);
   const [realTicketId, setRealTicketId] = useState("DL-4823");
+  const [realFullId, setRealFullId] = useState("");
   const [realAi, setRealAi] = useState<ReturnType<typeof getAI> | null>(null);
   const [realOfficerName, setRealOfficerName] = useState("Rajesh Kumar · South Zone");
+  // upvote state
+  const [similarId, setSimilarId] = useState<string | null>(null);
+  const [similarUpvotes, setSimilarUpvotes] = useState(0);
+  const [upvoted, setUpvoted] = useState(false);
+  const [upvoteSkipped, setUpvoteSkipped] = useState(false);
+  // satisfaction state
+  const [satisfactionDone, setSatisfactionDone] = useState(false);
   const timer = useRef<NodeJS.Timeout | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const t = T[lang];
@@ -133,11 +141,30 @@ export default function ComplaintPage() {
 
   useEffect(() => {
     if (timer.current) clearTimeout(timer.current);
-    if (desc.trim().length < 8) { setAi(null); setAiLoading(false); return; }
+    if (desc.trim().length < 8) { setAi(null); setAiLoading(false); setSimilarId(null); return; }
     setAiLoading(true); setAi(null);
-    timer.current = setTimeout(() => { setAi(getAI(desc)); setAiLoading(false); }, 1500);
+    timer.current = setTimeout(async () => {
+      const classified = getAI(desc);
+      setAi(classified);
+      setAiLoading(false);
+      // fetch similar complaints
+      if (ward) {
+        try {
+          const res = await fetch(`/api/complaints/similar?category=${encodeURIComponent(classified.cat)}&ward_id=${ward.ward}`);
+          if (res.ok) {
+            const similar = await res.json() as Array<{ id: string; shortId: string; upvotes: number }>;
+            if (similar.length > 0) {
+              setSimilarId(similar[0].id);
+              setSimilarUpvotes(similar[0].upvotes);
+              setUpvoted(false);
+              setUpvoteSkipped(false);
+            }
+          }
+        } catch { /* ignore */ }
+      }
+    }, 1500);
     return () => { if (timer.current) clearTimeout(timer.current); };
-  }, [desc]);
+  }, [desc, ward]);
 
   const handlePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
@@ -165,6 +192,7 @@ export default function ComplaintPage() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json() as {
         shortId: string;
+        ticketId?: string;
         category: string;
         priority: string;
         department: string;
@@ -172,6 +200,7 @@ export default function ComplaintPage() {
         officerName: string;
       };
       setRealTicketId(data.shortId);
+      setRealFullId(data.ticketId ?? data.shortId);
       setRealAi({
         cat: data.category,
         priority: `${data.priority} · ${data.priority === "P1" ? "Critical" : data.priority === "P2" ? "High" : "Medium"}`,
@@ -349,7 +378,16 @@ export default function ComplaintPage() {
           <div style={{ width: "100%", maxWidth: "480px" }}>
             <AnimatePresence mode="wait">
               {done ? (
-                <SuccessView key="done" t={t} ticketId={ticketId} eta={eta} phone={phone} ai={realAi ?? ai} officerName={realOfficerName} copied={copied} onCopy={handleCopy} />
+                <SuccessView key="done" t={t} ticketId={ticketId} fullId={realFullId} eta={eta} phone={phone} ai={realAi ?? ai} officerName={realOfficerName} copied={copied} onCopy={handleCopy} satisfactionDone={satisfactionDone} onSatisfaction={async (rating) => {
+                    setSatisfactionDone(true);
+                    try {
+                      await fetch(`/api/tickets/${realFullId}/feedback`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ phone: phone.replace(/\D/g, "").slice(-10) || "9999999999", rating }),
+                      });
+                    } catch { /* ignore */ }
+                  }} />
               ) : (
                 <motion.div key="form" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
                   {/* Heading */}
@@ -495,6 +533,51 @@ export default function ComplaintPage() {
                             </motion.div>
                           )}
                         </AnimatePresence>
+
+                        {/* Upvote nudge — show if similar complaint found and not skipped/upvoted */}
+                        <AnimatePresence>
+                          {similarId && !upvoteSkipped && !upvoted && ai && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                              style={{ marginTop: "12px", padding: "14px 16px", borderRadius: "12px", background: "rgba(93,122,111,0.07)", border: "1px solid rgba(93,122,111,0.18)" }}
+                            >
+                              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", fontWeight: 600, color: "#3D6B5F", margin: "0 0 10px" }}>
+                                {similarUpvotes + 1} people in this area reported the same issue. Upvote instead of filing a new complaint?
+                              </p>
+                              <div style={{ display: "flex", gap: "8px" }}>
+                                <button
+                                  onClick={async () => {
+                                    try {
+                                      const res = await fetch(`/api/complaints/${similarId}/upvote`, {
+                                        method: "POST",
+                                        headers: { "Content-Type": "application/json" },
+                                        body: JSON.stringify({ phone: phone || "0000000000" }),
+                                      });
+                                      const data = await res.json() as { upvotes: number };
+                                      setSimilarUpvotes(data.upvotes ?? similarUpvotes + 1);
+                                    } catch { /* ignore */ }
+                                    setUpvoted(true);
+                                  }}
+                                  style={{ flex: 1, padding: "9px 12px", borderRadius: "8px", border: "none", background: "#5D7A6F", color: "#fff", fontFamily: "'DM Sans', sans-serif", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}
+                                >
+                                  Upvote ({similarUpvotes})
+                                </button>
+                                <button
+                                  onClick={() => setUpvoteSkipped(true)}
+                                  style={{ padding: "9px 14px", borderRadius: "8px", border: "1.5px solid rgba(26,46,42,0.15)", background: "transparent", color: "rgba(26,46,42,0.6)", fontFamily: "'DM Sans', sans-serif", fontSize: "13px", cursor: "pointer" }}
+                                >
+                                  File new
+                                </button>
+                              </div>
+                            </motion.div>
+                          )}
+                          {upvoted && (
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                              style={{ marginTop: "12px", padding: "12px 16px", borderRadius: "12px", background: "rgba(22,163,74,0.06)", border: "1px solid rgba(22,163,74,0.15)", color: "#16A34A", fontFamily: "'DM Sans', sans-serif", fontSize: "13px", fontWeight: 600 }}>
+                              Upvoted. Your voice is counted — {similarUpvotes} people now backing this issue.
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </motion.div>
                     )}
 
@@ -593,9 +676,10 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-function SuccessView({ t, ticketId, eta, phone, ai, officerName, copied, onCopy }: {
-  t: typeof T["en"]; ticketId: string; eta: string; phone: string;
+function SuccessView({ t, ticketId, fullId, eta, phone, ai, officerName, copied, onCopy, satisfactionDone, onSatisfaction }: {
+  t: typeof T["en"]; ticketId: string; fullId: string; eta: string; phone: string;
   ai: ReturnType<typeof getAI> | null; officerName: string; copied: boolean; onCopy: () => void;
+  satisfactionDone: boolean; onSatisfaction: (r: "satisfied" | "unsatisfied") => void;
 }) {
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
@@ -635,6 +719,33 @@ function SuccessView({ t, ticketId, eta, phone, ai, officerName, copied, onCopy 
           </div>
         ))}
       </div>
+
+      {/* Satisfaction widget */}
+      {!satisfactionDone ? (
+        <div style={{ background: "#fff", borderRadius: "16px", padding: "18px 20px", marginBottom: "12px", border: "1px solid rgba(26,46,42,0.07)" }}>
+          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", fontWeight: 600, color: "#1A2E2A", margin: "0 0 12px" }}>
+            Rate your experience filing this complaint
+          </p>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button
+              onClick={() => onSatisfaction("satisfied")}
+              style={{ flex: 1, padding: "9px", borderRadius: "8px", border: "1.5px solid rgba(22,163,74,0.25)", background: "rgba(22,163,74,0.06)", color: "#16A34A", fontFamily: "'DM Sans', sans-serif", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}
+            >
+              Satisfied
+            </button>
+            <button
+              onClick={() => onSatisfaction("unsatisfied")}
+              style={{ flex: 1, padding: "9px", borderRadius: "8px", border: "1.5px solid rgba(26,46,42,0.12)", background: "transparent", color: "rgba(26,46,42,0.6)", fontFamily: "'DM Sans', sans-serif", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}
+            >
+              Not satisfied
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div style={{ padding: "12px 16px", borderRadius: "12px", background: "rgba(22,163,74,0.06)", border: "1px solid rgba(22,163,74,0.15)", color: "#16A34A", fontFamily: "'DM Sans', sans-serif", fontSize: "13px", fontWeight: 600, marginBottom: "12px" }}>
+          Thank you for your feedback.
+        </div>
+      )}
 
       <button
         onClick={() => window.open(`https://wa.me/?text=Complaint ${ticketId} filed with SANKALP AI`, "_blank")}

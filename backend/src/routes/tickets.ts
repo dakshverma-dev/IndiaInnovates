@@ -164,4 +164,28 @@ router.post("/api/tickets/:id/verify", async (req: Request, res: Response) => {
   }
 });
 
+// POST /api/tickets/:id/feedback — citizen satisfaction rating
+router.post("/api/tickets/:id/feedback", (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { phone, rating, note } = req.body as {
+    phone?: string;
+    rating?: "satisfied" | "unsatisfied";
+    note?: string;
+  };
+
+  if (!phone || !rating || !["satisfied", "unsatisfied"].includes(rating)) {
+    return res.status(400).json({ error: "phone and rating (satisfied|unsatisfied) required" });
+  }
+
+  if (!useInMemory) return res.json({ ok: true });
+
+  const complaint = store.addFeedback(id, phone, rating, note);
+  if (!complaint) {
+    return res.status(404).json({ error: "Ticket not found or phone does not match" });
+  }
+
+  emitTicketUpdated(complaint as unknown as Record<string, unknown>);
+  res.json({ ok: true, satisfaction: complaint.satisfaction });
+});
+
 export default router;

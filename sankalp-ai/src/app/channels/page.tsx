@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Navbar from "../components/Navbar";
 
 const WHATSAPP_STEPS = [
   { sender: "user", text: "Meri gali mein nali band hai" },
@@ -38,8 +39,9 @@ export default function ChannelsPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#FDFCFB", color: "#0A0F1E", fontFamily: "'DM Sans', sans-serif" }}>
+      <Navbar />
       {/* HEADER */}
-      <header style={{ padding: "80px 24px 40px", textAlign: "center", maxWidth: "1200px", margin: "0 auto" }}>
+      <header style={{ padding: "104px 24px 40px", textAlign: "center", maxWidth: "1200px", margin: "0 auto" }}>
         <h1 style={{ fontFamily: "Sora", fontSize: "40px", fontWeight: 700, margin: 0 }}>🌐 Any Citizen. Any Language. Zero Barriers.</h1>
         <p style={{ fontSize: "18px", color: "rgba(10,15,30,0.5)", marginTop: "12px", maxWidth: "800px", margin: "12px auto 0" }}>
           60% of Delhi's working population prefers Hindi. SANKALP AI reaches all of them via WhatsApp, Voice, and Kiosks.

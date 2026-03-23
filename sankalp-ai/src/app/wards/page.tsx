@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Navbar from "../components/Navbar";
 
 const WARDS = [
   { name: "Lajpat Nagar", id: 42, score: 78, speed: 82, satisfaction: 75, volume: 45, infra: 88, budget: 92, trend: "up" },
@@ -84,8 +85,9 @@ export default function WardsPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#F8F9FC", color: "#0A0F1E", fontFamily: "'DM Sans', sans-serif" }}>
+      <Navbar />
       {/* HEADER */}
-      <header style={{ padding: "60px 24px 40px", textAlign: "center", maxWidth: "1200px", margin: "0 auto" }}>
+      <header style={{ padding: "104px 24px 40px", textAlign: "center", maxWidth: "1200px", margin: "0 auto" }}>
         <h1 style={{ fontFamily: "Sora", fontSize: "40px", fontWeight: 700, margin: 0 }}>Delhi Civic Health Scorecard</h1>
         <p style={{ fontSize: "16px", color: "rgba(10,15,30,0.5)", marginTop: "8px" }}>Live ward-level governance accountability. Updated every 15 minutes.</p>
         <div style={{ marginTop: "24px", display: "flex", gap: "12px", justifyContent: "center", alignItems: "center" }}>

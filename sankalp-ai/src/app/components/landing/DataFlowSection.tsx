@@ -4,14 +4,14 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 
 const nodes = [
-  { icon: "👤", label: "Citizen" },
-  { icon: "📥", label: "Intake" },
-  { icon: "🧠", label: "Gemini AI" },
-  { icon: "🔮", label: "Prediction" },
-  { icon: "⚙️", label: "Workflow" },
-  { icon: "📱", label: "Field App" },
-  { icon: "⛓️", label: "Blockchain" },
-  { icon: "📊", label: "Dashboard" },
+  { abbr: "C", label: "Citizen" },
+  { abbr: "IN", label: "Intake" },
+  { abbr: "AI", label: "Gemini AI" },
+  { abbr: "PR", label: "Prediction" },
+  { abbr: "WF", label: "Workflow" },
+  { abbr: "FO", label: "Field App" },
+  { abbr: "AU", label: "Audit" },
+  { abbr: "DB", label: "Dashboard" },
 ];
 
 export default function DataFlowSection() {
@@ -34,8 +34,8 @@ export default function DataFlowSection() {
     const id = setInterval(() => {
       setActive(i);
       i = (i + 1) % nodes.length;
-      if (i === 0) setTimeout(() => setActive(-1), 400);
-    }, 500);
+      if (i === 0) setTimeout(() => setActive(-1), 600);
+    }, 2500);
     return () => clearInterval(id);
   }, [started]);
 
@@ -110,7 +110,6 @@ export default function DataFlowSection() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "28px",
                     background: isCurrent
                       ? "#5D7A6F"
                       : isActive
@@ -123,9 +122,14 @@ export default function DataFlowSection() {
                       : "2px solid rgba(93, 122, 111, 0.06)",
                     boxShadow: isCurrent ? "0 0 24px rgba(93, 122, 111, 0.3)" : "none",
                     transition: "all 0.35s ease",
+                    fontFamily: "'DM Mono', monospace",
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    color: isCurrent ? "#fff" : isActive ? "#5D7A6F" : "rgba(26,46,42,0.25)",
+                    letterSpacing: "0.05em",
                   }}
                 >
-                  {node.icon}
+                  {node.abbr}
                 </div>
                 <span
                   style={{
