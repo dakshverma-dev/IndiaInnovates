@@ -1,264 +1,108 @@
-# 🏙️ SANKALP AI
+# SANKALP AI
 
-## Delhi's Civic Nervous System
+Delhi has 272 wards. Each ward generates hundreds of civic complaints every week — broken drains, potholes, water outages, street lights down. Most of them vanish into phone calls, WhatsApp forwards, and paper registers. No tracking. No accountability. No resolution.
 
-**SANKALP AI** is an AI-powered civic intelligence platform designed to transform how cities manage public grievances, infrastructure issues, and emergency alerts.
-
-Instead of being just another complaint portal, SANKALP AI acts as an **intelligent command center for urban governance**, connecting citizens, field workers, and civic administrators in real time.
-
-Built for **India Innovates 2026**, the platform demonstrates how AI, automation, and transparency can modernize public service delivery.
+SANKALP AI is a complaint management system that changes that. Citizens file a complaint in two minutes. The AI routes it to the right department and officer automatically. Officers verify on-site with GPS and photo proof. Admins see everything in real time. And when a complaint is marked "resolved" by an official, citizens can say whether it was actually fixed.
 
 ---
 
-# 🚨 The Problem
+## The problem is bigger than it looks
 
-Delhi has **20+ million citizens** and **272 wards**, yet civic complaints often disappear into slow, fragmented bureaucratic systems.
+According to DARPG's CPGRAMS data, central government services alone received **7,932 grievances in a single quarter** (Oct–Dec 2025). Provident Fund: 2,548. Banking: 1,317. Railways: 349. Posts: 456. That's just the central tier — at the ward level, volumes are 10x higher, with far fewer resources and no system to handle them.
 
-Current issues include:
-
-• Citizens receive **no visibility on complaint status**
-• Duplicate complaints flood the system
-• Multiple agencies overlap (MCD, DJB, PWD, DDA)
-• No enforcement of **Citizen Charter timelines**
-• Officers can close complaints **without visiting the site**
-• Infrastructure issues repeat every season due to **lack of predictive maintenance**
-• Emergency civic hazards often have **no rapid-response system**
-
-The core issue:
-
-> The system does not lack portals.
-> It lacks **intelligence and accountability.**
+Most complaints go unresolved because there's no accountability loop. An officer can mark a ticket "closed" without leaving their desk. There's no photo, no GPS, no citizen confirmation. SANKALP AI closes that loop.
 
 ---
 
-# 💡 Our Solution
+## What it does
 
-**SANKALP AI — Delhi's Civic Nervous System**
+**For citizens**
+- File a complaint in Hindi or English in under 2 minutes
+- Get a ticket ID (DL-XXXX) with real-time status
+- Upvote existing complaints instead of filing duplicates — if 50 people have the same drainage problem, it shows up as one high-priority ticket, not 50
+- Track your complaint at `/track` — no login needed
+- Rate whether the issue was actually resolved (separate from the official "resolved" status)
 
-A unified AI-powered platform that adds an **intelligence layer** to existing civic systems like **MCD 311, PGMS, and Delhi Mitra**.
+**For field officers**
+- Dedicated login portal at `/auth/officer`
+- View assigned complaints with GPS routing
+- Verify resolution with photo upload and QR code scan
+- Complaints can't be closed without on-site verification
 
-The platform introduces:
+**For administrators**
+- Live dashboard at `/dashboard` with WebSocket updates
+- Citizen Satisfaction % — tracks whether people are actually happy, not just whether tickets are "resolved"
+- Ward health scores (0–100) updated after every resolution
+- Monsoon risk predictions by ward (e.g. "Ward 42 / Drainage / July 15 / 92% confidence")
+- Filterable complaint list by priority, status, ward
 
-• AI-powered complaint classification
-• Duplicate complaint clustering
-• GPS-verified field worker resolution
-• QR-based verification to prevent fake closures
-• Civic Health Score analytics per ward
-• SOS emergency reporting for critical hazards
-• Real-time civic command dashboards
-
-The goal is simple:
-
-> Transform civic governance from **reactive complaint handling**
-> into **proactive city intelligence.**
-
----
-
-# ⚙️ Core Platform Components
-
-### 🧠 AI Intelligence Engine
-
-Automatically classifies complaints, detects duplicates, predicts infrastructure risks, and prioritizes tickets.
-
-### 📱 Citizen Mobile Experience
-
-Citizens can easily submit complaints, upload photos, track progress, and trigger SOS alerts.
-
-### 🛠 Field Worker App
-
-Workers receive tasks, navigate using GPS, scan QR codes at complaint locations, and upload verified resolution proof.
-
-### 🏙 Civic Command Dashboard
-
-A powerful admin interface displaying real-time civic data, complaint clusters, worker activity, and ward health analytics.
+**Under the hood**
+- Gemini AI classifies complaints in 1–2 seconds (Hindi + English, 9 categories)
+- Smart deduplication — same issue in same ward within 24h gets merged
+- Hash-chained audit trail — every action is SHA-256 linked to the previous one, tamper-proof
+- SLA escalation — P1 tickets auto-escalate after 4 hours
+- Works without any external dependencies (in-memory fallback for DB, queue, and AI)
 
 ---
 
-# 🌐 Platform Architecture
+## How to run locally
 
-Citizen Complaint
-⬇
-AI Complaint Processing
-⬇
-Duplicate Detection & Priority Scoring
-⬇
-Automatic Worker Assignment
-⬇
-Field Verification (QR + GPS + Photo)
-⬇
-Resolution Update
-⬇
-Civic Dashboard Analytics
+```bash
+# Clone
+git clone https://github.com/dakshverma-dev/IndiaInnovates.git
+cd IndiaInnovates
 
----
+# Start the backend (port 3001)
+cd backend
+npm install
+npm run dev
 
-# 🚀 Key Features
-
-### 🔁 AI Complaint Classification
-
-Natural language processing categorizes complaints automatically.
-
-### 📍 Geo-Based Duplicate Detection
-
-Hundreds of duplicate complaints are merged into one master issue cluster.
-
-### 📷 QR Verified Resolution
-
-Field workers must scan a QR code and upload geo-tagged photos to close a ticket.
-
-### 🚨 SOS Emergency Reporting
-
-Citizens can trigger urgent alerts for hazards such as gas leaks, electrical faults, or road accidents.
-
-### 📊 Civic Health Score
-
-Each ward receives a dynamic score based on response speed, complaint volume, and citizen satisfaction.
-
-### 🗺 Real-Time Civic Map
-
-Live map displaying complaints, worker locations, and emergency alerts.
-
-### 🔮 Predictive Infrastructure Monitoring
-
-Uses historical complaint data and weather patterns to predict infrastructure failures.
-
----
-
-# 🧩 Technology Stack
-
-## Frontend
-
-React
-Next.js
-Tailwind CSS
-Framer Motion
-Recharts
-
-## Mobile
-
-React Native (Expo)
-
-## Backend
-
-Node.js
-Express.js
-Socket.IO
-
-## AI / Machine Learning
-
-Python
-FastAPI
-spaCy
-HuggingFace
-Scikit-learn
-
-## Database
-
-PostgreSQL
-
-## Cloud & Services
-
-Firebase Authentication
-Expo EAS Build
-AWS S3 (media storage)
-
----
-
-# 📱 Platform Interfaces
-
-SANKALP AI consists of **two primary interfaces**:
-
-### 🌐 Web Platform
-
-For civic administrators and supervisors.
-
-Features:
-
-* Civic command center dashboard
-* Ward analytics and insights
-* Complaint tracking and cluster analysis
-* Worker activity monitoring
-
-### 📱 Mobile App
-
-For citizens and field officers.
-
-Features:
-
-* Complaint reporting
-* Photo uploads
-* SOS emergency alerts
-* QR-based resolution verification
-* Task assignment for field workers
-
----
-
-# 🎯 Demo Flow
-
-1️⃣ Citizen reports a complaint
-2️⃣ AI automatically classifies the issue
-3️⃣ Complaint appears on live civic dashboard
-4️⃣ Worker receives assignment on mobile app
-5️⃣ Worker verifies location via QR scan
-6️⃣ Worker uploads resolution photo
-7️⃣ Civic health score updates in real time
-
----
-
-# 📊 Example Civic Issues Supported
-
-• Garbage overflow
-• Water leakage
-• Broken streetlights
-• Road potholes
-• Blocked drains
-• Public safety hazards
-
----
-
-# 🏗 Project Structure
-
-```
-sankalp-ai/
-
-frontend/        → Next.js web dashboard
-mobile-app/      → Expo React Native mobile app
-backend/         → Node.js API server
-ai-service/      → Python AI microservices
-database/        → PostgreSQL schema
+# In a new terminal — start the frontend (port 3000)
+cd sankalp-ai
+npm install
+npm run dev
 ```
 
----
+Open http://localhost:3000
 
-# 👥 Team
-
-**SANKALP AI Team**
-
-Kartik Chilkoti
-Daksh
-Yash
-Aparna
-
-Built for **India Innovates 2026 — Bharat Mandapam, New Delhi**
+The backend works with zero configuration. If you have a Gemini API key, add it as `GEMINI_API_KEY` in `backend/.env` for real AI classification. Without it, a local keyword classifier runs instead.
 
 ---
 
-# 🌍 Vision
+## Demo in 5 steps (for judges)
 
-SANKALP AI is designed to scale beyond Delhi.
-
-The platform architecture supports deployment in **any Indian city**, enabling smarter governance through AI-driven civic intelligence.
-
-Our long-term vision:
-
-> A national civic-tech platform that connects citizens and governments through **transparent, intelligent public service systems.**
+1. Go to `/complaint` — type a Hindi complaint like "nali band hai lajpat nagar mein" and watch the AI classify it in real time
+2. Notice the upvote nudge — if similar complaints exist in that ward, you'll be asked to upvote instead of filing a duplicate
+3. Submit — you get a ticket ID (DL-XXXX). The success screen asks for satisfaction feedback
+4. Open `/dashboard` in another tab — your ticket appears instantly via WebSocket
+5. Click Resolve — then go to `/track`, enter your ticket ID to see the hash-chained audit trail
 
 ---
 
-# 📄 License
+## Tech
 
-This project is built for **educational and innovation purposes** under the India Innovates 2026 hackathon.
+| Layer | Stack |
+|-------|-------|
+| Frontend | Next.js 15 (App Router), Framer Motion |
+| Backend | Node.js, Express, Socket.IO |
+| AI | Google Gemini (local keyword fallback) |
+| Database | PostgreSQL (in-memory fallback) |
+| Queue | Bull + Redis (setTimeout fallback) |
+| Auth | JWT (phone + PIN) |
 
 ---
 
-# ✨ Built with the vision of smarter cities, transparent governance, and empowered citizens.
+## Access portals
+
+| Portal | URL | Demo credentials |
+|--------|-----|-----------------|
+| Admin dashboard | `/auth/login` | 9999999999 / 000000 |
+| Officer portal | `/auth/officer` | 9876500001 / 111111 |
+| Citizen tracker | `/track` | No login needed |
+| File complaint | `/complaint` | No login needed |
+
+---
+
+## Built for India Innovates Hackathon — March 2026
+
+This is a working prototype, not a slideshow. The backend handles real AI classification, real Socket.IO updates, and real hash-chained audit trails. The in-memory store means data resets on restart — connect a PostgreSQL database via `DATABASE_URL` env var for persistence.

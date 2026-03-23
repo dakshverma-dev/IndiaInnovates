@@ -130,4 +130,37 @@ router.post("/api/complaints", async (req: Request, res: Response) => {
   }
 });
 
+// GET /api/complaints/similar?category=X&ward_id=Y
+router.get("/api/complaints/similar", (req: Request, res: Response) => {
+  const { category, ward_id } = req.query as { category?: string; ward_id?: string };
+  if (!category || !ward_id) return res.status(400).json({ error: "category and ward_id required" });
+  if (!useInMemory) return res.json([]);
+  const similar = store.getSimilar(parseInt(ward_id), category);
+  res.json(similar.map((c) => ({
+    id: c.id,
+    shortId: `DL-${c.id.slice(0, 6).toUpperCase()}`,
+    category: c.category,
+    ward_name: c.ward_name,
+    upvotes: c.upvotes,
+    created_at: c.created_at,
+  })));
+});
+
+// POST /api/complaints/:id/upvote
+router.post("/api/complaints/:id/upvote", (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { phone } = req.body as { phone?: string };
+  if (!phone) return res.status(400).json({ error: "phone required" });
+  if (!useInMemory) return res.json({ upvotes: 0, alreadyVoted: false });
+
+  const { complaint, alreadyVoted } = store.upvoteComplaint(id, phone);
+  if (!complaint) return res.status(404).json({ error: "Complaint not found" });
+  if (alreadyVoted) return res.status(409).json({ error: "Already upvoted", upvotes: complaint.upvotes });
+
+  const { emitTicketUpdated } = require("../sockets/events");
+  emitTicketUpdated(complaint);
+
+  res.json({ upvotes: complaint.upvotes, alreadyVoted: false });
+});
+
 export default router;

@@ -4,21 +4,21 @@ import { motion } from "framer-motion";
 
 const engines = [
   {
-    emoji: "🧠",
+    abbr: "AI",
     name: "AI Intelligence Core",
     desc: "Gemini-powered NLP for Hindi + English. Auto-classifies into 15 categories with 94% accuracy. Smart deduplication collapses 400 tickets into 1.",
     color: "rgba(93, 122, 111, 0.06)",
     border: "rgba(93, 122, 111, 0.12)",
   },
   {
-    emoji: "📡",
+    abbr: "CH",
     name: "Omnichannel Citizen Access",
     desc: "WhatsApp, Voice IVR, Web portal, QR kiosks — every channel feeds one AI backend. Works on ₹1,500 smartphones with no internet required.",
     color: "rgba(255, 107, 43, 0.06)",
     border: "rgba(255, 107, 43, 0.12)",
   },
   {
-    emoji: "⚙️",
+    abbr: "WF",
     name: "Workflow Orchestration",
     desc: "GPS-based auto-assignment, real-time SLA tracking with auto-escalation, QR-verified proof of resolution, and blockchain audit trail.",
     color: "rgba(22, 163, 74, 0.06)",
@@ -84,9 +84,10 @@ export default function ThreeEnginesSection() {
                 width: "52px", height: "52px", borderRadius: "14px",
                 background: eng.color, border: `1px solid ${eng.border}`,
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "24px", marginBottom: "20px",
+                fontFamily: "'DM Mono', monospace", fontSize: "13px", fontWeight: 700,
+                color: "#1A2E2A", marginBottom: "20px", letterSpacing: "0.05em",
               }}>
-                {eng.emoji}
+                {eng.abbr}
               </div>
               <h3 style={{
                 fontFamily: "'Sora'",

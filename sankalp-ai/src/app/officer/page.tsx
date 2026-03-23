@@ -20,7 +20,7 @@ interface Ticket {
 }
 
 const BACKEND = "";
-const WS_URL = "http://localhost:3001";
+const WS_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
 
 const PRIORITY_COLOR: Record<string, string> = {
   P1: "#FF6B2B",

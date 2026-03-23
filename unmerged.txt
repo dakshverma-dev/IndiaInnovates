@@ -1,0 +1,6 @@
+﻿sankalp-ai/src/app/channels/page.tsx
+sankalp-ai/src/app/complaint/page.tsx
+sankalp-ai/src/app/components/AuthProvider.tsx
+sankalp-ai/src/app/components/Navbar.tsx
+sankalp-ai/src/app/predict/page.tsx
+sankalp-ai/src/app/wards/page.tsx
