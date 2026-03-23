@@ -1,0 +1,66 @@
+
+D:\hackathon\INDIAINNOVATES\IndiaInnovates\sankalp-ai\src\app\audit\page.tsx
+   42:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  124:33  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\hackathon\INDIAINNOVATES\IndiaInnovates\sankalp-ai\src\app\auth\login\page.tsx
+  37:14  warning  '_err' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\hackathon\INDIAINNOVATES\IndiaInnovates\sankalp-ai\src\app\channels\page.tsx
+    4:18   warning  'AnimatePresence' is defined but never used                      @typescript-eslint/no-unused-vars
+   48:23   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  129:21   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  129:97   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  168:97   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  168:125  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+D:\hackathon\INDIAINNOVATES\IndiaInnovates\sankalp-ai\src\app\complaint\page.tsx
+  190:14  warning  '_err' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\hackathon\INDIAINNOVATES\IndiaInnovates\sankalp-ai\src\app\components\AuthProvider.tsx
+  34:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\hackathon\INDIAINNOVATES\IndiaInnovates\sankalp-ai\src\app\components\AuthProvider.tsx:34:9
+  32 |     if (storedToken && storedUser) {
+  33 |       try {
+> 34 |         setToken(storedToken);
+     |         ^^^^^^^^ Avoid calling setState() directly within an effect
+  35 |         setUser(JSON.parse(storedUser));
+  36 |       } catch (e) {
+  37 |         localStorage.removeItem("sankalp_token");  react-hooks/set-state-in-effect
+  36:16  warning  'e' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+
+D:\hackathon\INDIAINNOVATES\IndiaInnovates\sankalp-ai\src\app\components\landing\Navbar.tsx
+  60:9  error  Do not use an `<a>` element to navigate to `/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
+
+D:\hackathon\INDIAINNOVATES\IndiaInnovates\sankalp-ai\src\app\components\ui\Card.tsx
+  3:11  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+D:\hackathon\INDIAINNOVATES\IndiaInnovates\sankalp-ai\src\app\dashboard\page.tsx
+  84:9   warning  'router' is assigned a value but never used           @typescript-eslint/no-unused-vars
+  85:17  warning  'isAuthenticated' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\hackathon\INDIAINNOVATES\IndiaInnovates\sankalp-ai\src\app\layout.tsx
+  22:9  warning  Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font  @next/next/no-page-custom-font
+
+D:\hackathon\INDIAINNOVATES\IndiaInnovates\sankalp-ai\src\app\officer\page.tsx
+   52:9   warning  'router' is assigned a value but never used                                                     @typescript-eslint/no-unused-vars
+   85:3   warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+  111:14  warning  '_' is defined but never used                                                                   @typescript-eslint/no-unused-vars
+
+D:\hackathon\INDIAINNOVATES\IndiaInnovates\sankalp-ai\src\app\predict\page.tsx
+  60:93  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\hackathon\INDIAINNOVATES\IndiaInnovates\sankalp-ai\src\app\wards\page.tsx
+  110:10  warning  'filter' is assigned a value but never used     @typescript-eslint/no-unused-vars
+  110:18  warning  'setFilter' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+✖ 23 problems (11 errors, 12 warnings)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+

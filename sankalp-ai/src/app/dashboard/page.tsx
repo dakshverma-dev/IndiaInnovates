@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import PageLayout from "../components/PageLayout";
 import { useAuth } from "../components/AuthProvider";
+import RoleGuard from "../components/RoleGuard";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface LiveTicket {
@@ -107,9 +108,7 @@ export default function DashboardPage() {
     { id: 3, ward_name: "Dwarka", category: "Water Supply", predicted_date: "2026-07-18T00:00:00Z", confidence: 0.78 },
   ];
 
-  useEffect(() => {
-    if (!isAuthenticated) router.push("/auth/login");
-  }, [isAuthenticated, router]);
+
 
   useEffect(() => {
     if (!token) return;
@@ -193,7 +192,7 @@ export default function DashboardPage() {
     }
   };
 
-  if (!isAuthenticated || !user) return null;
+
 
   const displayStats = [
     { label: "Total Tickets", value: stats?.total ?? "—", color: "#1A2E2A" },
@@ -203,6 +202,7 @@ export default function DashboardPage() {
   ];
 
   return (
+    <RoleGuard allowedRoles={["admin"]}>
     <PageLayout showFooter>
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px 80px", width: "100%" }}>
 
@@ -219,7 +219,7 @@ export default function DashboardPage() {
               Civic Dashboard
             </h1>
             <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "14px", color: "rgba(26,46,42,0.5)" }}>
-              Delhi Operations · <span style={{ color: "#1A2E2A", fontWeight: 600 }}>{user.name}</span>
+              Delhi Operations · <span style={{ color: "#1A2E2A", fontWeight: 600 }}>{user?.name}</span>
             </p>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "white", border: "1.5px solid rgba(26,46,42,0.08)", borderRadius: "100px", padding: "8px 14px" }}>
@@ -449,5 +449,6 @@ export default function DashboardPage() {
         }
       `}</style>
     </PageLayout>
+    </RoleGuard>
   );
 }

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import PageLayout from "../components/PageLayout";
 
 const WHATSAPP_STEPS = [
   { sender: "user", text: "Meri gali mein nali band hai" },
@@ -37,16 +38,18 @@ export default function ChannelsPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#FDFCFB", color: "#0A0F1E", fontFamily: "'DM Sans', sans-serif" }}>
+    <PageLayout showFooter>
+      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px 80px", width: "100%" }}>
       {/* HEADER */}
-      <header style={{ padding: "80px 24px 40px", textAlign: "center", maxWidth: "1200px", margin: "0 auto" }}>
-        <h1 style={{ fontFamily: "Sora", fontSize: "40px", fontWeight: 700, margin: 0 }}>🌐 Any Citizen. Any Language. Zero Barriers.</h1>
-        <p style={{ fontSize: "18px", color: "rgba(10,15,30,0.5)", marginTop: "12px", maxWidth: "800px", margin: "12px auto 0" }}>
-          60% of Delhi's working population prefers Hindi. SANKALP AI reaches all of them via WhatsApp, Voice, and Kiosks.
+      <div style={{ textAlign: "center", marginBottom: "48px" }}>
+        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(26,46,42,0.35)", marginBottom: "8px" }}>MULTI-CHANNEL ACCESS</p>
+        <h1 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "38px", color: "#1A2E2A", margin: "0 0 10px" }}>Any Citizen. Any Language. Zero Barriers.</h1>
+        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "15px", color: "rgba(26,46,42,0.5)", maxWidth: "600px", margin: "0 auto" }}>
+          60% of Delhi&apos;s working population prefers Hindi. SANKALP AI reaches all of them via WhatsApp, Voice, and Kiosks.
         </p>
-      </header>
+      </div>
 
-      <main style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px 80px", display: "flex", flexDirection: "column", gap: "64px" }}>
+      <main style={{ display: "flex", flexDirection: "column", gap: "48px" }}>
         
         {/* THREE CHANNEL SHOWCASES */}
         <section style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "32px" }}>
@@ -123,7 +126,7 @@ export default function ChannelsPage() {
                <div style={{ width: "100%", background: "#F8F9FC", border: "1px solid #E5E7EB", borderRadius: "16px", padding: "20px" }}>
                   <p style={{ fontSize: "10px", fontWeight: 800, color: "rgba(0,0,0,0.3)", letterSpacing: "0.1em", marginBottom: "12px" }}>REAL-TIME TRANSCRIPTION</p>
                   <p style={{ fontSize: "15px", fontFamily: "Noto Sans Devanagari", fontWeight: 500, margin: 0 }}>
-                    "नमस्ते, मेरे क्षेत्र में जलभराव की समस्या है। कृपया इसे जल्द से जल्द देखें।"
+                    &quot;नमस्ते, मेरे क्षेत्र में जलभराव की समस्या है। कृपया इसे जल्द से जल्द देखें।&quot;
                   </p>
                   <div style={{ marginTop: "16px", display: "flex", gap: "8px" }}>
                     <span style={{ fontSize: "10px", fontWeight: 700, background: "#818CF8", color: "#FFF", padding: "4px 10px", borderRadius: "100px" }}>Whisper AI</span>
@@ -162,7 +165,7 @@ export default function ChannelsPage() {
                </div>
                
                <div style={{ padding: "20px", background: "rgba(255,107,43,0.1)", border: "1px dashed #FF6B2B", borderRadius: "16px", textAlign: "center" }}>
-                  <p style={{ fontSize: "11px", color: "#FF6B2B", fontWeight: 700, margin: 0 }}>"Tap to speak your complaint"</p>
+                  <p style={{ fontSize: "11px", color: "#FF6B2B", fontWeight: 700, margin: 0 }}>&quot;Tap to speak your complaint&quot;</p>
                </div>
             </div>
           </div>
@@ -204,13 +207,8 @@ export default function ChannelsPage() {
         </section>
 
       </main>
-
-      <style jsx global>{`
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.05); borderRadius: 10px; }
-      `}</style>
-    </div>
+      </div>
+    </PageLayout>
   );
 }
 

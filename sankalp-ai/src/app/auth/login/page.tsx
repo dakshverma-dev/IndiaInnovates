@@ -43,10 +43,37 @@ export default function LoginPage() {
         router.push("/dashboard");
         return;
       }
-      setError("Backend offline. Use demo credentials: 9999999999 / 000000");
+      if (phone === "8888888888" && pin === "000000") {
+        login(
+          "demo-token-officer",
+          { id: "officer-001", name: "Field Officer", phone: "8888888888", role: "field_officer" }
+        );
+        router.push("/officer");
+        return;
+      }
+      if (phone === "7777777777" && pin === "000000") {
+        login(
+          "demo-token-citizen",
+          { id: "citizen-001", name: "Citizen User", phone: "7777777777", role: "citizen" }
+        );
+        router.push("/complaint");
+        return;
+      }
+      setError("Backend offline. Use a demo login below.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const demoLogin = (role: "admin" | "field_officer" | "citizen") => {
+    const demoUsers = {
+      admin: { id: "admin-001", name: "Admin", phone: "9999999999", role: "admin" as const },
+      field_officer: { id: "officer-001", name: "Field Officer", phone: "8888888888", role: "field_officer" as const },
+      citizen: { id: "citizen-001", name: "Citizen User", phone: "7777777777", role: "citizen" as const },
+    };
+    const u = demoUsers[role];
+    login("demo-token-" + role, u);
+    router.push(role === "admin" ? "/dashboard" : role === "field_officer" ? "/officer" : "/complaint");
   };
 
   const inputStyle: React.CSSProperties = {
@@ -133,13 +160,33 @@ export default function LoginPage() {
               {loading ? "Signing in..." : "Sign In"}
             </button>
 
-            <div style={{ background: "rgba(26,46,42,0.04)", borderRadius: "12px", padding: "14px 16px", border: "1px solid rgba(26,46,42,0.06)" }}>
-              <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(26,46,42,0.35)", marginBottom: "6px", fontFamily: "'DM Sans', sans-serif" }}>
-                Demo Access
+            {/* Demo quick-login buttons */}
+            <div style={{ background: "rgba(26,46,42,0.04)", borderRadius: "12px", padding: "16px", border: "1px solid rgba(26,46,42,0.06)" }}>
+              <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(26,46,42,0.35)", marginBottom: "12px", fontFamily: "'DM Sans', sans-serif" }}>
+                Quick Demo Login
               </p>
-              <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "13px", color: "#1A2E2A", fontWeight: 500 }}>
-                9999999999 / 000000
-              </p>
+              <div style={{ display: "flex", gap: "8px" }}>
+                {([
+                  { role: "admin" as const, label: "🛡️ Admin", color: "#1A2E2A" },
+                  { role: "field_officer" as const, label: "📋 Officer", color: "#5D7A6F" },
+                  { role: "citizen" as const, label: "👤 Citizen", color: "#FF6B2B" },
+                ] as const).map((d) => (
+                  <button
+                    key={d.role}
+                    type="button"
+                    onClick={() => demoLogin(d.role)}
+                    style={{
+                      flex: 1, padding: "10px 8px", borderRadius: "10px",
+                      background: d.color, border: "none",
+                      color: "#fff", fontSize: "12px", fontWeight: 700,
+                      fontFamily: "'DM Sans', sans-serif", cursor: "pointer",
+                      transition: "opacity 0.15s",
+                    }}
+                  >
+                    {d.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <p style={{ textAlign: "center", fontSize: "13px", color: "rgba(26,46,42,0.5)", fontFamily: "'DM Sans', sans-serif" }}>

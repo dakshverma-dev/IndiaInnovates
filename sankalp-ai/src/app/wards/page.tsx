@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import PageLayout from "../components/PageLayout";
+import RoleGuard from "../components/RoleGuard";
 
 const WARDS = [
   { name: "Lajpat Nagar", id: 42, score: 78, speed: 82, satisfaction: 75, volume: 45, infra: 88, budget: 92, trend: "up" },
@@ -26,30 +28,36 @@ const WARDS = [
   { name: "Uttam Nagar", id: 82, score: 60, speed: 55, satisfaction: 58, volume: 75, infra: 62, budget: 58, trend: "stable" },
 ];
 
+function scoreColor(s: number) {
+  if (s > 75) return "#16A34A";
+  if (s > 50) return "#FF6B2B";
+  return "#DC2626";
+}
+
 function WardCard({ ward }: { ward: typeof WARDS[0] }) {
-  const color = ward.score > 75 ? "#16A34A" : ward.score > 50 ? "#F59E0B" : "#DC2626";
-  
+  const color = scoreColor(ward.score);
   return (
-    <motion.div 
-      whileHover={{ y: -4, boxShadow: "0 10px 25px rgba(0,0,0,0.05)" }}
+    <motion.div
+      whileHover={{ y: -4 }}
+      transition={{ type: "spring", stiffness: 400, damping: 20 }}
       style={{
-        background: "#FFF", border: "1px solid #E5E7EB", borderRadius: "16px",
-        padding: "20px", display: "flex", flexDirection: "column", gap: "16px",
-        cursor: "pointer"
+        background: "white", borderRadius: "20px",
+        border: "1.5px solid rgba(26,46,42,0.07)",
+        padding: "24px", display: "flex", flexDirection: "column", gap: "16px",
+        cursor: "pointer",
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
         <div>
-          <h4 style={{ fontFamily: "Sora", fontSize: "16px", fontWeight: 700, margin: 0 }}>{ward.name}</h4>
-          <p style={{ fontSize: "11px", color: "rgba(0,0,0,0.4)", marginTop: "2px" }}>Ward #{ward.id} · Delhi</p>
+          <h4 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "17px", color: "#1A2E2A", margin: 0 }}>{ward.name}</h4>
+          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", color: "rgba(26,46,42,0.4)", marginTop: "2px" }}>Ward #{ward.id} · Delhi</p>
         </div>
-        <div style={{ 
-          width: "48px", height: "48px", borderRadius: "50%", border: `3px solid ${color}22`,
+        <div style={{
+          width: "50px", height: "50px", borderRadius: "50%",
+          background: color + "12", border: `2.5px solid ${color}`,
           display: "flex", alignItems: "center", justifyContent: "center",
-          position: "relative"
         }}>
-          <span style={{ fontFamily: "Sora", fontWeight: 800, fontSize: "14px", color: color }}>{ward.score}</span>
-          {/* Simple SVG circle for progress would be better but keeping it text-based for now */}
+          <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 800, fontSize: "15px", color }}>{ward.score}</span>
         </div>
       </div>
 
@@ -61,10 +69,13 @@ function WardCard({ ward }: { ward: typeof WARDS[0] }) {
       </div>
 
       <div style={{ marginTop: "auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ fontSize: "10px", color: "rgba(0,0,0,0.3)" }}>
+        <span style={{
+          fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 600,
+          color: ward.trend === "up" ? "#16A34A" : ward.trend === "down" ? "#DC2626" : "rgba(26,46,42,0.4)",
+        }}>
           {ward.trend === "up" ? "↑ Improving" : ward.trend === "down" ? "↓ Declining" : "→ Stable"}
-        </div>
-        <span style={{ fontSize: "11px", fontWeight: 600, color: "#0F2D5E" }}>Report →</span>
+        </span>
+        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 700, color: "#FF6B2B" }}>View Report →</span>
       </div>
     </motion.div>
   );
@@ -73,66 +84,108 @@ function WardCard({ ward }: { ward: typeof WARDS[0] }) {
 function MetricSmall({ label, val }: { label: string; val: string }) {
   return (
     <div>
-      <p style={{ fontSize: "10px", color: "rgba(0,0,0,0.4)", margin: "0 0 2px" }}>{label}</p>
-      <p style={{ fontSize: "12px", fontWeight: 700, margin: 0 }}>{val}</p>
+      <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "10px", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(26,46,42,0.35)", margin: "0 0 3px" }}>{label}</p>
+      <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", fontWeight: 700, color: "#1A2E2A", margin: 0 }}>{val}</p>
+    </div>
+  );
+}
+
+function LeaderRow({ rank, name, score, color }: { rank: number; name: string; score: number; color: string }) {
+  return (
+    <div style={{
+      display: "flex", alignItems: "center", justifyContent: "space-between",
+      padding: "12px 16px", background: "white", borderRadius: "12px",
+      border: "1px solid rgba(26,46,42,0.05)",
+    }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "12px", fontWeight: 800, color: "rgba(26,46,42,0.15)", width: "22px" }}>0{rank}</span>
+        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "14px", fontWeight: 600, color: "#1A2E2A" }}>{name}</span>
+      </div>
+      <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "14px", fontWeight: 800, color }}>{score}</span>
     </div>
   );
 }
 
 export default function WardsPage() {
-  const [filter, setFilter] = useState("All");
+  const sorted = [...WARDS].sort((a, b) => b.score - a.score);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#F8F9FC", color: "#0A0F1E", fontFamily: "'DM Sans', sans-serif" }}>
-      {/* HEADER */}
-      <header style={{ padding: "60px 24px 40px", textAlign: "center", maxWidth: "1200px", margin: "0 auto" }}>
-        <h1 style={{ fontFamily: "Sora", fontSize: "40px", fontWeight: 700, margin: 0 }}>Delhi Civic Health Scorecard</h1>
-        <p style={{ fontSize: "16px", color: "rgba(10,15,30,0.5)", marginTop: "8px" }}>Live ward-level governance accountability. Updated every 15 minutes.</p>
-        <div style={{ marginTop: "24px", display: "flex", gap: "12px", justifyContent: "center", alignItems: "center" }}>
-          <span style={{ fontSize: "11px", fontWeight: 700, color: "rgba(0,0,0,0.3)" }}>REPORTING TO:</span>
-          <span style={{ padding: "4px 12px", background: "#FFF", border: "1px solid #E5E7EB", borderRadius: "100px", fontSize: "11px", fontWeight: 600 }}>Delhi HC</span>
-          <span style={{ padding: "4px 12px", background: "#FFF", border: "1px solid #E5E7EB", borderRadius: "100px", fontSize: "11px", fontWeight: 600 }}>CAG</span>
-          <span style={{ padding: "4px 12px", background: "#FFF", border: "1px solid #E5E7EB", borderRadius: "100px", fontSize: "11px", fontWeight: 600 }}>MCD Commissioner</span>
-        </div>
-      </header>
+    <RoleGuard allowedRoles={["admin", "field_officer"]}>
+    <PageLayout showFooter>
+      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px 80px", width: "100%" }}>
 
-      <main style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px 80px", display: "flex", flexDirection: "column", gap: "48px" }}>
-        
+        {/* HEADER */}
+        <div style={{ marginBottom: "48px" }}>
+          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(26,46,42,0.35)", marginBottom: "8px" }}>
+            CIVIC ACCOUNTABILITY
+          </p>
+          <h1 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "40px", color: "#1A2E2A", lineHeight: 1.1, margin: "0 0 10px" }}>
+            Delhi Civic Health Scorecard
+          </h1>
+          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "15px", color: "rgba(26,46,42,0.5)", maxWidth: "550px" }}>
+            Live ward-level governance accountability. Updated every 15 minutes.
+          </p>
+          <div style={{ marginTop: "16px", display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+            <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "10px", fontWeight: 700, color: "rgba(26,46,42,0.3)", letterSpacing: "0.1em" }}>REPORTING TO:</span>
+            {["Delhi HC", "CAG", "MCD Commissioner"].map((t) => (
+              <span key={t} style={{ padding: "4px 14px", background: "white", border: "1.5px solid rgba(26,46,42,0.08)", borderRadius: "100px", fontSize: "11px", fontWeight: 600, fontFamily: "'DM Sans', sans-serif", color: "#1A2E2A" }}>{t}</span>
+            ))}
+          </div>
+        </div>
+
         {/* HERO METRIC */}
-        <section style={{ display: "flex", background: "#FFF", border: "1px solid #E5E7EB", borderRadius: "32px", padding: "40px", alignItems: "center", justifyContent: "space-between", gap: "40px" }}>
-          <div style={{ flex: 1 }}>
-            <h2 style={{ fontFamily: "Sora", fontSize: "20px", fontWeight: 700, marginBottom: "8px" }}>Delhi Overall Civic Health</h2>
-            <p style={{ fontSize: "15px", color: "rgba(0,0,0,0.5)", maxWidth: "400px" }}>The city-wide average across all 272 wards, weighted by population density and complaint severity.</p>
-            <div style={{ marginTop: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
-              <span style={{ fontSize: "14px", color: "#16A34A", fontWeight: 700 }}>↑ 4 points</span>
-              <span style={{ fontSize: "14px", color: "rgba(0,0,0,0.3)" }}>from last month</span>
+        <motion.section
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+          style={{
+            display: "flex", background: "white", borderRadius: "24px",
+            border: "1.5px solid rgba(26,46,42,0.07)", padding: "40px",
+            alignItems: "center", justifyContent: "space-between", gap: "40px",
+            marginBottom: "40px", flexWrap: "wrap",
+          }}
+        >
+          <div style={{ flex: 1, minWidth: "300px" }}>
+            <h2 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "22px", color: "#1A2E2A", marginBottom: "8px" }}>Delhi Overall Civic Health</h2>
+            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "14px", color: "rgba(26,46,42,0.5)", maxWidth: "400px" }}>
+              City-wide average across all 272 wards, weighted by population density and complaint severity.
+            </p>
+            <div style={{ marginTop: "20px", display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "#16A34A", fontWeight: 700 }}>↑ 4 points</span>
+              <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "rgba(26,46,42,0.35)" }}>from last month</span>
             </div>
           </div>
           <div style={{ textAlign: "center" }}>
-            <div style={{ 
-              width: "140px", height: "140px", borderRadius: "50%", background: "#FDF4FF", border: "8px solid #F59E0B",
-              display: "flex", alignItems: "center", justifyContent: "center", position: "relative"
+            <div style={{
+              width: "130px", height: "130px", borderRadius: "50%",
+              background: "rgba(255,107,43,0.06)", border: "6px solid #FF6B2B",
+              display: "flex", alignItems: "center", justifyContent: "center", position: "relative",
             }}>
-              <span style={{ fontFamily: "Sora", fontWeight: 800, fontSize: "40px", color: "#0A0F1E" }}>67</span>
-              <span style={{ position: "absolute", bottom: "24px", fontSize: "12px", fontWeight: 600, color: "rgba(0,0,0,0.3)" }}>/100</span>
+              <span style={{ fontFamily: "'DM Serif Display', serif", fontWeight: 700, fontSize: "38px", color: "#1A2E2A" }}>67</span>
+              <span style={{ position: "absolute", bottom: "22px", fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 600, color: "rgba(26,46,42,0.3)" }}>/100</span>
             </div>
-            <p style={{ marginTop: "16px", fontSize: "14px", fontWeight: 700, color: "#F59E0B" }}>FAIR PERFORMANCE</p>
+            <p style={{ fontFamily: "'DM Sans', sans-serif", marginTop: "14px", fontSize: "12px", fontWeight: 700, color: "#FF6B2B", letterSpacing: "0.05em" }}>FAIR PERFORMANCE</p>
           </div>
-        </section>
+        </motion.section>
 
         {/* SEARCH & FILTER */}
-        <section style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-          <div style={{ 
-            flex: 1, minWidth: "300px", background: "#FFF", border: "1px solid #E5E7EB", borderRadius: "100px",
-            padding: "10px 24px", display: "flex", alignItems: "center", gap: "12px"
+        <section style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginBottom: "36px" }}>
+          <div style={{
+            flex: 1, minWidth: "280px", background: "white", border: "1.5px solid rgba(26,46,42,0.08)",
+            borderRadius: "100px", padding: "11px 22px", display: "flex", alignItems: "center", gap: "10px",
           }}>
             <span style={{ opacity: 0.3 }}>🔍</span>
-            <input 
-              placeholder="Find your ward (e.g. Lajpat Nagar)..." 
-              style={{ border: "none", background: "transparent", outline: "none", width: "100%", fontSize: "14px" }}
+            <input
+              placeholder="Find your ward (e.g. Lajpat Nagar)..."
+              style={{
+                border: "none", background: "transparent", outline: "none", width: "100%",
+                fontSize: "14px", fontFamily: "'DM Sans', sans-serif", color: "#1A2E2A",
+              }}
             />
           </div>
-          <select style={{ background: "#FFF", border: "1px solid #E5E7EB", borderRadius: "100px", padding: "10px 24px", fontSize: "14px", outline: "none" }}>
+          <select style={{
+            background: "white", border: "1.5px solid rgba(26,46,42,0.08)",
+            borderRadius: "100px", padding: "11px 22px", fontSize: "14px",
+            fontFamily: "'DM Sans', sans-serif", color: "#1A2E2A", outline: "none",
+          }}>
             <option>All Zones</option>
             <option>South Delhi</option>
             <option>North West</option>
@@ -141,8 +194,8 @@ export default function WardsPage() {
         </section>
 
         {/* WARD GRID */}
-        <section>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "24px" }}>
+        <section style={{ marginBottom: "48px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "20px" }}>
             {WARDS.map((ward) => (
               <WardCard key={ward.id} ward={ward} />
             ))}
@@ -150,51 +203,34 @@ export default function WardsPage() {
         </section>
 
         {/* LEADERBOARD */}
-        <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
-          <div style={{ background: "#F0FDF4", border: "1px solid #BBF7D0", borderRadius: "24px", padding: "32px" }}>
-             <h3 style={{ fontFamily: "Sora", fontSize: "18px", fontWeight: 700, color: "#16A34A", marginBottom: "20px" }}>Top Performing Wards</h3>
-             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-               {WARDS.sort((a,b) => b.score - a.score).slice(0, 5).map((w, idx) => (
-                 <LeaderRow key={w.id} rank={idx+1} name={w.name} score={w.score} color="#16A34A" />
-               ))}
-             </div>
+        <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "48px" }}>
+          <div style={{ background: "rgba(22,163,74,0.04)", border: "1.5px solid rgba(22,163,74,0.12)", borderRadius: "20px", padding: "28px" }}>
+            <h3 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "18px", color: "#16A34A", marginBottom: "16px" }}>Top Performing Wards</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              {sorted.slice(0, 5).map((w, idx) => (
+                <LeaderRow key={w.id} rank={idx + 1} name={w.name} score={w.score} color="#16A34A" />
+              ))}
+            </div>
           </div>
-          <div style={{ background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: "24px", padding: "32px" }}>
-             <h3 style={{ fontFamily: "Sora", fontSize: "18px", fontWeight: 700, color: "#DC2626", marginBottom: "20px" }}>Wards Requiring Attention</h3>
-             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {WARDS.sort((a,b) => a.score - b.score).slice(0, 5).map((w, idx) => (
-                 <LeaderRow key={w.id} rank={idx+1} name={w.name} score={w.score} color="#DC2626" />
-               ))}
-             </div>
+          <div style={{ background: "rgba(220,38,38,0.04)", border: "1.5px solid rgba(220,38,38,0.12)", borderRadius: "20px", padding: "28px" }}>
+            <h3 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "18px", color: "#DC2626", marginBottom: "16px" }}>Wards Requiring Attention</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              {[...WARDS].sort((a, b) => a.score - b.score).slice(0, 5).map((w, idx) => (
+                <LeaderRow key={w.id} rank={idx + 1} name={w.name} score={w.score} color="#DC2626" />
+              ))}
+            </div>
           </div>
         </section>
 
         {/* TRANSPARENCY NOTE */}
-        <footer style={{ padding: "40px", background: "rgba(0,0,0,0.03)", borderRadius: "24px", textAlign: "center" }}>
-           <p style={{ fontSize: "13px", color: "rgba(0,0,0,0.5)", lineHeight: 1.6, maxWidth: "800px", margin: "0 auto" }}>
-             <strong>Transparency Note:</strong> This data is sourced from SANKALP AI's complaint resolution database, cross-verified with MCD's PGMS system, and published under the RTI Act 2005. All records are immutable and blockchain-verified for public auditing.
-           </p>
-        </footer>
+        <div style={{ padding: "32px", background: "rgba(26,46,42,0.03)", borderRadius: "20px", textAlign: "center", border: "1px solid rgba(26,46,42,0.05)" }}>
+          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "rgba(26,46,42,0.45)", lineHeight: 1.7, maxWidth: "700px", margin: "0 auto" }}>
+            <strong style={{ color: "#1A2E2A" }}>Transparency Note:</strong> This data is sourced from SANKALP AI&apos;s complaint resolution database, cross-verified with MCD&apos;s PGMS system, and published under the RTI Act 2005. All records are immutable and blockchain-verified.
+          </p>
+        </div>
 
-      </main>
-
-      <style jsx global>{`
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.05); borderRadius: 10px; }
-      `}</style>
-    </div>
-  );
-}
-
-function LeaderRow({ rank, name, score, color }: { rank: number; name: string; score: number; color: string }) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px", background: "#FFF", borderRadius: "12px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-        <span style={{ fontSize: "12px", fontWeight: 800, color: "rgba(0,0,0,0.15)", width: "20px" }}>0{rank}</span>
-        <span style={{ fontSize: "14px", fontWeight: 600 }}>{name}</span>
       </div>
-      <span style={{ fontSize: "14px", fontWeight: 800, color: color }}>{score}</span>
-    </div>
+    </PageLayout>
+    </RoleGuard>
   );
 }

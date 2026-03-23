@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 const navLinks = [
   { label: "Problem", href: "#problem" },
@@ -57,7 +58,7 @@ export default function Navbar() {
         }}
       >
         {/* Logo */}
-        <a href="/" style={{ textDecoration: "none" }}>
+        <Link href="/" style={{ textDecoration: "none" }}>
           <span
             style={{
               fontFamily: "'Sora', sans-serif",
@@ -69,7 +70,7 @@ export default function Navbar() {
           >
             SANKALP AI
           </span>
-        </a>
+        </Link>
 
         {/* Desktop links — centered */}
         <nav

@@ -4,15 +4,29 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth } from "./AuthProvider";
+import { useAuth, User } from "./AuthProvider";
 
-const links = [
-  { label: "Home", href: "/" },
-  { label: "Complaint", href: "/complaint" },
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Officer", href: "/officer" },
-  { label: "Demo", href: "/demo" },
+type Role = User["role"];
+
+const allLinks: { label: string; href: string; roles: Role[] | "public" }[] = [
+  { label: "Home", href: "/", roles: "public" },
+  { label: "Complaint", href: "/complaint", roles: ["citizen", "admin"] },
+  { label: "Dashboard", href: "/dashboard", roles: ["admin"] },
+  { label: "Officer", href: "/officer", roles: ["field_officer", "admin"] },
+  { label: "Wards", href: "/wards", roles: ["field_officer", "admin"] },
+  { label: "Audit", href: "/audit", roles: ["admin"] },
+  { label: "Predict", href: "/predict", roles: ["admin"] },
+  { label: "Demo", href: "/demo", roles: "public" },
+  { label: "Channels", href: "/channels", roles: "public" },
 ];
+
+function getVisibleLinks(role?: Role) {
+  return allLinks.filter((l) => {
+    if (l.roles === "public") return true;
+    if (!role) return false;
+    return l.roles.includes(role);
+  });
+}
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -75,7 +89,7 @@ export default function Navbar() {
 
         {/* Desktop nav */}
         <nav className="desk-nav" style={{ display: "flex", alignItems: "center", gap: "32px", flex: 1, justifyContent: "center" }}>
-          {links.map((l) => {
+          {getVisibleLinks(user?.role).map((l) => {
             const active = pathname === l.href;
             return (
               <Link
@@ -186,7 +200,7 @@ export default function Navbar() {
             }}
           >
             <div style={{ padding: "16px 24px 24px", display: "flex", flexDirection: "column", gap: "4px" }}>
-              {links.map((l) => {
+              {getVisibleLinks(user?.role).map((l) => {
                 const active = pathname === l.href;
                 return (
                   <Link

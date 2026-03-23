@@ -1,23 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
   PieChart,
   Pie,
   Cell,
-  AreaChart,
-  Area,
 } from "recharts";
+import PageLayout from "../components/PageLayout";
+import RoleGuard from "../components/RoleGuard";
 
-// --- Mock Data ---
+// --- Data ---
 const PREDICTION_DATA = [
   { month: "Jan 23", predicted: 400, actual: 380 },
   { month: "Feb 23", predicted: 350, actual: 360 },
@@ -25,7 +23,7 @@ const PREDICTION_DATA = [
   { month: "Apr 23", predicted: 600, actual: 610 },
   { month: "May 23", predicted: 850, actual: 830 },
   { month: "Jun 23", predicted: 1100, actual: 1050 },
-  { month: "Jul 23", predicted: 1450, actual: 1470 }, // Monsoon Peak
+  { month: "Jul 23", predicted: 1450, actual: 1470 },
   { month: "Aug 23", predicted: 1300, actual: 1280 },
   { month: "Sep 23", predicted: 1100, actual: 1120 },
   { month: "Oct 23", predicted: 700, actual: 680 },
@@ -49,51 +47,47 @@ const PREVENTION_STATS = [
   { name: "Prevented", value: 40 },
   { name: "Filed", value: 60 },
 ];
-const COLORS = ["#FF6B2B", "#0F2D5E"];
-
-const WARD_RISKS = [
-  { id: "DL-W42", name: "Lajpat Nagar", risk: 87, status: "High", category: "Drainage" },
-  { id: "DL-W17", name: "Rohini Sec 7", risk: 74, status: "High", category: "Water Supply" },
-  { id: "DL-W61", name: "Mayur Vihar", risk: 61, status: "Medium", category: "Roads" },
-  { id: "DL-W09", name: "Dwarka", risk: 45, status: "Low", category: "Streetlights" },
-  { id: "DL-W23", name: "Saket", risk: 82, status: "High", category: "Drainage" },
-  { id: "DL-W14", name: "Karol Bagh", risk: 55, status: "Medium", category: "Sanitation" },
-];
+const PIE_COLORS = ["#FF6B2B", "#1A2E2A"];
 
 const WORKORDERS = [
-  { id: "PW-8847", ward: "Lajpat Nagar", category: "Drainage", risk: 87, date: "2026-03-20", officer: "Rajesh Kumar", status: "Prevented" },
-  { id: "PW-8848", ward: "Rohini Sec 7", category: "Water Supply", risk: 74, date: "2026-03-21", officer: "Amit Sharma", status: "In Progress" },
-  { id: "PW-8849", ward: "Mayur Vihar", category: "Roads", risk: 61, date: "2026-03-22", officer: "Suresh Gupta", status: "Completed" },
-  { id: "PW-8850", ward: "Saket", category: "Drainage", risk: 82, date: "2026-03-23", officer: "Priya Singh", status: "Pending" },
-  { id: "PW-8851", ward: "Dwarka", category: "Streetlights", risk: 45, date: "2026-03-24", officer: "Vikas Raj", status: "Prevented" },
+  { id: "PW-8847", ward: "Lajpat Nagar", category: "Drainage", risk: 87, officer: "Rajesh Kumar", status: "Prevented" },
+  { id: "PW-8848", ward: "Rohini Sec 7", category: "Water Supply", risk: 74, officer: "Amit Sharma", status: "In Progress" },
+  { id: "PW-8849", ward: "Mayur Vihar", category: "Roads", risk: 61, officer: "Suresh Gupta", status: "Completed" },
+  { id: "PW-8850", ward: "Saket", category: "Drainage", risk: 82, officer: "Priya Singh", status: "Pending" },
+  { id: "PW-8851", ward: "Dwarka", category: "Streetlights", risk: 45, officer: "Vikas Raj", status: "Prevented" },
 ];
 
-// --- Components ---
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function PredictionCard({ title, subtitle, risk, trigger, history, action, status, color }: any) {
   return (
-    <motion.div 
+    <motion.div
       whileHover={{ y: -5 }}
+      transition={{ type: "spring", stiffness: 400, damping: 20 }}
       style={{
-        minWidth: "320px", background: "#161B22", border: `1px solid ${color}44`,
-        borderRadius: "16px", padding: "20px", display: "flex", flexDirection: "column", gap: "12px"
+        minWidth: "300px", background: "white", borderRadius: "20px",
+        border: `1.5px solid ${color}22`, padding: "24px",
+        display: "flex", flexDirection: "column", gap: "14px",
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-        <p style={{ fontFamily: "Sora", fontSize: "12px", fontWeight: 700, color: color }}>{title}</p>
-        <span style={{ fontSize: "10px", fontWeight: 700, color: "#FFF", background: color, padding: "2px 8px", borderRadius: "100px" }}>{risk}/100</span>
+        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "12px", fontWeight: 700, color, margin: 0 }}>{title}</p>
+        <span style={{ fontSize: "10px", fontWeight: 800, color: "#FFF", background: color, padding: "3px 10px", borderRadius: "100px", fontFamily: "'DM Sans', sans-serif" }}>{risk}/100</span>
       </div>
       <div>
-        <h4 style={{ fontSize: "16px", fontWeight: 700, color: "#FFF", margin: 0 }}>{subtitle}</h4>
-        <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)", marginTop: "4px" }}>Trigger: {trigger}</p>
+        <h4 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "16px", color: "#1A2E2A", margin: 0 }}>{subtitle}</h4>
+        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", color: "rgba(26,46,42,0.45)", marginTop: "4px" }}>Trigger: {trigger}</p>
       </div>
-      <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: "8px", padding: "12px", fontSize: "11px", color: "rgba(255,255,255,0.7)" }}>
-        <p style={{ margin: 0 }}><strong>Historical:</strong> {history}</p>
-        <p style={{ margin: "4px 0 0" }}><strong>Action:</strong> {action}</p>
+      <div style={{ background: "rgba(26,46,42,0.03)", borderRadius: "12px", padding: "14px", fontSize: "12px", fontFamily: "'DM Sans', sans-serif", color: "rgba(26,46,42,0.6)", lineHeight: 1.5 }}>
+        <p style={{ margin: 0 }}><strong style={{ color: "#1A2E2A" }}>Historical:</strong> {history}</p>
+        <p style={{ margin: "4px 0 0" }}><strong style={{ color: "#1A2E2A" }}>Action:</strong> {action}</p>
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto" }}>
-        <span style={{ fontSize: "11px", color: "#4ADE80", fontWeight: 600 }}>Status: {status}</span>
-        <button style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.2)", borderRadius: "100px", padding: "4px 12px", fontSize: "10px", color: "#FFF", cursor: "pointer" }}>Details</button>
+        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", color: "#16A34A", fontWeight: 700 }}>Status: {status}</span>
+        <button style={{
+          background: "transparent", border: "1.5px solid rgba(26,46,42,0.12)",
+          borderRadius: "100px", padding: "5px 14px", fontSize: "10px", fontWeight: 700,
+          fontFamily: "'DM Sans', sans-serif", color: "#1A2E2A", cursor: "pointer",
+        }}>Details</button>
       </div>
     </motion.div>
   );
@@ -101,33 +95,37 @@ function PredictionCard({ title, subtitle, risk, trigger, history, action, statu
 
 export default function PredictPage() {
   return (
-    <div style={{ minHeight: "100vh", background: "#0A0F1E", color: "#FFF", fontFamily: "'DM Sans', sans-serif" }}>
-      {/* HEADER */}
-      <header style={{ padding: "40px 24px", maxWidth: "1200px", margin: "0 auto" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end" }}>
+    <RoleGuard allowedRoles={["admin"]}>
+    <PageLayout showFooter>
+      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px 80px", width: "100%" }}>
+
+        {/* HEADER */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: "40px", flexWrap: "wrap", gap: "20px" }}>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-              <span style={{ fontSize: "24px" }}>🔮</span>
-              <h1 style={{ fontFamily: "Sora", fontSize: "32px", fontWeight: 700, margin: 0 }}>Predictive Prevention Engine</h1>
-            </div>
-            <p style={{ fontSize: "16px", color: "rgba(255,255,255,0.6)", maxWidth: "600px" }}>
-              3 years of ward-level complaint history × live weather forecasts = failures prevented before they're filed.
+            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(26,46,42,0.35)", marginBottom: "8px" }}>
+              AI-POWERED ANALYTICS
+            </p>
+            <h1 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "38px", color: "#1A2E2A", lineHeight: 1.1, margin: "0 0 10px" }}>
+              Predictive Prevention Engine
+            </h1>
+            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "15px", color: "rgba(26,46,42,0.5)", maxWidth: "550px" }}>
+              3 years of ward-level complaint history × live weather forecasts = failures prevented before they&apos;re filed.
             </p>
           </div>
-          <span style={{ background: "#FF6B2B", color: "#FFF", fontSize: "11px", fontWeight: 800, padding: "6px 16px", borderRadius: "100px", letterSpacing: "0.05em" }}>
+          <span style={{
+            background: "#FF6B2B", color: "#FFF", fontSize: "10px", fontWeight: 800,
+            fontFamily: "'DM Sans', sans-serif", padding: "8px 18px", borderRadius: "100px", letterSpacing: "0.05em",
+          }}>
             ★ INDUSTRY FIRST IN INDIAN CIVIC TECH
           </span>
         </div>
-      </header>
 
-      <main style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px 80px", display: "flex", flexDirection: "column", gap: "48px" }}>
-        
-        {/* SECTION 1: ALERT CARDS */}
-        <section>
-          <div style={{ display: "flex", gap: "20px", overflowX: "auto", paddingBottom: "20px", scrollbarWidth: "none" }}>
-            <PredictionCard 
-              title="⚠️ MONSOON DRAIN BLOCKAGE RISK" 
-              subtitle="High probability alert — 34 wards" 
+        {/* ALERT CARDS */}
+        <section style={{ marginBottom: "40px" }}>
+          <div style={{ display: "flex", gap: "16px", overflowX: "auto", paddingBottom: "16px" }}>
+            <PredictionCard
+              title="⚠️ MONSOON DRAIN BLOCKAGE RISK"
+              subtitle="High probability alert — 34 wards"
               risk={87}
               trigger="IMD forecast: 89mm rainfall in next 72 hours"
               history="Same wards reported 1,247 drainage complaints in July 2023"
@@ -135,9 +133,9 @@ export default function PredictPage() {
               status="Workorders sent to field teams ✓"
               color="#DC2626"
             />
-            <PredictionCard 
-              title="⚠️ SUMMER WATER PRESSURE FAILURE" 
-              subtitle="Risk score high — 18 wards affected" 
+            <PredictionCard
+              title="⚠️ SUMMER WATER PRESSURE FAILURE"
+              subtitle="Risk score high — 18 wards affected"
               risk={74}
               trigger="Temperature forecast: 44°C+ for 5 consecutive days"
               history="Pipeline pressure drops significantly above 42°C in this zone"
@@ -145,9 +143,9 @@ export default function PredictPage() {
               status="En-route ✓"
               color="#F59E0B"
             />
-            <PredictionCard 
-              title="📋 ROAD SURFACE DEGRADATION" 
-              subtitle="Post-winter analysis — 22 wards flagged" 
+            <PredictionCard
+              title="📋 ROAD SURFACE DEGRADATION"
+              subtitle="Post-winter analysis — 22 wards flagged"
               risk={61}
               trigger="Recent freeze-thaw cycles + heavy freight movement"
               history="80% accuracy in predicting potholes before they expand"
@@ -155,9 +153,9 @@ export default function PredictPage() {
               status="Pending review"
               color="#818CF8"
             />
-            <PredictionCard 
-              title="✅ STREETLIGHT OUTAGE CYCLE" 
-              subtitle="Predictive maintenance — Low risk" 
+            <PredictionCard
+              title="✅ STREETLIGHT OUTAGE CYCLE"
+              subtitle="Predictive maintenance — Low risk"
               risk={45}
               trigger="End-of-life cycle for 847 LED bulbs this quarter"
               history="Average bulb life: 18 months in North Zone V2 grid"
@@ -168,116 +166,119 @@ export default function PredictPage() {
           </div>
         </section>
 
-        {/* SECTION 2: CHARTS */}
-        <section style={{ display: "grid", gridTemplateColumns: "1fr 400px", gap: "24px" }}>
+        {/* CHARTS */}
+        <section style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "20px", marginBottom: "40px" }}>
           {/* Accuracy Chart */}
-          <div style={{ background: "#111827", borderRadius: "24px", padding: "32px", border: "1px solid rgba(255,255,255,0.05)" }}>
-            <h3 style={{ fontFamily: "Sora", fontSize: "18px", fontWeight: 700, marginBottom: "8px" }}>Complaint Volume: Predicted vs Actual</h3>
-            <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)", marginBottom: "32px" }}>Historical model alignment across 272 wards (2023–2025)</p>
-            <div style={{ height: "300px" }}>
+          <div style={{ background: "white", borderRadius: "20px", border: "1.5px solid rgba(26,46,42,0.07)", padding: "28px" }}>
+            <h3 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "18px", color: "#1A2E2A", marginBottom: "6px" }}>Complaint Volume: Predicted vs Actual</h3>
+            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "12px", color: "rgba(26,46,42,0.4)", marginBottom: "28px" }}>Historical model alignment across 272 wards (2023–2025)</p>
+            <div style={{ height: "280px" }}>
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={PREDICTION_DATA}>
                   <defs>
                     <linearGradient id="colorPred" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#FF6B2B" stopOpacity={0.1}/>
-                      <stop offset="95%" stopColor="#FF6B2B" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#FF6B2B" stopOpacity={0.15} />
+                      <stop offset="95%" stopColor="#FF6B2B" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="colorAct" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#818CF8" stopOpacity={0.1}/>
-                      <stop offset="95%" stopColor="#818CF8" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#1A2E2A" stopOpacity={0.1} />
+                      <stop offset="95%" stopColor="#1A2E2A" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="month" stroke="rgba(255,255,255,0.2)" fontSize={10} tickLine={false} axisLine={false} />
-                  <YAxis stroke="rgba(255,255,255,0.2)" fontSize={10} tickLine={false} axisLine={false} />
-                  <Tooltip contentStyle={{ background: "#111827", border: "1px solid rgba(255,255,255,0.1)", color: "#FFF" }} />
-                  <Area type="monotone" dataKey="predicted" stroke="#FF6B2B" strokeWidth={3} fillOpacity={1} fill="url(#colorPred)" />
-                  <Area type="monotone" dataKey="actual" stroke="#818CF8" strokeWidth={2} strokeDasharray="5 5" fillOpacity={1} fill="url(#colorAct)" />
+                  <XAxis dataKey="month" stroke="rgba(26,46,42,0.15)" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="rgba(26,46,42,0.15)" fontSize={10} tickLine={false} axisLine={false} />
+                  <Tooltip contentStyle={{ background: "white", border: "1px solid rgba(26,46,42,0.1)", borderRadius: "12px", color: "#1A2E2A", fontFamily: "'DM Sans', sans-serif", fontSize: "12px" }} />
+                  <Area type="monotone" dataKey="predicted" stroke="#FF6B2B" strokeWidth={2.5} fillOpacity={1} fill="url(#colorPred)" />
+                  <Area type="monotone" dataKey="actual" stroke="#1A2E2A" strokeWidth={1.5} strokeDasharray="5 5" fillOpacity={1} fill="url(#colorAct)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
-            <div style={{ marginTop: "24px", display: "flex", gap: "24px" }}>
+            <div style={{ marginTop: "20px", display: "flex", gap: "24px", alignItems: "center" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <div style={{ width: "12px", height: "3px", background: "#FF6B2B" }} />
-                <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.6)" }}>AI Prediction</span>
+                <div style={{ width: "14px", height: "3px", background: "#FF6B2B", borderRadius: "2px" }} />
+                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", color: "rgba(26,46,42,0.5)" }}>AI Prediction</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <div style={{ width: "12px", height: "3px", background: "#818CF8", borderStyle: "dashed", borderBottomWidth: "1px" }} />
-                <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.6)" }}>Actual Growth</span>
+                <div style={{ width: "14px", height: "3px", background: "#1A2E2A", borderRadius: "2px", borderTop: "1px dashed #1A2E2A" }} />
+                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", color: "rgba(26,46,42,0.5)" }}>Actual Growth</span>
               </div>
-              <span style={{ marginLeft: "auto", fontSize: "11px", fontWeight: 700, color: "#16A34A" }}>Model Accuracy: 91.3%</span>
+              <span style={{ marginLeft: "auto", fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 700, color: "#16A34A" }}>Model Accuracy: 91.3%</span>
             </div>
           </div>
 
-          {/* Donut Chart */}
-          <div style={{ background: "#111827", borderRadius: "24px", padding: "32px", border: "1px solid rgba(255,255,255,0.05)", textAlign: "center", display: "flex", flexDirection: "column" }}>
-            <h3 style={{ fontFamily: "Sora", fontSize: "18px", fontWeight: 700, marginBottom: "8px" }}>Efforts (YTD)</h3>
-            <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)", marginBottom: "32px" }}>Prevented vs Reactive filing</p>
-            <div style={{ flex: 1, position: "relative" }}>
+          {/* Donut */}
+          <div style={{ background: "white", borderRadius: "20px", border: "1.5px solid rgba(26,46,42,0.07)", padding: "28px", textAlign: "center", display: "flex", flexDirection: "column" }}>
+            <h3 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "18px", color: "#1A2E2A", marginBottom: "6px" }}>Prevention Efforts (YTD)</h3>
+            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "12px", color: "rgba(26,46,42,0.4)", marginBottom: "24px" }}>Prevented vs Reactive filing</p>
+            <div style={{ flex: 1, position: "relative", minHeight: "200px" }}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={PREVENTION_STATS} cx="50%" cy="50%" innerRadius={70} outerRadius={90} paddingAngle={5} dataKey="value">
-                    {PREVENTION_STATS.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Pie data={PREVENTION_STATS} cx="50%" cy="50%" innerRadius={65} outerRadius={85} paddingAngle={5} dataKey="value">
+                    {PREVENTION_STATS.map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
                     ))}
                   </Pie>
                 </PieChart>
               </ResponsiveContainer>
               <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
-                <p style={{ fontSize: "28px", fontWeight: 800, margin: 0 }}>40%</p>
-                <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)", margin: 0 }}>PREVENTED</p>
+                <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: "28px", fontWeight: 700, color: "#1A2E2A", margin: 0 }}>40%</p>
+                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em", color: "rgba(26,46,42,0.35)", margin: 0 }}>PREVENTED</p>
               </div>
             </div>
-            <p style={{ fontSize: "13px", color: "#FF6B2B", fontWeight: 600, marginTop: "24px" }}>
+            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "#FF6B2B", fontWeight: 700, marginTop: "20px" }}>
               Saving MCD ₹2.3 crore in reactive repair costs
             </p>
           </div>
         </section>
 
-        {/* SECTION 3: WARD RISK LOG */}
-        <section style={{ background: "#111827", borderRadius: "24px", padding: "32px", border: "1px solid rgba(255,255,255,0.05)" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
-            <h3 style={{ fontFamily: "Sora", fontSize: "20px", fontWeight: 700 }}>Auto-Created Preventive Workorders</h3>
-            <div style={{ display: "flex", gap: "8px" }}>
-               {["All", "Drainage", "Water", "Roads"].map(label => (
-                 <button key={label} style={{ background: label === "All" ? "#FF6B2B" : "rgba(255,255,255,0.05)", border: "none", borderRadius: "100px", padding: "6px 16px", fontSize: "11px", color: "#FFF", cursor: "pointer" }}>{label}</button>
-               ))}
+        {/* WORKORDERS TABLE */}
+        <section style={{ background: "white", borderRadius: "20px", border: "1.5px solid rgba(26,46,42,0.07)", padding: "28px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "12px" }}>
+            <h3 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "20px", color: "#1A2E2A", margin: 0 }}>Auto-Created Preventive Workorders</h3>
+            <div style={{ display: "flex", gap: "6px" }}>
+              {["All", "Drainage", "Water", "Roads"].map((label) => (
+                <button key={label} style={{
+                  background: label === "All" ? "#FF6B2B" : "rgba(26,46,42,0.04)",
+                  border: label === "All" ? "none" : "1.5px solid rgba(26,46,42,0.08)",
+                  borderRadius: "100px", padding: "7px 16px", fontSize: "11px", fontWeight: 700,
+                  fontFamily: "'DM Sans', sans-serif",
+                  color: label === "All" ? "#FFF" : "#1A2E2A", cursor: "pointer",
+                }}>{label}</button>
+              ))}
             </div>
           </div>
-          
+
           <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px", fontFamily: "'DM Sans', sans-serif" }}>
               <thead>
-                <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", textAlign: "left" }}>
-                  <th style={{ padding: "16px", fontWeight: 600, color: "rgba(255,255,255,0.4)" }}>WO ID</th>
-                  <th style={{ padding: "16px", fontWeight: 600, color: "rgba(255,255,255,0.4)" }}>Ward</th>
-                  <th style={{ padding: "16px", fontWeight: 600, color: "rgba(255,255,255,0.4)" }}>Category</th>
-                  <th style={{ padding: "16px", fontWeight: 600, color: "rgba(255,255,255,0.4)" }}>Risk Score</th>
-                  <th style={{ padding: "16px", fontWeight: 600, color: "rgba(255,255,255,0.4)" }}>Officer</th>
-                  <th style={{ padding: "16px", fontWeight: 600, color: "rgba(255,255,255,0.4)" }}>Outcome</th>
+                <tr style={{ borderBottom: "1.5px solid rgba(26,46,42,0.06)", textAlign: "left" }}>
+                  {["WO ID", "Ward", "Category", "Risk Score", "Officer", "Outcome"].map((h) => (
+                    <th key={h} style={{ padding: "14px 16px", fontWeight: 700, fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(26,46,42,0.35)" }}>{h}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
                 {WORKORDERS.map((wo) => (
-                  <tr key={wo.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-                    <td style={{ padding: "16px", fontFamily: "JetBrains Mono", color: "#FF6B2B" }}>{wo.id}</td>
-                    <td style={{ padding: "16px", fontWeight: 600 }}>{wo.ward}</td>
-                    <td style={{ padding: "16px" }}>
-                      <span style={{ padding: "4px 10px", borderRadius: "100px", background: "rgba(255,255,255,0.05)", fontSize: "11px" }}>{wo.category}</span>
+                  <tr key={wo.id} style={{ borderBottom: "1px solid rgba(26,46,42,0.04)" }}>
+                    <td style={{ padding: "14px 16px", fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, color: "#FF6B2B", fontSize: "12px" }}>{wo.id}</td>
+                    <td style={{ padding: "14px 16px", fontWeight: 600, color: "#1A2E2A" }}>{wo.ward}</td>
+                    <td style={{ padding: "14px 16px" }}>
+                      <span style={{ padding: "4px 12px", borderRadius: "100px", background: "rgba(26,46,42,0.04)", border: "1px solid rgba(26,46,42,0.06)", fontSize: "11px", fontWeight: 600 }}>{wo.category}</span>
                     </td>
-                    <td style={{ padding: "16px" }}>
+                    <td style={{ padding: "14px 16px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <div style={{ flex: 1, height: "4px", background: "rgba(255,255,255,0.1)", borderRadius: "2px", maxWidth: "60px" }}>
-                          <div style={{ height: "100%", width: `${wo.risk}%`, background: wo.risk > 80 ? "#DC2626" : "#F59E0B", borderRadius: "2px" }} />
+                        <div style={{ flex: 1, height: "4px", background: "rgba(26,46,42,0.06)", borderRadius: "2px", maxWidth: "60px" }}>
+                          <div style={{ height: "100%", width: `${wo.risk}%`, background: wo.risk > 80 ? "#DC2626" : "#FF6B2B", borderRadius: "2px" }} />
                         </div>
-                        <span style={{ fontSize: "11px" }}>{wo.risk}%</span>
+                        <span style={{ fontSize: "11px", fontWeight: 700, color: "#1A2E2A" }}>{wo.risk}%</span>
                       </div>
                     </td>
-                    <td style={{ padding: "16px" }}>{wo.officer}</td>
-                    <td style={{ padding: "16px" }}>
+                    <td style={{ padding: "14px 16px", color: "rgba(26,46,42,0.6)" }}>{wo.officer}</td>
+                    <td style={{ padding: "14px 16px" }}>
                       {wo.status === "Prevented" ? (
-                        <span style={{ color: "#4ADE80", fontWeight: 700 }}>Complaint Avoided ✓</span>
+                        <span style={{ color: "#16A34A", fontWeight: 700 }}>Complaint Avoided ✓</span>
                       ) : (
-                        <span style={{ color: "rgba(255,255,255,0.4)" }}>{wo.status}</span>
+                        <span style={{ color: "rgba(26,46,42,0.4)" }}>{wo.status}</span>
                       )}
                     </td>
                   </tr>
@@ -287,13 +288,8 @@ export default function PredictPage() {
           </div>
         </section>
 
-      </main>
-
-      <style jsx global>{`
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); borderRadius: 10px; }
-      `}</style>
-    </div>
+      </div>
+    </PageLayout>
+    </RoleGuard>
   );
 }

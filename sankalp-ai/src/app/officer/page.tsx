@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import PageLayout from "../components/PageLayout";
 import { useAuth } from "../components/AuthProvider";
+import RoleGuard from "../components/RoleGuard";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Ticket {
@@ -58,9 +59,7 @@ export default function OfficerPage() {
   const [justResolved, setJustResolved] = useState<string | null>(null);
   const [backendOnline, setBackendOnline] = useState(true);
 
-  useEffect(() => {
-    if (!isAuthenticated) router.push("/auth/login");
-  }, [isAuthenticated, router]);
+
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -124,7 +123,7 @@ export default function OfficerPage() {
     );
   };
 
-  if (!isAuthenticated) return null;
+
 
   const pendingTickets = tickets.filter((t) => t.status !== "resolved" && !resolved.has(t.id));
   const resolvedTickets = tickets.filter((t) => t.status === "resolved" || resolved.has(t.id));
@@ -136,6 +135,7 @@ export default function OfficerPage() {
   ];
 
   return (
+    <RoleGuard allowedRoles={["admin", "field_officer"]}>
     <PageLayout showFooter>
       <div style={{ maxWidth: "760px", margin: "0 auto", padding: "0 24px 80px" }}>
 
@@ -398,5 +398,6 @@ export default function OfficerPage() {
         </div>
       </div>
     </PageLayout>
+    </RoleGuard>
   );
 }
